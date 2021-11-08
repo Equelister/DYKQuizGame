@@ -16,8 +16,8 @@
     <Window.DataContext>
         <viewModel:MainViewModel/>
     </Window.DataContext>
-    
-    <Border Background="#111c4a"
+
+    <Border Background="{StaticResource MainWindowsBrush}"
             CornerRadius="20">
 
         <Grid>

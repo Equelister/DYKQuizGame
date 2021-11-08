@@ -1,0 +1,65 @@
+﻿<Page x:Class="DYKClient.LoginWindow.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DYKClient.LoginWindow"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="240"
+      Title="LoginPage" Background="Transparent"
+      Foreground="#b3bcfc"
+      FontFamily="Georgia">
+    <Grid>
+
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="8">
+            <TextBlock Text="Email" Margin="0,5,0,5"/>
+            <TextBox x:Name="emailTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+            <TextBlock Text="Password" Margin="0,5,0,5"/>
+            <PasswordBox x:Name="passwordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}"/>
+
+            <Button x:Name="loginButton" Style="{StaticResource StandardButtonStyle}" Content="Login" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+                    MinWidth="70"
+                    Margin="0,20,0,20" Click="loginButton_Click"/>
+
+            <Label x:Name="errorLabel" HorizontalAlignment="Center"
+                   Content="ErrorLabelFailedLogin"
+                   Visibility="Hidden"
+                   Foreground="Red"/>
+        </StackPanel>
+
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+    </Grid>
+</Page>

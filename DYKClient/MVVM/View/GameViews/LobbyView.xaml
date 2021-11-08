@@ -55,7 +55,30 @@
                           HorizontalAlignment="Center"/>
         </ListView>
 
+        <StackPanel Grid.Row="1" Grid.RowSpan="2"
+                    Grid.Column="1" Grid.ColumnSpan="3"
+                    Margin="0">
 
+            <TextBlock Text="Rozpocznij grę"
+                       Style="{StaticResource StandardTextBlockStyle}"/>
+
+            <DockPanel>
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Zwykła" 
+                            Style="{StaticResource StandardButtonStyle}"/>
+
+                    <Button Grid.Column="1" 
+                            Content="Urozmaicona"
+                            Style="{StaticResource StandardButtonStyle}"/>
+                </Grid>
+            </DockPanel>
+            
+        </StackPanel>
+        
         <StackPanel Grid.Row="1" Grid.RowSpan="2"
                     Grid.Column="5" Grid.ColumnSpan="2"
                     Margin="0">
@@ -68,17 +91,7 @@
 
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.RowSpan="2"
-                    Grid.Column="1" Grid.ColumnSpan="2"
-                    Margin="0">
 
-            <TextBlock Text="Rozpocznij grę"
-                       Style="{StaticResource StandardTextBlockStyle}"/>
-
-                    <Button Content="Rozpocznij"
-                    Style="{StaticResource StandardButtonStyle}"/>
-
-                </StackPanel>
 
 
 

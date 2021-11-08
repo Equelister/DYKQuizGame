@@ -6,14 +6,16 @@
              xmlns:gameViewModel="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
              xmlns:view="clr-namespace:DYKClient.MVVM.View" 
              xmlns:gameView="clr-namespace:DYKClient.MVVM.View.GameViews"
-             StartupUri="MainWindow.xaml">
+             StartupUri="LoginWindow/LoginWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/LinearGradients.xaml"/>
                 <ResourceDictionary Source="Theme/MenuButtonStyle.xaml"/>
                 <ResourceDictionary Source="Theme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Theme/StandardButtonStyle.xaml"/>
                 <ResourceDictionary Source="Theme/StandardTextBlockStyle.xaml"/>
+                <ResourceDictionary Source="Theme/StandardPasswordBoxStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             
