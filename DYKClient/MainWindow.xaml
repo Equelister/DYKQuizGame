@@ -4,9 +4,90 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DYKClient"
+        xmlns:viewModel="clr-namespace:DYKClient.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" 
+        Width="1280" Height="720"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True">
 
-    </Grid>
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+    
+    <Border Background="#111c4a"
+            CornerRadius="20">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="DidYouKnow"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="26"
+                   />
+
+            <StackPanel Grid.Row="2"
+                        Grid.RowSpan="7">
+
+                <RadioButton Content="Lobbies"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             IsChecked="True"
+                             Command="{Binding LobbiesViewCommand}"/>
+                
+                <RadioButton Content="About"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             Command="{Binding AboutViewCommand}"/>
+
+                <RadioButton Content="Help"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             Command="{Binding HelpViewCommand}"/>
+            </StackPanel>
+
+            <TextBox Grid.Column="1"
+                     Text="123"
+                     Style="{StaticResource TextBoxStyle}"/>
+
+            <ContentControl Grid.Row="1" Grid.RowSpan="8"
+                            Grid.Column="1" Grid.ColumnSpan="6"
+                            Margin="0,10,10,10"
+                            Content="{Binding CurrentView}"/>
+
+        </Grid>
+
+
+        
+        
+        
+                
+    </Border>
 </Window>

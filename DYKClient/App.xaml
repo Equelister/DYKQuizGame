@@ -2,8 +2,40 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DYKClient"
+             xmlns:viewModel="clr-namespace:DYKClient.MVVM.ViewModel"
+             xmlns:gameViewModel="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
+             xmlns:view="clr-namespace:DYKClient.MVVM.View" 
+             xmlns:gameView="clr-namespace:DYKClient.MVVM.View.GameViews"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/MenuButtonStyle.xaml"/>
+                <ResourceDictionary Source="Theme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="Theme/StandardButtonStyle.xaml"/>
+                <ResourceDictionary Source="Theme/StandardTextBlockStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            
+
+            <DataTemplate DataType="{x:Type viewModel:LobbiesViewModel}">
+                <view:LobbiesView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:AboutViewModel}">
+                <view:AboutView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewModel:HelpViewModel}">
+                <view:HelpView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type gameViewModel:LobbyViewModel}">
+                <gameView:LobbyView/>
+            </DataTemplate>
+
+
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

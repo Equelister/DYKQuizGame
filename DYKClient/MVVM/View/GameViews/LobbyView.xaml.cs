@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DYKClient
+namespace DYKClient.MVVM.View.GameViews
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LobbyView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LobbyView : UserControl
     {
-        public MainWindow()
+        public LobbyView()
         {
-            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
         }
     }
