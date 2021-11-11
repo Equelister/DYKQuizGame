@@ -38,6 +38,13 @@ namespace DYKClient.Net
                     _client.Client.Send(connectPacket.GetPacketBytes());
                 }
                 ReadPacket();
+                /*if (_client.Connected)
+                {
+                    ReadPacket();
+                }else
+                {
+                    PacketReader = null;
+                }*/
             }
         }
 
@@ -49,15 +56,31 @@ namespace DYKClient.Net
         private void ReadPacket()
         {
             Task.Run(() => {
-                while (true)
+                while (_client.Connected)
                 {
-                    var opcode = PacketReader.ReadByte();
+                    var opcode = 0;
+                    try
+                    {
+                        opcode = PacketReader.ReadByte();
+                    }catch(System.IO.IOException IOE)
+                    {
+                        Console.WriteLine(IOE.ToString());
+                        return;
+                    }catch(System.InvalidOperationException invalidOperationE)
+                    {
+                        Console.WriteLine("Propably user was clicking to fast at login phase \r\n" + invalidOperationE.ToString());
+                        return;
+                    }
                     switch (opcode)
                     {
                         case 1:
                             connectedEvent?.Invoke();
                             break;
                         case 2:
+                            /*if(GetLoginCredentialsResult() == false)
+                            {
+                                return;
+                            }*/
                             GetLoginCredentialsResult();
                             break;
                         case 5:
@@ -86,6 +109,7 @@ namespace DYKClient.Net
         {
             if (_client.Connected == false)
             {
+                //_client = new TcpClient();
                 _client.Connect("127.0.0.1", 7710);
                 PacketReader = new PacketReader(_client.GetStream());
 
@@ -99,6 +123,7 @@ namespace DYKClient.Net
                     _client.Client.Send(messagePacket.GetPacketBytes());
                 }
                 ReadPacket();
+               
             }
         }
 
@@ -123,6 +148,7 @@ namespace DYKClient.Net
             }
             else
             {
+                //DisconnectFromServer();
                 return false;
             }
 

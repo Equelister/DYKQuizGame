@@ -42,9 +42,14 @@ namespace DYKServer.Net
             if (UserModel is not null)
             {
                 succesLogin = true;
-                GetClientsLoginCredentials(succesLogin);
+                bool isUniqueUser = GetClientsLoginCredentials(succesLogin);
+                if(isUniqueUser == false)
+                {
+                    Console.WriteLine($"[{ DateTime.Now}]: Client with username: [{Username}] is already connected!");
+                    return;
+                }
                 Username = UserModel.Username;
-                Console.WriteLine($"[{ DateTime.Now}]: Client connected with the username: {Username} ");
+                Console.WriteLine($"[{ DateTime.Now}]: Client connected with the username: [{Username}]");
             }
             else
             {
@@ -73,27 +78,33 @@ namespace DYKServer.Net
                     }
 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    
+                    Console.WriteLine(e.ToString());
                     Console.WriteLine($"{UID.ToString()} - Disconnected!");
                     //Program.BroadcastDisconnect(UID.ToString());
                     ClientSocket.Close();
+                    Program.RemoveUserFromList(UID.ToString());
+                    return;
                 }
             }
         }
 
-        private void GetClientsLoginCredentials(bool status)
+        private bool GetClientsLoginCredentials(bool status)
         {
             if (status)
             {
-                Program.BroadcastLoginResult(UID.ToString(), "credsLegit");
+                return Program.BroadcastLoginResult(UID.ToString(), "credsLegit");
             }
             else
             {
-                Program.BroadcastLoginResult(UID.ToString(), "credsNotLegit");
+                return Program.BroadcastLoginResult(UID.ToString(), "credsNotLegit");
+                
             }
         }
+
+
+        
 
         private void GetAndBroadcastClientMessage()
         {
@@ -101,5 +112,7 @@ namespace DYKServer.Net
             Console.WriteLine($"{DateTime.Now} [{Username}]: {message}");
             Program.BroadcastMessage($"{DateTime.Now} [{Username}]: {message}");*/
         }
+
+        
     }
 }

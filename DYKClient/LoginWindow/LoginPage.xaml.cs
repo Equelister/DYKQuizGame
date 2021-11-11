@@ -30,7 +30,7 @@ namespace DYKClient.LoginWindow
         public LoginPage()
         {
             InitializeComponent();
-            InitializeConnectionToServer();
+            //InitializeConnectionToServer();
         }
 
         private void InitializeConnectionToServer()
@@ -40,6 +40,7 @@ namespace DYKClient.LoginWindow
 
         private void UserLogin(object sender, RoutedEventArgs e)
         {
+            InitializeConnectionToServer();
             string emailTe = emailTextBox.Text.ToString();
 
             if (string.IsNullOrEmpty(emailTextBox.Text) == false)// && string.IsNullOrEmpty(passwordPasswordBox.Password.ToString()) == false)
@@ -52,6 +53,10 @@ namespace DYKClient.LoginWindow
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Show();
                     App.Current.MainWindow.Close();
+                }else
+                {
+                    _server.DisconnectFromServer();
+                    _server = null;
                 }
             }
         }

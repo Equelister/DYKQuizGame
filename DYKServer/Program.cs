@@ -38,29 +38,74 @@ namespace DYKServer
 
         static void BroadcastConnection()
         {
-/*            foreach (var user in _users)
-            {
-                foreach (var usr in _users)
-                {
-                    var broadcastPacket = new PacketBuilder();
-                    broadcastPacket.WriteOpCode(1);
-                    broadcastPacket.WriteMessage(usr.Username);
-                    broadcastPacket.WriteMessage(usr.UID.ToString());
-                    user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
-                }
-            }*/
+            /*            foreach (var user in _users)
+                        {
+                            foreach (var usr in _users)
+                            {
+                                var broadcastPacket = new PacketBuilder();
+                                broadcastPacket.WriteOpCode(1);
+                                broadcastPacket.WriteMessage(usr.Username);
+                                broadcastPacket.WriteMessage(usr.UID.ToString());
+                                user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
+                            }
+                        }*/
         }
 
-        public static void BroadcastLoginResult(string UID, string message)
-        {            
+        public static bool BroadcastLoginResult(string UID, string message)
+        {
+            RemoveUserFromList(Guid.Empty.ToString());
+            Client user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
+            if(user is null)
+            {
+                RemoveUserFromList(UID);
+                return false;
+            }
+            if (message.Equals("credsLegit"))
+            {
+                int count = _users.Where(x => x.UserModel.ID == user.UserModel.ID).Count();
+                if(count > 1)
+                {
+                    message = "credsNotLegit";
+                }
+                //user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
+            }
             var msgPacket = new PacketBuilder();
             msgPacket.WriteOpCode(2);
             msgPacket.WriteMessage(message);
-            _users.Where(x => x.UID.ToString() == UID).FirstOrDefault()
-                .ClientSocket.Client.Send(msgPacket.GetPacketBytes());
+            if (user is not null)
+            {
+                user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
+                if (message.Equals("credsNotLegit"))
+                {
+                    _users.Remove(user);
+                    user = null;
+                    return false;
+                }
+                return true; // successfull login
+            }
+            else
+            {
+                Console.WriteLine($"Error while finding user [{UID}].");
+                return false;
+            }
         }
 
-        public static void BroadcastMessage(string message)
+        public static void RemoveUserFromList(string UID)
+        {
+            var user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
+            if (user is not null)
+            {
+                _users.Remove(user);
+                user = null;
+                Console.WriteLine($"User [{UID}] removed from list");
+            }        
+            else
+            {
+                Console.WriteLine($"Error while finding user to remove from list [{UID}].");
+            }
+        }
+
+    public static void BroadcastMessage(string message)
         {
 /*            foreach (var user in _users)
             {
