@@ -23,6 +23,7 @@ namespace DYKServer.Net.IO
         public void WriteMessage(string msg)
         {
             var msgLength = msg.Length;
+            Console.WriteLine(msgLength +", msg: " +msg);
             _ms.Write(BitConverter.GetBytes(msgLength));
             _ms.Write(Encoding.ASCII.GetBytes(msg));
         }

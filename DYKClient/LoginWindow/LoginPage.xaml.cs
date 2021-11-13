@@ -43,7 +43,7 @@ namespace DYKClient.LoginWindow
             InitializeConnectionToServer();
             string emailTe = emailTextBox.Text.ToString();
 
-            if (string.IsNullOrEmpty(emailTextBox.Text) == false)// && string.IsNullOrEmpty(passwordPasswordBox.Password.ToString()) == false)
+            if (string.IsNullOrEmpty(emailTextBox.Text) == false && string.IsNullOrEmpty(passwordPasswordBox.Password.ToString()) == false)
             {
                 _server.SendLoginCredentialsToServer(emailTextBox.Text, HashPassword(passwordPasswordBox.Password));
 

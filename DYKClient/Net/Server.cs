@@ -16,41 +16,34 @@ namespace DYKClient.Net
         public event Action connectedEvent;
         public event Action messageEvent;
         public event Action userDisconnectedEvent;
-        public event Action LoginCredentialsEvent;
+        //public event Action LoginCredentialsEvent;
+
+        enum OpCodes{
+            SendLogin = 2,
+            SendMessage = 5
+        }
 
         public Server()
         {
             _client = new TcpClient();
         }
 
-        public void ConnectToServer(string username)
+        public bool ConnectToServer()
         {
             if (_client.Connected == false)
             {
                 _client.Connect("127.0.0.1", 7710);
                 PacketReader = new PacketReader(_client.GetStream());
-
-                if (string.IsNullOrEmpty(username) == false)
-                {
-                    var connectPacket = new PacketBuilder();
-                    connectPacket.WriteOpCode(0);
-                    connectPacket.WriteString(username);
-                    _client.Client.Send(connectPacket.GetPacketBytes());
-                }
-                ReadPacket();
-                /*if (_client.Connected)
-                {
-                    ReadPacket();
-                }else
-                {
-                    PacketReader = null;
-                }*/
+                return true;
             }
+            return false;
         }
 
         public void DisconnectFromServer()
         {
             _client.Close();
+            _client.Dispose();
+            PacketReader = null;
         }
 
         private void ReadPacket()
@@ -70,6 +63,9 @@ namespace DYKClient.Net
                     {
                         Console.WriteLine("Propably user was clicking to fast at login phase \r\n" + invalidOperationE.ToString());
                         return;
+                    }catch(Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
                     }
                     switch (opcode)
                     {
@@ -100,30 +96,33 @@ namespace DYKClient.Net
         public void SendMessageToServer(string message)
         {
             var messagePacket = new PacketBuilder();
-            messagePacket.WriteOpCode(5);
+            messagePacket.WriteOpCode(Convert.ToByte(OpCodes.SendMessage));
+            messagePacket.WriteString(message);
+            _client.Client.Send(messagePacket.GetPacketBytes());
+        }
+
+        public void SendMessageToServerOpCode(string message, byte opcode)
+        {
+            var messagePacket = new PacketBuilder();
+            messagePacket.WriteOpCode(opcode);
             messagePacket.WriteString(message);
             _client.Client.Send(messagePacket.GetPacketBytes());
         }
 
         public void SendLoginCredentialsToServer(string userEmail, string hashedPassword)
         {
-            if (_client.Connected == false)
+            if (string.IsNullOrEmpty(userEmail) == false && string.IsNullOrEmpty(hashedPassword) == false)
             {
-                //_client = new TcpClient();
-                _client.Connect("127.0.0.1", 7710);
-                PacketReader = new PacketReader(_client.GetStream());
-
-                if (string.IsNullOrEmpty(userEmail) == false && string.IsNullOrEmpty(hashedPassword) == false)
+                if (ConnectToServer())
                 {
-
                     string message = String.Concat(userEmail, "%%^^&&", hashedPassword);
-                    var messagePacket = new PacketBuilder();
+                    /*var messagePacket = new PacketBuilder();
                     messagePacket.WriteOpCode(2);
                     messagePacket.WriteString(message);
-                    _client.Client.Send(messagePacket.GetPacketBytes());
+                    _client.Client.Send(messagePacket.GetPacketBytes());*/
+                    SendMessageToServerOpCode(message, Convert.ToByte(OpCodes.SendLogin));
+                    ReadPacket();
                 }
-                ReadPacket();
-               
             }
         }
 
@@ -139,8 +138,11 @@ namespace DYKClient.Net
                         {
                             Application.Current.Dispatcher.Invoke(() => Users.Add(user));
                         }*/
-
-            var message = this.PacketReader.ReadMessage().Trim('\0');
+            var message = this.PacketReader.ReadMessage();
+            if (message.Contains("\0"))
+            {
+                message = message.Trim('\0');
+            }
 
             if (message.Equals("credsLegit"))
             {

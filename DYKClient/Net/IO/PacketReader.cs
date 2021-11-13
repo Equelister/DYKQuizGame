@@ -19,14 +19,40 @@ namespace DYKClient.Net.IO
 
         public string ReadMessage()
         {
-            byte[] msgBuffer;
-            var length = ReadInt32();
-            msgBuffer = new byte[length];
-            _ns.Read(msgBuffer, 0, length);
+            try
+            {
+                byte[] msgBuffer;
+                var length = ReadInt32();
+                msgBuffer = new byte[length];
+                //Console.WriteLine(_ns.Read(msgBuffer, 0, length));
 
-            var msg = Encoding.ASCII.GetString(msgBuffer);
+                if (_ns.CanRead)
+                {
+                    _ns.Read(msgBuffer, 0, length-1);
+                    _ns.Flush();
+                }
 
-            return msg;
+                var msg = Encoding.ASCII.GetString(msgBuffer);
+
+               // Console.WriteLine("*******\r\n" + _ns.ToString() + "\r\n********");
+                return msg;
+            }catch(System.ObjectDisposedException ODE)
+            {
+                Console.WriteLine(ODE.ToString());
+               // Console.WriteLine("*******\r\n" + _ns.ToString() + "\r\n********");
+            }
+            catch(System.IO.IOException ioe)
+            {
+                Console.WriteLine(ioe.ToString());
+               // Console.WriteLine("*******\r\n" + _ns.ToString() + "\r\n********");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+               // Console.WriteLine("*******\r\n" + _ns.ToString() +"\r\n********");
+            }
+
+            return "";
         }
 
     }

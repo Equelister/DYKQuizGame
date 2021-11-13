@@ -105,7 +105,7 @@ namespace DYKServer
             }
         }
 
-    public static void BroadcastMessage(string message)
+        public static void BroadcastMessage(string message)
         {
 /*            foreach (var user in _users)
             {

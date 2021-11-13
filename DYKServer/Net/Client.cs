@@ -32,7 +32,7 @@ namespace DYKServer.Net
             UserModel = lg.ValidateLoginCredentials(connectionRequestMessage.ElementAt(0), connectionRequestMessage.ElementAt(1));
 
 
-            Task.Run(() => Process());            
+            Task.Run(() => Process());
         }
 
         void Process()
