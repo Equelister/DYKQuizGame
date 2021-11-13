@@ -48,17 +48,17 @@ namespace DYKClient.LoginWindow
             {
                 _gc.Server.SendLoginCredentialsToServer(emailTextBox.Text, HashPassword(passwordPasswordBox.Password));
 
-                if (_gc.Server.GetLoginCredentialsResult())
+                /*if (_gc.Server.GetLoginCredentialsResult())
                 {
                     App.Current.MainWindow.Hide();
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Show();
                     App.Current.MainWindow.Close();
                 }else
-                {
-                    _gc.Server.DisconnectFromServer();
-                    _gc.Server = null;
-                }
+                {*/
+                   // _gc.Server.DisconnectFromServer();
+                   // _gc.Server = null;
+                //}
             }
         }
 

@@ -48,13 +48,19 @@ namespace DYKClient.Net
 
         private void ReadPacket()
         {
+            //bool flagusia = true;
             Task.Run(() => {
+                Console.WriteLine("Server.cs -> ReadPacket() Dzien Dobry");
                 while (_client.Connected)
                 {
-                    var opcode = 0;
+                    byte opcode = 0;
                     try
                     {
-                        opcode = PacketReader.ReadByte();
+                        Console.WriteLine("Server.cs -> ReadPacket() try. CanRead?: " + PacketReader._ns.CanRead);
+
+                        //opcode =  PacketReader.Read();
+                        opcode =  PacketReader.ReadByte();
+                        Console.WriteLine("OPCODE: "+opcode);
                     }catch(System.IO.IOException IOE)
                     {
                         Console.WriteLine(IOE.ToString());
@@ -73,11 +79,12 @@ namespace DYKClient.Net
                             connectedEvent?.Invoke();
                             break;
                         case 2:
-                            /*if(GetLoginCredentialsResult() == false)
+                            if(GetLoginCredentialsResult() == false)
                             {
+                                //flagusia
                                 return;
-                            }*/
-                            GetLoginCredentialsResult();
+                            }
+                            //GetLoginCredentialsResult();
                             break;
                         case 5:
                             messageEvent?.Invoke();
@@ -89,6 +96,8 @@ namespace DYKClient.Net
                             Console.WriteLine("Server.ReadPacket = default");
                             break;
                     }
+                    Task.Delay(1000);
+                    System.Threading.Thread.Sleep(1000);
                 }
             });
         }
@@ -139,18 +148,23 @@ namespace DYKClient.Net
                             Application.Current.Dispatcher.Invoke(() => Users.Add(user));
                         }*/
             var message = this.PacketReader.ReadMessage();
-            if (message.Contains("\0"))
+            if (string.IsNullOrEmpty(message) == false)
             {
-                message = message.Trim('\0');
-            }
-
-            if (message.Equals("credsLegit"))
+                if (message.Contains("\0"))
+                {
+                    message = message.Trim('\0');
+                }
+                if (message.Equals("credsLegit"))
+                {
+                    return true;
+                }
+                else
+                {
+                    //DisconnectFromServer();
+                    return false;
+                }
+            }else
             {
-                return true;
-            }
-            else
-            {
-                //DisconnectFromServer();
                 return false;
             }
 

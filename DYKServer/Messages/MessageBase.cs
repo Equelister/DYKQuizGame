@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace DYKServer.Messages
 {
-    class MessageBase
+    [Serializable]
+    public class MessageBase
     {
+        public string message { get; set; }
     }
 }
