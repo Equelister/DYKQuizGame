@@ -22,6 +22,14 @@ namespace DYKServer.Net
             MaxSize = 8;
         }
 
+        public Hub(string name, int maxSize)
+        {
+            UID = Guid.NewGuid();
+            Name = name;
+            Users = new List<Client>();
+            MaxSize = maxSize;
+        }
+
         public bool AddClient(Client client)
         {
             if(Users.Count <= MaxSize)
