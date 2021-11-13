@@ -23,10 +23,16 @@ namespace DYKClient.Net.IO
             var length = ReadInt32();
             msgBuffer = new byte[length];
             _ns.Read(msgBuffer, 0, length);
-
-            var msg = Encoding.ASCII.GetString(msgBuffer);
-
-            return msg;
+            try
+            {
+                var msg = Encoding.ASCII.GetString(msgBuffer);
+                return msg;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            return "";
         }
 
     }

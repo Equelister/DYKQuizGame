@@ -9,26 +9,36 @@ namespace DYKServer.Net
     class Hub
     {
 
-        public Guid UID { get; set; }
+        public Guid GUID { get; set; }
         public string Name { get; set; }
         public List<Client> Users { get; set; }
         public int MaxSize { get; set; }
+        public int JoinCode { get; set; }
 
         public Hub(string name)
         {
-            UID = Guid.NewGuid();
+            GUID = Guid.NewGuid();
             Name = name;
             Users = new List<Client>();
             MaxSize = 8;
+            JoinCode = GenerateJoinCode();
         }
 
         public Hub(string name, int maxSize)
         {
-            UID = Guid.NewGuid();
+            GUID = Guid.NewGuid();
             Name = name;
             Users = new List<Client>();
             MaxSize = maxSize;
+            JoinCode = GenerateJoinCode();
         }
+
+        public int GenerateJoinCode()
+        {
+            return new Random().Next(9000)+1000;
+        }
+
+
 
         public bool AddClient(Client client)
         {
@@ -39,7 +49,7 @@ namespace DYKServer.Net
             }
             else
             {
-                Console.WriteLine($"Client [{client.UID}] tried to connect into hub [{this.UID}] but it was full.");
+                Console.WriteLine($"Client [{client.UID}] tried to connect into hub [{this.GUID}] but it was full.");
                 return false;
             }
         }

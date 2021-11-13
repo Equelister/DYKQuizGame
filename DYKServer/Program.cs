@@ -14,15 +14,19 @@ namespace DYKServer
     class Program
     {
         static List<Client> _users;
+        static List<Hub> _hubs;
         static TcpListener _listener;
         static void Main(string[] args)
         {
             _users = new List<Client>();
+            _hubs = new List<Hub>();
+            InitializeDefaultHubs();
+            OutPutInitializeToConsole();
 
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7710);
             _listener.Start();
 
-
+            Console.WriteLine("******\r\nStarted Listening for clients...");
             while (true)
             {
                 _users.Add(new Client(_listener.AcceptTcpClient()));
@@ -34,6 +38,62 @@ namespace DYKServer
 
 
             }
+        }
+
+        static void InitializeDefaultHubs()
+        {
+            for(int i = 0; i<20;i++)
+            {
+                Hub newHub = new Hub(i + 1 + ". Hub");
+                _hubs.Add(newHub);
+            }
+            CheckHubUniqueJoinCodeAll();
+        }
+
+        static void OutPutInitializeToConsole()
+        {
+            foreach(Hub hub in _hubs)
+            {
+                Console.WriteLine($"Created new Hub [{hub.GUID}] - [{hub.Name}] - JoinCode [{hub.JoinCode}]");
+            }
+        }
+
+        static void CheckHubUniqueJoinCodeAll()
+        {
+            for(int i = 0; i<_hubs.Count; i++)
+            {
+                foreach (Hub nextHub in _hubs)
+                {
+                    if(_hubs.ElementAt(i).JoinCode == nextHub.JoinCode && _hubs.ElementAt(i).GUID != nextHub.GUID)
+                    {
+                        _hubs.ElementAt(i).GenerateJoinCode();
+                        i--;
+                        break;
+                    }
+                }
+            }
+        }
+
+        static void CheckHubUniqueJoinCodeSingle(Hub hub)
+        {
+            bool unique = false;
+            do
+            {
+                bool flag = true;
+                foreach (Hub nextHub in _hubs)
+                {
+                    if (hub.JoinCode == nextHub.JoinCode)
+                    {
+                        hub.GenerateJoinCode();
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                {
+                    unique = true;
+                }
+            } while (unique == false);
         }
 
         static void BroadcastConnection()
@@ -62,12 +122,7 @@ namespace DYKServer
             }
             if (message.Equals("credsLegit"))
             {
-                int count = _users.Where(x => x.UserModel.ID == user.UserModel.ID).Count();
-                if(count > 1)
-                {
-                    message = "credsNotLegit";
-                }
-                //user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
+                ChecKUniqueUser(ref message, user);
             }
             var msgPacket = new PacketBuilder();
             msgPacket.WriteOpCode(2);
@@ -88,6 +143,16 @@ namespace DYKServer
                 Console.WriteLine($"Error while finding user [{UID}].");
                 return false;
             }
+        }
+
+        public static void ChecKUniqueUser(ref string message, Client user)
+        {
+            int count = _users.Where(x => x.UserModel.ID == user.UserModel.ID).Count();
+            if (count > 1)
+            {
+                message = "credsNotLegit";
+            }
+            //user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
         }
 
         public static void RemoveUserFromList(string UID)
