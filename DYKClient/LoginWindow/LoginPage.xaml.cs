@@ -25,7 +25,7 @@ namespace DYKClient.LoginWindow
     /// </summary>
     public partial class LoginPage : Page
     {
-        private Server _server;
+        private GlobalClass _gc;
 
         public LoginPage()
         {
@@ -35,7 +35,8 @@ namespace DYKClient.LoginWindow
 
         private void InitializeConnectionToServer()
         {
-            _server = new Server();
+            _gc = new GlobalClass();
+            _gc.Server = new Server();
         }
 
         private void UserLogin(object sender, RoutedEventArgs e)
@@ -45,9 +46,9 @@ namespace DYKClient.LoginWindow
 
             if (string.IsNullOrEmpty(emailTextBox.Text) == false && string.IsNullOrEmpty(passwordPasswordBox.Password.ToString()) == false)
             {
-                _server.SendLoginCredentialsToServer(emailTextBox.Text, HashPassword(passwordPasswordBox.Password));
+                _gc.Server.SendLoginCredentialsToServer(emailTextBox.Text, HashPassword(passwordPasswordBox.Password));
 
-                if (_server.GetLoginCredentialsResult())
+                if (_gc.Server.GetLoginCredentialsResult())
                 {
                     App.Current.MainWindow.Hide();
                     MainWindow mainWindow = new MainWindow();
@@ -55,8 +56,8 @@ namespace DYKClient.LoginWindow
                     App.Current.MainWindow.Close();
                 }else
                 {
-                    _server.DisconnectFromServer();
-                    _server = null;
+                    _gc.Server.DisconnectFromServer();
+                    _gc.Server = null;
                 }
             }
         }
