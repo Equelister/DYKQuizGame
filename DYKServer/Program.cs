@@ -129,6 +129,15 @@ namespace DYKServer
             msgPacket.WriteMessage(message);
             if (user is not null)
             {
+                Console.WriteLine("**********************");
+                //Console.WriteLine(msgPacket.WriteMessage()) ;
+
+                foreach (var item in msgPacket.GetPacketBytes())
+                {
+                    Console.Write(item.ToString()+", ");
+                }
+
+                Console.WriteLine("**********************");
                 user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
                 if (message.Equals("credsNotLegit"))
                 {
@@ -170,7 +179,7 @@ namespace DYKServer
             }
         }
 
-    public static void BroadcastMessage(string message)
+        public static void BroadcastMessage(string message)
         {
 /*            foreach (var user in _users)
             {

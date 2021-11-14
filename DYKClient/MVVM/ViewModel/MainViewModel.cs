@@ -16,7 +16,7 @@ namespace DYKClient.MVVM.ViewModel
     {
         public ObservableCollection<UserModel> Users { get; set; }
         public ObservableCollection<string> Messages { get; set; }
-        public RelayCommand ConnectToServerCommand { get; set; }
+        //public RelayCommand ConnectToServerCommand { get; set; }
         public RelayCommand SendMessageCommand { get; set; }
         public string Username { get; set; }
         public string Message { get; set; }
@@ -47,7 +47,7 @@ namespace DYKClient.MVVM.ViewModel
 
         public MainViewModel()
         {
-            InitializeConnectionToServer();
+            //InitializeConnectionToServer();
             InitializeViewCommands();
         }
 
@@ -56,11 +56,13 @@ namespace DYKClient.MVVM.ViewModel
         {
             Users = new ObservableCollection<UserModel>();
             Messages = new ObservableCollection<string>();
-            _server = new Server();
-            _server.connectedEvent += UserConnected;
+            //_server = new Server();
+            //GlobalClass gc = new GlobalClass();
+            _server = GlobalClass.Server;
+            //_server.connectedEvent += UserConnected;
             _server.messageEvent += MessageReceived;
             _server.userDisconnectedEvent += RemoveUser;
-            ConnectToServerCommand = new RelayCommand(o => _server.ConnectToServer(Username), o => string.IsNullOrEmpty(Username) == false);
+            //ConnectToServerCommand = new RelayCommand(o => _server.ConnectToServer(Username), o => string.IsNullOrEmpty(Username) == false);
             SendMessageCommand = new RelayCommand(o => _server.SendMessageToServer(Message), o => string.IsNullOrEmpty(Message) == false);
         }
 
@@ -123,7 +125,7 @@ namespace DYKClient.MVVM.ViewModel
             Application.Current.Dispatcher.Invoke(() => Messages.Add(msg));
         }
 
-        private void UserConnected()
+      /*  private void UserConnected()
         {
             UserModel user = new UserModel
             {
@@ -135,7 +137,7 @@ namespace DYKClient.MVVM.ViewModel
             {
                 Application.Current.Dispatcher.Invoke(() => Users.Add(user));
             }
-        }
+        }*/
 
     }
 }
