@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DYKClient
 {
-    class GlobalClass
+    static class GlobalClass
     {
-        public Server Server { get; set; }
+        public static Server Server { get; set; }
     }
 }

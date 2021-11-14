@@ -25,28 +25,30 @@ namespace DYKClient.LoginWindow
     /// </summary>
     public partial class LoginPage : Page
     {
-        private GlobalClass _gc;
+        private RelayCommand ReceivedLoginResultCommand { get; set; }
 
         public LoginPage()
         {
             InitializeComponent();
+            
             //InitializeConnectionToServer();
         }
 
         private void InitializeConnectionToServer()
         {
-            _gc = new GlobalClass();
-            _gc.Server = new Server();
+            GlobalClass.Server = new Server();
+            GlobalClass.Server.receivedLoginResultEvent += ReceivedLoginResult;
         }
 
         private void UserLogin(object sender, RoutedEventArgs e)
         {
+            loginButton.IsEnabled = false;
             InitializeConnectionToServer();
             string emailTe = emailTextBox.Text.ToString();
 
             if (string.IsNullOrEmpty(emailTextBox.Text) == false && string.IsNullOrEmpty(passwordPasswordBox.Password.ToString()) == false)
             {
-                _gc.Server.SendLoginCredentialsToServer(emailTextBox.Text, HashPassword(passwordPasswordBox.Password));
+                GlobalClass.Server.SendLoginCredentialsToServer(emailTextBox.Text, HashPassword(passwordPasswordBox.Password));
 
                 /*if (_gc.Server.GetLoginCredentialsResult())
                 {
@@ -62,18 +64,47 @@ namespace DYKClient.LoginWindow
             }
         }
 
-/*        private bool LoginEvent()
+        private bool ReceivedLoginResult()
         {
-            string userEmail = emailTextBox.Text;
-            string userPassword = passwordPasswordBox.Password;
+            var msg = GlobalClass.Server.PacketReader.ReadMessage();
+            //Application.Current.Dispatcher.Invoke(() => Messages.Add(msg));
+            if (msg.Equals("credsLegit"))
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    App.Current.MainWindow.Hide();
+                    MainWindow mainWindow = new MainWindow();
+                    mainWindow.Show();
+                    App.Current.MainWindow.Close();
+                });
+                return true;
+            }
+            else
+            {
+                GlobalClass.Server.DisconnectFromServer();
+                GlobalClass.Server = null;
+                Dispatcher.Invoke(() =>
+                {
+                    loginButton.IsEnabled = true;
+                });
+                return false;
+            }
+        }
 
-            Net.Server server = new Net.Server();
-            server.SendLoginCredentialsToServer(userEmail, userPassword);
+            /*        private bool LoginEvent()
+                    {
+                        string userEmail = emailTextBox.Text;
+                        string userPassword = passwordPasswordBox.Password;
 
-            server.DisconnectFromServer();
-            
-            return true;
-        }*/
+                        Net.Server server = new Net.Server();
+                        server.SendLoginCredentialsToServer(userEmail, userPassword);
+
+                        server.DisconnectFromServer();
+
+                        return true;
+                    }*/
+        
+
 
         private string HashPassword(string password)
         {

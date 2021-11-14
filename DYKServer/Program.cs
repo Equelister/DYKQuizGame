@@ -71,25 +71,7 @@ namespace DYKServer
             }
             var msgPacket = new PacketBuilder();
             msgPacket.WriteOpCode(2);
-            //msgPacket.WriteMessage(message);
-
-
-
-
-
-
-            msgPacket.WriteMessage("ABCDEFGHIJKLMNOPQRSTUVWQYZ");
-
-
-
-
-
-
-
-
-
-
-
+            msgPacket.WriteMessage(message);
             if (user is not null)
             {
                 Console.WriteLine("**********************");

@@ -16,6 +16,7 @@ namespace DYKClient.Net
         public event Action connectedEvent;
         public event Action messageEvent;
         public event Action userDisconnectedEvent;
+        public event Func<bool> receivedLoginResultEvent;
         //public event Action LoginCredentialsEvent;
 
         enum OpCodes{
@@ -48,7 +49,6 @@ namespace DYKClient.Net
 
         private void ReadPacket()
         {
-            //bool flagusia = true;
             Task.Run(() => {
                 Console.WriteLine("Server.cs -> ReadPacket() Dzien Dobry");
                 while (_client.Connected)
@@ -79,9 +79,13 @@ namespace DYKClient.Net
                             connectedEvent?.Invoke();
                             break;
                         case 2:
-                            if(GetLoginCredentialsResult() == false)
+                            bool? xdddd = receivedLoginResultEvent?.Invoke();
+                            if(xdddd.HasValue == false)
                             {
-                                //flagusia
+                                return;
+                            }
+                            if(xdddd == false)
+                            {
                                 return;
                             }
                             //GetLoginCredentialsResult();

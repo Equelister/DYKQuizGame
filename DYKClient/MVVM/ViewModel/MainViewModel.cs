@@ -56,7 +56,9 @@ namespace DYKClient.MVVM.ViewModel
         {
             Users = new ObservableCollection<UserModel>();
             Messages = new ObservableCollection<string>();
-            _server = new Server();
+            //_server = new Server();
+            //GlobalClass gc = new GlobalClass();
+            _server = GlobalClass.Server;
             //_server.connectedEvent += UserConnected;
             _server.messageEvent += MessageReceived;
             _server.userDisconnectedEvent += RemoveUser;
