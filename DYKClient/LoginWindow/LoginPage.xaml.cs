@@ -38,6 +38,7 @@ namespace DYKClient.LoginWindow
         {
             GlobalClass.Server = new Server();
             GlobalClass.Server.receivedLoginResultEvent += ReceivedLoginResult;
+            GlobalClass.Server.unlockLoginButtonEvent += UnlockLoginButton;
         }
 
         private void UserLogin(object sender, RoutedEventArgs e)
@@ -61,6 +62,17 @@ namespace DYKClient.LoginWindow
                    // _gc.Server.DisconnectFromServer();
                    // _gc.Server = null;
                 //}
+            }else
+            {
+                UnlockLoginButton();
+            }
+        }
+
+        private void UnlockLoginButton()
+        {
+            if (loginButton.IsEnabled == false)
+            {
+                loginButton.IsEnabled = true;
             }
         }
 
@@ -85,7 +97,7 @@ namespace DYKClient.LoginWindow
                 GlobalClass.Server = null;
                 Dispatcher.Invoke(() =>
                 {
-                    loginButton.IsEnabled = true;
+                    UnlockLoginButton();
                 });
                 return false;
             }
@@ -107,8 +119,8 @@ namespace DYKClient.LoginWindow
 
 
         private string HashPassword(string password)
-        {
-            /*            byte[] salt = new byte[128 / 8];
+        {/*
+                        byte[] salt = new byte[128 / 8];
                         using (var rngCsp = new RNGCryptoServiceProvider())
                         {
                             rngCsp.GetNonZeroBytes(salt);
@@ -119,8 +131,8 @@ namespace DYKClient.LoginWindow
                             prf: KeyDerivationPrf.HMACSHA256,
                             iterationCount: 100000,
                             numBytesRequested: 256 / 8));
-                        return hashed;*/
-
+                        return hashed;
+*/
 
             return password;
         }

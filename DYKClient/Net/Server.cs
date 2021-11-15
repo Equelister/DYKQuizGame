@@ -16,6 +16,7 @@ namespace DYKClient.Net
         public event Action connectedEvent;
         public event Action messageEvent;
         public event Action userDisconnectedEvent;
+        public event Action unlockLoginButtonEvent;
         public event Func<bool> receivedLoginResultEvent;
         //public event Action LoginCredentialsEvent;
 
@@ -33,9 +34,17 @@ namespace DYKClient.Net
         {
             if (_client.Connected == false)
             {
-                _client.Connect("127.0.0.1", 7710);
-                PacketReader = new PacketReader(_client.GetStream());
-                return true;
+                try
+                {
+                    _client.Connect("127.0.0.1", 7710);
+                    PacketReader = new PacketReader(_client.GetStream());
+                    return true;
+                }catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    unlockLoginButtonEvent?.Invoke();
+                    return false;
+                }
             }
             return false;
         }
