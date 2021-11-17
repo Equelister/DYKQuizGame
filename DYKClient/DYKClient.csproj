@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DYKShared\DYKShared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="MVVM\View\AboutView - Copy %282%29 - Copy.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>AboutView - Copy (2).xaml.cs</DependentUpon>

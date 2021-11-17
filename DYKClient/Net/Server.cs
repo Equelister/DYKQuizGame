@@ -7,7 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DYKClient.Net
-{
+{   public enum OpCodes
+    {
+        SendLogin = 2,
+        SendMessage = 5,
+        SendLobbiesList = 20
+    }
     class Server
     {
         TcpClient _client;
@@ -16,14 +21,12 @@ namespace DYKClient.Net
         public event Action connectedEvent;
         public event Action messageEvent;
         public event Action userDisconnectedEvent;
+        public event Action receivedPublicLobbiesListEvent;
         public event Action unlockLoginButtonEvent;
         public event Func<bool> receivedLoginResultEvent;
         //public event Action LoginCredentialsEvent;
 
-        enum OpCodes{
-            SendLogin = 2,
-            SendMessage = 5
-        }
+        
 
         public Server()
         {
@@ -105,6 +108,9 @@ namespace DYKClient.Net
                         case 10:
                             userDisconnectedEvent?.Invoke();
                             break;
+                        case 20:
+                            receivedPublicLobbiesListEvent.Invoke();
+                            break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");
                             break;
@@ -128,6 +134,13 @@ namespace DYKClient.Net
             var messagePacket = new PacketBuilder();
             messagePacket.WriteOpCode(opcode);
             messagePacket.WriteString(message);
+            _client.Client.Send(messagePacket.GetPacketBytes());
+        }
+        public void SendOpCodeToServer(byte opcode)
+        {
+            var messagePacket = new PacketBuilder();
+            messagePacket.WriteOpCode(opcode);
+            //messagePacket.WriteString(message);
             _client.Client.Send(messagePacket.GetPacketBytes());
         }
 

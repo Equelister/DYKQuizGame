@@ -7,22 +7,32 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DYKServer
 {
+    public enum OpCodes
+    {
+        LoginResult = 2,
+        LobbiesList = 20
+    }
+
     class Program
     {
         static List<Client> _users;
         static List<Hub> _hubs;
         static TcpListener _listener;
+
+        
+
         static void Main(string[] args)
         {
             _users = new List<Client>();
             _hubs = new List<Hub>();
             InitializeDefaultHubs();
             OutPutInitializeToConsole();
-
+            
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7710);
             _listener.Start();
 
@@ -111,10 +121,16 @@ namespace DYKServer
                         }*/
         }
 
+        public static string GetHubListAsJson(string UID)
+        {
+            Console.WriteLine($"User [{UID}] requested a lobby list.");
+            return Hub.PublicLobbiesToSendCreateJson(_hubs);
+        }
+
         public static bool BroadcastLoginResult(string UID, string message)
         {
             RemoveUserFromList(Guid.Empty.ToString());
-            Client user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
+            Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
             if(user is null)
             {
                 RemoveUserFromList(UID);
@@ -129,7 +145,7 @@ namespace DYKServer
             msgPacket.WriteMessage(message);
             if (user is not null)
             {
-                Console.WriteLine("**********************");
+/*                Console.WriteLine("**********************");
                 //Console.WriteLine(msgPacket.WriteMessage()) ;
 
                 foreach (var item in msgPacket.GetPacketBytes())
@@ -137,7 +153,7 @@ namespace DYKServer
                     Console.Write(item.ToString()+", ");
                 }
 
-                Console.WriteLine("**********************");
+                Console.WriteLine("**********************");*/
                 user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
                 if (message.Equals("credsNotLegit"))
                 {
@@ -166,7 +182,7 @@ namespace DYKServer
 
         public static void RemoveUserFromList(string UID)
         {
-            var user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
+            var user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
             if (user is not null)
             {
                 _users.Remove(user);
@@ -189,14 +205,25 @@ namespace DYKServer
                 user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
             }*/
         }
+        public static void BroadcastMessageToSpecificUser(string UID, string message, OpCodes opcode)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
+            var msgPacket = new PacketBuilder();
+            msgPacket.WriteOpCode(Convert.ToByte(opcode));
+            msgPacket.WriteMessage(message);
+            user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
+        }
 
         public static void BroadcastDisconnect(string uid)
         {
-            var disconnectedUser = _users.Where(x => x.UID.ToString() == uid).FirstOrDefault();
+            var disconnectedUser = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             _users.Remove(disconnectedUser);
             var broadcastPacket = new PacketBuilder();
             BroadcastMessage($"{disconnectedUser.Username} has disconnected from the server!");            
         }
+
+
+
 
     }
 }

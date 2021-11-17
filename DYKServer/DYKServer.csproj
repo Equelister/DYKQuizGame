@@ -15,4 +15,8 @@
     <Folder Include="Database\GameCommands\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DYKShared\DYKShared.csproj" />
+  </ItemGroup>
+
 </Project>

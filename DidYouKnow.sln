@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DYKClient", "DYKClient\DYKClient.csproj", "{F3B60BC0-1301-4B93-B6E4-231D748697FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DYKClient", "DYKClient\DYKClient.csproj", "{F3B60BC0-1301-4B93-B6E4-231D748697FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DYKServer", "DYKServer\DYKServer.csproj", "{83BA5AB7-A2AF-4585-96E4-91A0998E8357}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DYKServer", "DYKServer\DYKServer.csproj", "{83BA5AB7-A2AF-4585-96E4-91A0998E8357}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DYKShared", "DYKShared\DYKShared.csproj", "{1580763E-E3D7-40CA-81A3-9CAD240001A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{83BA5AB7-A2AF-4585-96E4-91A0998E8357}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83BA5AB7-A2AF-4585-96E4-91A0998E8357}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83BA5AB7-A2AF-4585-96E4-91A0998E8357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1580763E-E3D7-40CA-81A3-9CAD240001A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1580763E-E3D7-40CA-81A3-9CAD240001A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1580763E-E3D7-40CA-81A3-9CAD240001A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1580763E-E3D7-40CA-81A3-9CAD240001A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

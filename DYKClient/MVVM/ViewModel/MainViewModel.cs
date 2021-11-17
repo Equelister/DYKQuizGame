@@ -20,7 +20,7 @@ namespace DYKClient.MVVM.ViewModel
         public RelayCommand SendMessageCommand { get; set; }
         public string Username { get; set; }
         public string Message { get; set; }
-        private Server _server;
+        public Server _server;
 
 
         public RelayCommand HelpViewCommand { get; set; }
@@ -47,7 +47,7 @@ namespace DYKClient.MVVM.ViewModel
 
         public MainViewModel()
         {
-            //InitializeConnectionToServer();
+            InitializeConnectionToServer();
             InitializeViewCommands();
         }
 
@@ -76,6 +76,9 @@ namespace DYKClient.MVVM.ViewModel
             LobbiesViewCommand = new RelayCommand(o =>
             {
                 CurrentView = LobbiesViewModel;
+                //LobbiesViewModel.ReceivedPublicLobbiesList();
+                _server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+
             });
 
             AboutViewCommand = new RelayCommand(o =>

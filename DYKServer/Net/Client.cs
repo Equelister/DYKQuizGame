@@ -13,7 +13,7 @@ namespace DYKServer.Net
     class Client
     {
         public string Username { get; set; }
-        public Guid UID { get; set; }
+        public Guid GUID { get; set; }
         public UserModel UserModel { get; set; }
         public TcpClient ClientSocket { get; set; }
 
@@ -21,7 +21,7 @@ namespace DYKServer.Net
         public Client(TcpClient client)
         {
             ClientSocket = client;
-            UID = Guid.NewGuid();
+            GUID = Guid.NewGuid();
             _packetReader = new PacketReader(ClientSocket.GetStream());
 
             var opCode = _packetReader.ReadByte();
@@ -55,7 +55,7 @@ namespace DYKServer.Net
             {
                 GetClientsLoginCredentials(succesLogin);
                 ClientSocket = null;
-                UID = Guid.Empty;
+                GUID = Guid.Empty;
                 _packetReader = null;
             }
 
@@ -73,6 +73,9 @@ namespace DYKServer.Net
                         case 5:
                             GetAndBroadcastClientMessage();
                             break;
+                        case 20:
+                            SendHubListAsJson();
+                            break;
                         default:
                             break;
                     }
@@ -81,24 +84,30 @@ namespace DYKServer.Net
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
-                    Console.WriteLine($"{UID.ToString()} - Disconnected!");
+                    Console.WriteLine($"{GUID.ToString()} - Disconnected!");
                     //Program.BroadcastDisconnect(UID.ToString());
                     ClientSocket.Close();
-                    Program.RemoveUserFromList(UID.ToString());
+                    Program.RemoveUserFromList(GUID.ToString());
                     return;
                 }
             }
+        }
+
+        private void SendHubListAsJson()
+        {
+            var lobbiesString = Program.GetHubListAsJson(this.GUID.ToString());
+            Program.BroadcastMessageToSpecificUser(this.GUID.ToString(),lobbiesString, OpCodes.LobbiesList);
         }
 
         private bool GetClientsLoginCredentials(bool status)
         {
             if (status)
             {
-                return Program.BroadcastLoginResult(UID.ToString(), "credsLegit");
+                return Program.BroadcastLoginResult(GUID.ToString(), "credsLegit");
             }
             else
             {
-                return Program.BroadcastLoginResult(UID.ToString(), "credsNotLegit");
+                return Program.BroadcastLoginResult(GUID.ToString(), "credsNotLegit");
                 
             }
         }
