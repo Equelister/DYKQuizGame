@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DYKClient.MVVM.View.GameViews"
+             xmlns:gameviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
+             d:DataContext="{d:DesignInstance Type=gameviewmodels:LobbyViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="Purple">
@@ -35,24 +37,25 @@
                   Grid.Row="4" Grid.RowSpan="4"
                   Margin="5"
                   Padding="5"
-                  SelectionMode="Single"                  
-                  >
-            <ListViewItem Content="1. Gracz"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="1. Gracz - Gotowy"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="1. Gracz"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="1. Gracz - Gotowy"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="1. Gracz - Gotowy"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="1. Gracz - Gotowy"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="1. Gracz"
-                          HorizontalAlignment="Center"/>
-            <ListViewItem Content="8. Gracz"
-                          HorizontalAlignment="Center"/>
+                  SelectionMode="Single"
+                  ItemsSource="{Binding Path=Hub.Users}" HorizontalAlignment="Stretch">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Username" Width="auto" 
+                        DisplayMemberBinding="{Binding Username}" >
+                    </GridViewColumn>
+                    <GridViewColumn Header="Username" Width="auto" 
+                        DisplayMemberBinding="{Binding Total_games}">
+                    </GridViewColumn>
+                    <GridViewColumn Header="Username" Width="auto" 
+                        DisplayMemberBinding="{Binding GameScore}" >
+                    </GridViewColumn>
+                    <GridViewColumn Header="Username" Width="auto" 
+                        DisplayMemberBinding="{Binding IsReady}" >
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+
         </ListView>
 
         <StackPanel Grid.Row="1" Grid.RowSpan="2"

@@ -13,6 +13,8 @@ namespace DYKShared.Model
     {
         public string Name { get; set; }
         public int JoinCode { get; set; }
+        public List<UserModel> Users { get; set; }
+        public int MaxSize { get; set; }
 
         public HubModel(string name, int joinCode)
         {
@@ -26,15 +28,19 @@ namespace DYKShared.Model
         {
             //List<HubModel> lobbies = new List<HubModel>();
             var jsonData = JsonSerializer.Deserialize<List<HubModel>>(json);
-
             return jsonData;
         }
-        
+
+        public static HubModel JsonToSingleLobby(string json)
+        {
+            var jsonData = JsonSerializer.Deserialize<HubModel>(json);
+            return jsonData;
+        }
+
         public static ObservableCollection<HubModel> JsonListToHubModelObservableCollection(string json)
         {
             //List<HubModel> lobbies = new List<HubModel>();
             var jsonData = JsonSerializer.Deserialize<ObservableCollection<HubModel>>(json);
-
             return jsonData;
         }
     }

@@ -1,6 +1,6 @@
 ﻿using DYKServer.Database.ConnectionCommands;
-using DYKServer.Model;
 using DYKServer.Net.IO;
+using DYKShared.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

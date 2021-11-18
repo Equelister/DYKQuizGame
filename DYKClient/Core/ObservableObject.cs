@@ -17,6 +17,10 @@ namespace DYKClient.Core
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+/*        protected void onPropertyChangedObject([CallerMemberName] object name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }*/
 
 
 

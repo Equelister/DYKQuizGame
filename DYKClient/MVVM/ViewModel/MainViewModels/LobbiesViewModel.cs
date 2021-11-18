@@ -16,10 +16,10 @@ using System.Windows.Data;
 
 namespace DYKClient.MVVM.ViewModel
 {
-    class LobbiesViewModel : INotifyPropertyChanged
+    class LobbiesViewModel : ObservableObject
     {
         private MainViewModel mainViewModel;
-        public List<HubModel> hubs = new List<HubModel>();
+        //public List<HubModel> hubs = new List<HubModel>();
 
         //public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,9 +28,10 @@ namespace DYKClient.MVVM.ViewModel
         public RelayCommand NewLobbyViewCommand { get; set; }
         public RelayCommand ConnectToLobbyViewCommand { get; set; }
         public RelayCommand ReceivedPublicLobbiesListCommand { get; set; }
+        //public RelayCommand ConnectToLobbyCommand { get; set; }
 
 
-        public ObservableCollection<HubModel> hubiksy = new ObservableCollection<HubModel>();
+        //public ObservableCollection<HubModel> hubiksy = new ObservableCollection<HubModel>();
 
 
 
@@ -39,11 +40,12 @@ namespace DYKClient.MVVM.ViewModel
         public LobbiesViewModel(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
-            LobbyViewModel = new LobbyViewModel();
             mainViewModel._server.receivedPublicLobbiesListEvent += ReceivedPublicLobbiesList;
+            mainViewModel._server.connectToLobbyViewEvent += ConnectToLobby;
             //lobbiesListView.ItemsSource = hubs;
-            hubiksy = new ObservableCollection<HubModel>();
-
+            //hubiksy = new ObservableCollection<HubModel>();
+/*            Hubs = new List<HubModel>();
+            JoinCode = "";*/
             //Customers = new ObservableCollection<HubModel>();
             // Window parentWindow = Window.GetWindow(this);
 
@@ -52,29 +54,53 @@ namespace DYKClient.MVVM.ViewModel
                 mainViewModel.CurrentView = LobbyViewModel;
             });
 
+
             ConnectToLobbyViewCommand = new RelayCommand(o =>
             {
-                mainViewModel.CurrentView = LobbyViewModel;
+                ConnectToLobby();
             });
 
             ReceivedPublicLobbiesListCommand = new RelayCommand(o =>
             {
                 ReceivedPublicLobbiesList();
             });
+            //ReceivedPublicLobbiesList();
+        }
+
+        private void ConnectToLobby()
+        {
+            int joinCodeNum;
+            bool result = Int32.TryParse(joinCode, out joinCodeNum);
+            if (result)
+            {
+                if (joinCodeNum >= 1000 && joinCodeNum < 10000)
+                {
+                    mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbyJoinCode));
+                    var msg = mainViewModel._server.PacketReader.ReadMessage();
+                    if (msg.Equals("lobbyDoesntExists") == false)
+                    {
+                        HubModel lobby = HubModel.JsonToSingleLobby(msg);
+                        LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);
+                        mainViewModel.CurrentView = LobbyViewModel;
+                    }
+                }
+            }
         }
 
         public void ReceivedPublicLobbiesList()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
-            hubs = HubModel.JsonListToHubModelList(msg);
-            hubiksy = HubModel.JsonListToHubModelObservableCollection(msg);
+            Hubs = HubModel.JsonListToHubModelList(msg);
+            //hubiksy = HubModel.JsonListToHubModelObservableCollection(msg);
             //Application.Current.Dispatcher.Invoke(() => hubs.Add(msg));
             //Application.LoadComponent.lobbiesListView
             //Customers.Add(new HubModel("aaa", 1234));
-            Icon = hubs;
-            Icon.Add(new HubModel("aaaa", 2134));
+            //Icon = hubs;
+            //Icon.Add(new HubModel("aaaa", 2134));
+            Hubs.Add(new HubModel("aaa", 1234));
             //hubiksy.Add(new HubModel("aaaa", 2134));
-            //CollectionViewSource.GetDefaultView(hubiksy).Refresh();
+            
+            CollectionViewSource.GetDefaultView(Hubs).Refresh();
         }
 
 
@@ -148,19 +174,39 @@ namespace DYKClient.MVVM.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private List<HubModel> _Icon;
-        public List<HubModel> Icon
+        private List<HubModel> _Hubs;
+        public List<HubModel> Hubs
         {
-            get { return _Icon; }
+            get { return _Hubs; }
             set
             {
-                _Icon = value;
+                _Hubs = value;
                 if (PropertyChanged != null)
                     PropertyChanged.Invoke(this,
-                        new PropertyChangedEventArgs("Icon"));
+                        new PropertyChangedEventArgs("Hubs"));
             }
         }
 
+
+        private string joinCode;
+        public string JoinCode
+        {
+            get { return this.joinCode; }
+            set
+            {
+                // Implement with property changed handling for INotifyPropertyChanged
+                if (string.Equals(this.joinCode, value) == false)
+                {
+                    //    this.joinCode = value;
+                    //    this.PropertyChanged.Invoke(this, 
+                    //        new PropertyChangedEventArgs("JoinCode")); // Method to raise the PropertyChanged event in your BaseViewModel class...
+
+                    this.joinCode = value;
+                    this.onPropertyChanged(this.joinCode); // Method to raise the PropertyChanged event in your BaseViewModel class...
+
+                }
+            }
+        }
 
     }
 

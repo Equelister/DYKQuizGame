@@ -1,4 +1,4 @@
-﻿using DYKServer.Model;
+﻿using DYKShared.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

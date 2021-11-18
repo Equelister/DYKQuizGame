@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Database\MenuCommands\" />
     <Folder Include="Database\GameCommands\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 
   <ItemGroup>

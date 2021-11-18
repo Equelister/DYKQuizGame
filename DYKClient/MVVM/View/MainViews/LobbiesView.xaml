@@ -40,7 +40,7 @@
                   Margin="5"
                   Padding="5"
                   SelectionMode="Single"
-                  ItemsSource="{Binding Path=Icon}">
+                  ItemsSource="{Binding Path=Hubs}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="auto" 
@@ -73,8 +73,10 @@
             <TextBlock Text="Wpisz kod poczekalni"
                        Style="{StaticResource StandardTextBlockStyle}"/>
 
-            <TextBox Margin="3"
-                     Style="{StaticResource TextBoxStyle}"/>
+            <TextBox x:Name="JoinCodeTextBox"
+                     Margin="3"
+                     Text="{Binding Path=JoinCode}"
+                     />
 
             <Button Content="Dołącz za pomocą kodu"
                     Style="{StaticResource StandardButtonStyle}"
