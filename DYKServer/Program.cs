@@ -1,5 +1,6 @@
 ﻿using DYKServer.Net;
 using DYKServer.Net.IO;
+using DYKShared.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,7 +16,8 @@ namespace DYKServer
     public enum OpCodes
     {
         LoginResult = 2,
-        LobbiesList = 20
+        LobbiesList = 20,
+        AddToLobbyRequest = 21,
     }
 
     class Program
@@ -49,7 +51,18 @@ namespace DYKServer
 
             }
         }
+        static void OutPutInitializeToConsole()
+        {
+            foreach (Hub hub in _hubs)
+            {
+                Console.WriteLine($"Created new Hub [{hub.GUID}] - [{hub.Name}] - JoinCode [{hub.JoinCode}]");
+            }
+        }
 
+
+        /// <summary>
+        /// HUBS
+        /// </summary>
         static void InitializeDefaultHubs()
         {
             for(int i = 0; i<20;i++)
@@ -58,14 +71,6 @@ namespace DYKServer
                 _hubs.Add(newHub);
             }
             CheckHubUniqueJoinCodeAll();
-        }
-
-        static void OutPutInitializeToConsole()
-        {
-            foreach(Hub hub in _hubs)
-            {
-                Console.WriteLine($"Created new Hub [{hub.GUID}] - [{hub.Name}] - JoinCode [{hub.JoinCode}]");
-            }
         }
 
         static void CheckHubUniqueJoinCodeAll()
@@ -106,27 +111,53 @@ namespace DYKServer
             } while (unique == false);
         }
 
-        static void BroadcastConnection()
-        {
-            /*            foreach (var user in _users)
-                        {
-                            foreach (var usr in _users)
-                            {
-                                var broadcastPacket = new PacketBuilder();
-                                broadcastPacket.WriteOpCode(1);
-                                broadcastPacket.WriteMessage(usr.Username);
-                                broadcastPacket.WriteMessage(usr.UID.ToString());
-                                user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
-                            }
-                        }*/
-        }
-
         public static string GetHubListAsJson(string UID)
         {
             Console.WriteLine($"User [{UID}] requested a lobby list.");
             return Hub.PublicLobbiesToSendCreateJson(_hubs);
         }
 
+        public static HubModel AddUserToHub(int receivedJoinCode, string uid)
+        {
+            Hub hub = _hubs.Where(x => x.JoinCode == receivedJoinCode).FirstOrDefault();
+            if (hub is not null)
+            {
+                hub.AddClient(_users.Where(x => x.GUID.ToString() == uid).FirstOrDefault());
+                HubModel hubmodel = new HubModel() {
+                    JoinCode = hub.JoinCode,
+                    MaxSize = hub.MaxSize,
+                    Name = hub.Name
+                };
+                foreach(var user in hub.Users)
+                {
+                    hubmodel.Users.Add(user.UserModel);
+                }
+                return hubmodel;
+            }
+            return null;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// LOGIN
+        /// </summary>
+        /// <param name="UID"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static bool BroadcastLoginResult(string UID, string message)
         {
             RemoveUserFromList(Guid.Empty.ToString());
@@ -195,6 +226,32 @@ namespace DYKServer
             }
         }
 
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// BROADCASTS
+        /// </summary>
+        static void BroadcastConnection()
+        {
+            /*            foreach (var user in _users)
+                        {
+                            foreach (var usr in _users)
+                            {
+                                var broadcastPacket = new PacketBuilder();
+                                broadcastPacket.WriteOpCode(1);
+                                broadcastPacket.WriteMessage(usr.Username);
+                                broadcastPacket.WriteMessage(usr.UID.ToString());
+                                user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
+                            }
+                        }*/
+        }
+
         public static void BroadcastMessage(string message)
         {
 /*            foreach (var user in _users)
@@ -219,7 +276,7 @@ namespace DYKServer
             var disconnectedUser = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             _users.Remove(disconnectedUser);
             var broadcastPacket = new PacketBuilder();
-            BroadcastMessage($"{disconnectedUser.Username} has disconnected from the server!");            
+            BroadcastMessage($"{disconnectedUser.UserModel.Username} has disconnected from the server!");            
         }
 
 

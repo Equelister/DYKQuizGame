@@ -20,6 +20,12 @@ namespace DYKShared.Model
         {
             Name = name;
             JoinCode = joinCode;
+            Users = new List<UserModel>();
+        }
+
+        public HubModel()
+        {
+            Users = new List<UserModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,6 +39,7 @@ namespace DYKShared.Model
 
         public static HubModel JsonToSingleLobby(string json)
         {
+            Console.WriteLine(json);
             var jsonData = JsonSerializer.Deserialize<HubModel>(json);
             return jsonData;
         }
@@ -42,6 +49,11 @@ namespace DYKShared.Model
             //List<HubModel> lobbies = new List<HubModel>();
             var jsonData = JsonSerializer.Deserialize<ObservableCollection<HubModel>>(json);
             return jsonData;
+        }
+
+        public string ConvertToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }

@@ -77,7 +77,7 @@ namespace DYKClient.MVVM.ViewModel
             {
                 //LobbiesViewModel.ReceivedPublicLobbiesList();
 
-                _server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+                //_server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
                 //LobbiesViewModel.ReceivedPublicLobbiesList();
                 CurrentView = LobbiesViewModel;
             });

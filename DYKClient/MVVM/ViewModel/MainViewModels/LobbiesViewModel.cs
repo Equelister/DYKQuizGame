@@ -60,10 +60,10 @@ namespace DYKClient.MVVM.ViewModel
                 ConnectToLobby();
             });
 
-            ReceivedPublicLobbiesListCommand = new RelayCommand(o =>
+/*            ReceivedPublicLobbiesListCommand = new RelayCommand(o =>
             {
                 ReceivedPublicLobbiesList();
-            });
+            });*/
             //ReceivedPublicLobbiesList();
         }
 
@@ -75,9 +75,10 @@ namespace DYKClient.MVVM.ViewModel
             {
                 if (joinCodeNum >= 1000 && joinCodeNum < 10000)
                 {
-                    mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbyJoinCode));
+                    string joinCodeStr = joinCodeNum.ToString();
+                    mainViewModel._server.SendMessageToServerOpCode(joinCodeStr, Convert.ToByte(OpCodes.SendLobbyJoinCode));
                     var msg = mainViewModel._server.PacketReader.ReadMessage();
-                    if (msg.Equals("lobbyDoesntExists") == false)
+                    if (msg.Equals("lobbyDoesntExists") == false && msg.Equals("wrongJoinCode") == false)
                     {
                         HubModel lobby = HubModel.JsonToSingleLobby(msg);
                         LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);

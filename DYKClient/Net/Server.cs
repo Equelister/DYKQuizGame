@@ -114,7 +114,7 @@ namespace DYKClient.Net
                             receivedPublicLobbiesListEvent.Invoke();
                             break;
                         case 21:
-                            connectToLobbyViewEvent.Invoke();
+                            //connectToLobbyViewEvent.Invoke();
                             break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");

@@ -12,7 +12,6 @@ namespace DYKServer.Net
 {
     class Client
     {
-        public string Username { get; set; }
         public Guid GUID { get; set; }
         public UserModel UserModel { get; set; }
         public TcpClient ClientSocket { get; set; }
@@ -45,11 +44,10 @@ namespace DYKServer.Net
                 bool isUniqueUser = GetClientsLoginCredentials(succesLogin);
                 if(isUniqueUser == false)
                 {
-                    Console.WriteLine($"[{ DateTime.Now}]: Client with username: [{Username}] is already connected!");
+                    Console.WriteLine($"[{ DateTime.Now}]: Client with username: [{UserModel.Username}] is already connected!");
                     return;
-                }
-                Username = UserModel.Username;
-                Console.WriteLine($"[{ DateTime.Now}]: Client connected with the username: [{Username}]");
+                }               
+                Console.WriteLine($"[{ DateTime.Now}]: Client connected with the username: [{UserModel.Username}]");
             }
             else
             {
@@ -76,6 +74,9 @@ namespace DYKServer.Net
                         case 20:
                             SendHubListAsJson();
                             break;
+                        case 21:
+                            AddToLobby();
+                            break;
                         default:
                             break;
                     }
@@ -91,6 +92,36 @@ namespace DYKServer.Net
                     return;
                 }
             }
+        }
+
+        private void AddToLobby()
+        {
+            int receivedJoinCode;
+            bool result = Int32.TryParse(_packetReader.ReadMessage(), out receivedJoinCode);
+            if(result)
+            {
+                HubModel hub = Program.AddUserToHub(receivedJoinCode, GUID.ToString());
+                if (hub is not null)
+                {
+                    var message = hub.ConvertToJson();
+                    Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+                    //add user to hub and send hubmodel
+                }
+                else
+                {
+                    var message = "lobbyDoesntExists";
+                    Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+                    // lobby doesnt exist return to user
+                }                
+            }else
+            {
+                var message = "wrongJoinCode";
+                Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+            }
+
+
+
+            //throw new NotImplementedException();
         }
 
         private void SendHubListAsJson()
