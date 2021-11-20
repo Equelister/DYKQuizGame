@@ -70,8 +70,10 @@ namespace DYKClient.MVVM.ViewModel
         {
             HelpViewModel = new HelpViewModel();
             AboutViewModel = new AboutViewModel();
-            //CurrentView = LobbiesViewModel;
             LobbiesViewModel = new LobbiesViewModel(this);
+
+            _server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+            CurrentView = LobbiesViewModel;
 
             LobbiesViewCommand = new RelayCommand(o =>
             {
@@ -79,7 +81,11 @@ namespace DYKClient.MVVM.ViewModel
 
                 //_server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
                 //LobbiesViewModel.ReceivedPublicLobbiesList();
+                //_server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+
                 CurrentView = LobbiesViewModel;
+                _server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+                //LobbiesViewModel.ReceivedPublicLobbiesList();
             });
 
             AboutViewCommand = new RelayCommand(o =>

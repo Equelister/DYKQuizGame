@@ -13,10 +13,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
+using System.Collections.Specialized;
 
 namespace DYKClient.MVVM.ViewModel
 {
-    class LobbiesViewModel : ObservableObject
+    class LobbiesViewModel : ObservableObject, INotifyCollectionChanged
     {
         private MainViewModel mainViewModel;
         //public List<HubModel> hubs = new List<HubModel>();
@@ -60,11 +61,13 @@ namespace DYKClient.MVVM.ViewModel
                 ConnectToLobby();
             });
 
-/*            ReceivedPublicLobbiesListCommand = new RelayCommand(o =>
+            ReceivedPublicLobbiesListCommand = new RelayCommand(o =>
             {
                 ReceivedPublicLobbiesList();
-            });*/
+            });
             //ReceivedPublicLobbiesList();
+
+            //mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
         }
 
         private void ConnectToLobby()
@@ -87,21 +90,28 @@ namespace DYKClient.MVVM.ViewModel
                 }
             }
         }
+        private int counter = 1;
 
         public void ReceivedPublicLobbiesList()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
-            Hubs = HubModel.JsonListToHubModelList(msg);
+            //Hubs = HubModel.JsonListToHubModelList(msg);
+            Hubs = HubModel.JsonListToHubModelObservableCollection(msg);
+
+            //TimeStepDataCollection.Add(new HubModel(counter++.ToString(), 9999));
+            Hubs.Add(new HubModel(counter++.ToString(), 9998));
+
+
             //hubiksy = HubModel.JsonListToHubModelObservableCollection(msg);
             //Application.Current.Dispatcher.Invoke(() => hubs.Add(msg));
             //Application.LoadComponent.lobbiesListView
             //Customers.Add(new HubModel("aaa", 1234));
             //Icon = hubs;
             //Icon.Add(new HubModel("aaaa", 2134));
-            Hubs.Add(new HubModel("aaa", 1234));
+            //Hubs.Add(new HubModel("aaa", 1234));
             //hubiksy.Add(new HubModel("aaaa", 2134));
-            
-            CollectionViewSource.GetDefaultView(Hubs).Refresh();
+
+            //CollectionViewSource.GetDefaultView(Hubs).Refresh();
         }
 
 
@@ -174,20 +184,19 @@ namespace DYKClient.MVVM.ViewModel
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        private List<HubModel> _Hubs;
-        public List<HubModel> Hubs
+        private ObservableCollection<HubModel> _Hubs;
+        public ObservableCollection<HubModel> Hubs
         {
             get { return _Hubs; }
             set
             {
                 _Hubs = value;
-                if (PropertyChanged != null)
-                    PropertyChanged.Invoke(this,
-                        new PropertyChangedEventArgs("Hubs"));
+                //if (this.CollectionChanged != null)
+                onPropertyChanged();
             }
         }
-
 
         private string joinCode;
         public string JoinCode

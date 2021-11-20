@@ -34,9 +34,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             set
             {
                 _Hub = value;
-                if (PropertyChanged != null)
-                    PropertyChanged.Invoke(this,
-                        new PropertyChangedEventArgs("Hub"));
+                onPropertyChanged();
             }
         }
 

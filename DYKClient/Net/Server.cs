@@ -120,8 +120,8 @@ namespace DYKClient.Net
                             Console.WriteLine("Server.ReadPacket = default");
                             break;
                     }
-                    Task.Delay(1000);
-                    System.Threading.Thread.Sleep(1000);
+                    //Task.Delay(1000);
+                    //System.Threading.Thread.Sleep(1000);
                 }
             });
         }
