@@ -28,6 +28,7 @@ namespace DYKClient.MVVM.ViewModel
 
         public RelayCommand NewLobbyViewCommand { get; set; }
         public RelayCommand ConnectToLobbyViewCommand { get; set; }
+        public RelayCommand SendConnectToLobbyReqCommand { get; set; }
         public RelayCommand ReceivedPublicLobbiesListCommand { get; set; }
         //public RelayCommand ConnectToLobbyCommand { get; set; }
 
@@ -42,7 +43,7 @@ namespace DYKClient.MVVM.ViewModel
         {
             this.mainViewModel = mainViewModel;
             mainViewModel._server.receivedPublicLobbiesListEvent += ReceivedPublicLobbiesList;
-            mainViewModel._server.connectToLobbyViewEvent += ConnectToLobby;
+            mainViewModel._server.connectToLobbyViewEvent += GetConnectToLobbyResult;
             //lobbiesListView.ItemsSource = hubs;
             //hubiksy = new ObservableCollection<HubModel>();
 /*            Hubs = new List<HubModel>();
@@ -55,10 +56,14 @@ namespace DYKClient.MVVM.ViewModel
                 mainViewModel.CurrentView = LobbyViewModel;
             });
 
+            SendConnectToLobbyReqCommand = new RelayCommand(o =>
+            {
+                SendConnectToLobbyRequest();
+            });
 
             ConnectToLobbyViewCommand = new RelayCommand(o =>
             {
-                ConnectToLobby();
+                GetConnectToLobbyResult();
             });
 
             ReceivedPublicLobbiesListCommand = new RelayCommand(o =>
@@ -70,7 +75,7 @@ namespace DYKClient.MVVM.ViewModel
             //mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
         }
 
-        private void ConnectToLobby()
+        private void SendConnectToLobbyRequest()
         {
             int joinCodeNum;
             bool result = Int32.TryParse(joinCode, out joinCodeNum);
@@ -80,16 +85,21 @@ namespace DYKClient.MVVM.ViewModel
                 {
                     string joinCodeStr = joinCodeNum.ToString();
                     mainViewModel._server.SendMessageToServerOpCode(joinCodeStr, Convert.ToByte(OpCodes.SendLobbyJoinCode));
-                    var msg = mainViewModel._server.PacketReader.ReadMessage();
-                    if (msg.Equals("lobbyDoesntExists") == false && msg.Equals("wrongJoinCode") == false)
-                    {
-                        HubModel lobby = HubModel.JsonToSingleLobby(msg);
-                        LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);
-                        mainViewModel.CurrentView = LobbyViewModel;
-                    }
                 }
             }
         }
+
+        private void GetConnectToLobbyResult()
+        {
+            var msg = mainViewModel._server.PacketReader.ReadMessage();
+            if (msg.Equals("lobbyDoesntExists") == false && msg.Equals("wrongJoinCode") == false)
+            {
+                HubModel lobby = HubModel.JsonToSingleLobby(msg);
+                LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);
+                mainViewModel.CurrentView = LobbyViewModel;
+            }
+        }
+
         private int counter = 1;
 
         public void ReceivedPublicLobbiesList()

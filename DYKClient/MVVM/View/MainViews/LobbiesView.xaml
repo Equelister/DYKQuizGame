@@ -81,7 +81,7 @@
 
             <Button Content="Dołącz za pomocą kodu"
                     Style="{StaticResource StandardButtonStyle}"
-                    Command="{Binding ConnectToLobbyViewCommand}"/>
+                    Command="{Binding SendConnectToLobbyReqCommand}"/>
 
         </StackPanel>
 
