@@ -36,11 +36,14 @@
         </Grid.RowDefinitions>
 
         <ListView x:Name="lobbiesListView" Grid.ColumnSpan="4"
-                  Grid.RowSpan="7"
+                  Grid.RowSpan="6"
                   Margin="5"
                   Padding="5"
                   SelectionMode="Single"
-                  ItemsSource="{Binding Path=Hubs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                  ItemsSource="{Binding Path=Hubs, 
+                                Mode=TwoWay, 
+                                UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding Path=SelectedHub}">
 
             <ListView.View>
                 <GridView>
@@ -50,10 +53,23 @@
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                    Grid.Row="6"
+                    Grid.RowSpan="2"
+                    Grid.ColumnSpan="4">
+                <Button Content="Dołącz z listy"
+                        Style="{StaticResource StandardButtonStyle}"
+                        Command="{Binding SendConnectToLobbyWithListCommand}"/>
+                <Button Content="Odśwież listę"
+                        Style="{StaticResource StandardButtonStyle}"
+                        Command="{Binding SendLobbiesListRequestCommand}"/>
+        </StackPanel>
+
         
-        <Button Grid.Row="7" Grid.ColumnSpan="4"
-                Content="Dołącz z listy"
-                Style="{StaticResource StandardButtonStyle}"/>
+
+
 
         <StackPanel Grid.Row="1" Grid.RowSpan="2"
                     Grid.Column="5" Grid.ColumnSpan="2"

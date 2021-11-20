@@ -28,8 +28,10 @@ namespace DYKClient.MVVM.ViewModel
 
         public RelayCommand NewLobbyViewCommand { get; set; }
         public RelayCommand ConnectToLobbyViewCommand { get; set; }
+        public RelayCommand SendConnectToLobbyWithListCommand { get; set; }
         public RelayCommand SendConnectToLobbyReqCommand { get; set; }
         public RelayCommand ReceivedPublicLobbiesListCommand { get; set; }
+        public RelayCommand SendLobbiesListRequestCommand { get; set; }
         //public RelayCommand ConnectToLobbyCommand { get; set; }
 
 
@@ -58,7 +60,12 @@ namespace DYKClient.MVVM.ViewModel
 
             SendConnectToLobbyReqCommand = new RelayCommand(o =>
             {
-                SendConnectToLobbyRequest();
+                SendConnectToLobbyRequest(JoinCode);
+            });
+
+            SendConnectToLobbyWithListCommand = new RelayCommand(o =>
+            {
+                SendConnectToLobbyWithList();
             });
 
             ConnectToLobbyViewCommand = new RelayCommand(o =>
@@ -70,15 +77,28 @@ namespace DYKClient.MVVM.ViewModel
             {
                 ReceivedPublicLobbiesList();
             });
+
+            SendLobbiesListRequestCommand = new RelayCommand(o =>
+            {
+                mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+            });
             //ReceivedPublicLobbiesList();
 
             //mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
         }
 
-        private void SendConnectToLobbyRequest()
+        private void SendConnectToLobbyWithList()
+        {
+            if (SelectedHub.JoinCode != 0)
+            {
+                SendConnectToLobbyRequest(SelectedHub.JoinCode.ToString());
+            }
+        }
+
+        private void SendConnectToLobbyRequest(string joincode)
         {
             int joinCodeNum;
-            bool result = Int32.TryParse(joinCode, out joinCodeNum);
+            bool result = Int32.TryParse(joincode, out joinCodeNum);
             if (result)
             {
                 if (joinCodeNum >= 1000 && joinCodeNum < 10000)
@@ -196,6 +216,8 @@ namespace DYKClient.MVVM.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
+        //public HubModel SelectedHub = new HubModel();
+
         private ObservableCollection<HubModel> _Hubs;
         public ObservableCollection<HubModel> Hubs
         {
@@ -205,6 +227,26 @@ namespace DYKClient.MVVM.ViewModel
                 _Hubs = value;
                 //if (this.CollectionChanged != null)
                 onPropertyChanged();
+            }
+        }
+
+        private HubModel _selectedHub;
+        public HubModel SelectedHub
+        {
+            get
+            {
+                if(_selectedHub is null)
+                {
+                    _selectedHub = new HubModel();
+                }
+                return _selectedHub;
+            }
+            set
+            {
+                _selectedHub = value;
+                //Departures = Departure.GetDepartures(_currentStation);
+                Console.WriteLine("New station selected: " + _selectedHub.ToString());
+                onPropertyChanged("SelectedHub");
             }
         }
 
