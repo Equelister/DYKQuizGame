@@ -14,18 +14,34 @@ namespace DYKShared.Model
         public string Name { get; set; }
         public int JoinCode { get; set; }
         public List<UserModel> Users { get; set; }
+        public CategoryModel Category { get; set; }
         public int MaxSize { get; set; }
 
-        public HubModel(string name, int joinCode)
+        public HubModel(string name, int joinCode, CategoryModel category)
         {
             Name = name;
             JoinCode = joinCode;
             Users = new List<UserModel>();
+            Category = category;
+        }
+        
+        public HubModel(int joinCode, int maxSize, string name, CategoryModel category)
+        {
+            Name = name;
+            JoinCode = joinCode;
+            Users = new List<UserModel>();
+            Category = category;
+            MaxSize = maxSize;
+        }
+
+        public HubModel(CategoryModel category)
+        {
+            Users = new List<UserModel>();
+            Category = category;
         }
 
         public HubModel()
         {
-            Users = new List<UserModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

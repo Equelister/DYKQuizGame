@@ -47,8 +47,11 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="auto" 
+                    <GridViewColumn Header="Nazwa" Width="auto" 
                         DisplayMemberBinding="{Binding Name}" >
+                    </GridViewColumn>
+                    <GridViewColumn Header="Kategoria" Width="auto" 
+                        DisplayMemberBinding="{Binding Category.Name}" >
                     </GridViewColumn>
                 </GridView>
             </ListView.View>

@@ -129,7 +129,7 @@ namespace DYKClient.MVVM.ViewModel
             Hubs = HubModel.JsonListToHubModelObservableCollection(msg);
 
             //TimeStepDataCollection.Add(new HubModel(counter++.ToString(), 9999));
-            Hubs.Add(new HubModel(counter++.ToString(), 9998));
+            //Hubs.Add(new HubModel(counter++.ToString(), 9998));
 
 
             //hubiksy = HubModel.JsonListToHubModelObservableCollection(msg);

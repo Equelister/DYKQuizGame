@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DYKShared.Model;
 
 namespace DYKServer.Net
 {
@@ -14,11 +15,12 @@ namespace DYKServer.Net
         public Guid GUID { get; set; }
         public string Name { get; set; }
         public List<Client> Users { get; set; }
+        public CategoryModel Category { get; set; }
         public int MaxSize { get; set; }
         public int JoinCode { get; set; }
         public bool IsPrivate {get;set;}
 
-        public Hub(string name)
+        public Hub(string name, CategoryModel category)
         {
             GUID = Guid.NewGuid();
             Name = name;
@@ -26,9 +28,10 @@ namespace DYKServer.Net
             MaxSize = 8;
             JoinCode = GenerateJoinCode();
             IsPrivate = false;
+            Category = category;
         }
 
-        public Hub(string name, int maxSize, bool isPrivate)
+        public Hub(string name, int maxSize, bool isPrivate, CategoryModel category)
         {
             GUID = Guid.NewGuid();
             Name = name;
@@ -36,6 +39,7 @@ namespace DYKServer.Net
             MaxSize = maxSize;
             JoinCode = GenerateJoinCode();
             IsPrivate = isPrivate;
+            Category = category;
         }
 
         public int GenerateJoinCode()
@@ -64,7 +68,7 @@ namespace DYKServer.Net
             {
                 if (lobby.IsPrivate == false)
                 {
-                    toJsonList.Add(new DYKShared.Model.HubModel(lobby.Name, lobby.JoinCode));
+                    toJsonList.Add(new DYKShared.Model.HubModel(lobby.Name, lobby.JoinCode, lobby.Category));
                 }
             }
             return JsonSerializer.Serialize(toJsonList);

@@ -1,4 +1,5 @@
-﻿using DYKServer.Net;
+﻿using DYKServer.Database.MenuCommands;
+using DYKServer.Net;
 using DYKServer.Net.IO;
 using DYKShared.Model;
 using System;
@@ -24,6 +25,7 @@ namespace DYKServer
     {
         static List<Client> _users;
         static List<Hub> _hubs;
+        static List<CategoryModel> _categories;
         static TcpListener _listener;
 
         
@@ -32,6 +34,8 @@ namespace DYKServer
         {
             _users = new List<Client>();
             _hubs = new List<Hub>();
+            _categories = new List<CategoryModel>();
+            InitializeCategories();
             InitializeDefaultHubs();
             OutPutInitializeToConsole();
             
@@ -57,7 +61,19 @@ namespace DYKServer
             {
                 Console.WriteLine($"Created new Hub [{hub.GUID}] - [{hub.Name}] - JoinCode [{hub.JoinCode}]");
             }
+            foreach (CategoryModel category in _categories)
+            {
+                Console.WriteLine($"Created new Hub [{category.ID}] - [{category.Name}]");
+            }
         }
+
+
+
+        static CategoryModel GetFirstCategoryFromList()
+        {
+            return _categories.ElementAt(0);
+        }
+
 
 
         /// <summary>
@@ -65,9 +81,10 @@ namespace DYKServer
         /// </summary>
         static void InitializeDefaultHubs()
         {
+
             for(int i = 0; i<20;i++)
             {
-                Hub newHub = new Hub(i + 1 + ". Hub");
+                Hub newHub = new Hub(i + 1 + ". Hub", GetFirstCategoryFromList());
                 _hubs.Add(newHub);
             }
             CheckHubUniqueJoinCodeAll();
@@ -123,11 +140,12 @@ namespace DYKServer
             if (hub is not null)
             {
                 hub.AddClient(_users.Where(x => x.GUID.ToString() == uid).FirstOrDefault());
-                HubModel hubmodel = new HubModel() {
-                    JoinCode = hub.JoinCode,
-                    MaxSize = hub.MaxSize,
-                    Name = hub.Name
-                };
+                HubModel hubmodel = new HubModel(
+                    hub.JoinCode,
+                    hub.MaxSize,
+                    hub.Name,
+                    hub.Category                    
+                );
                 foreach(var user in hub.Users)
                 {
                     hubmodel.Users.Add(user.UserModel);
@@ -140,6 +158,25 @@ namespace DYKServer
 
 
 
+        static void InitializeCategories()
+        {
+            HubCommands hc = new HubCommands();
+            _categories = hc.GetCategoriesList(); 
+            if(IsListEmpty(_categories))
+            {
+                throw new ArgumentException("*** Categories do not exists in database ***");
+            }
+        }
+
+        static bool IsListEmpty(List<CategoryModel> list)
+        {
+            if (list == null)
+            {
+                return true;
+            }
+
+            return list.Count == 0;
+        }
 
 
 
