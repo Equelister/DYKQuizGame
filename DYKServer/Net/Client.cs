@@ -77,6 +77,9 @@ namespace DYKServer.Net
                         case 21:
                             AddToLobby();
                             break;
+                        case 22:
+                            SendCategoriesList();
+                            break;
                         default:
                             break;
                     }
@@ -123,6 +126,12 @@ namespace DYKServer.Net
         {
             var lobbiesString = Program.GetHubListAsJson(this.GUID.ToString());
             Program.BroadcastMessageToSpecificUser(this.GUID.ToString(),lobbiesString, OpCodes.LobbiesList);
+        }
+
+        private void SendCategoriesList()
+        {
+            var categoriesString = Program.GetCategoriesAsJson();
+            Program.BroadcastMessageToSpecificUser(this.GUID.ToString(), categoriesString, OpCodes.CategoryListRequest);
         }
 
         private bool GetClientsLoginCredentials(bool status)

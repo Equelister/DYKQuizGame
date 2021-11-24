@@ -75,6 +75,18 @@ namespace DYKClient.MVVM.ViewModel
         public LobbiesViewModel(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
+            InitializeCommands();
+
+        }
+
+        public void ReceivedPublicLobbiesList()
+        {
+            var msg = mainViewModel._server.PacketReader.ReadMessage();
+            Hubs = HubModel.JsonListToHubModelObservableCollection(msg);
+        }
+
+        private void InitializeCommands()
+        {
             mainViewModel._server.receivedPublicLobbiesListEvent += ReceivedPublicLobbiesList;
             mainViewModel._server.connectToLobbyViewEvent += GetConnectToLobbyResult;
 
@@ -139,17 +151,8 @@ namespace DYKClient.MVVM.ViewModel
                 HubModel lobby = HubModel.JsonToSingleLobby(msg);
                 LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);
                 mainViewModel.CurrentView = LobbyViewModel;
+                mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
             }
         }
-
-        public void ReceivedPublicLobbiesList()
-        {
-            var msg = mainViewModel._server.PacketReader.ReadMessage();
-            Hubs = HubModel.JsonListToHubModelObservableCollection(msg);
-        }
-
-
-    }
-
-    
+    }    
 }

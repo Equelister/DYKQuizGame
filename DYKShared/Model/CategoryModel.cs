@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DYKShared.Model
@@ -10,18 +12,29 @@ namespace DYKShared.Model
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public string Descritpion { get; set; }
+        public string Description { get; set; }
 
 
         public CategoryModel(int id, string name, string description)
         {
             ID = id;
             Name = name;
-            Descritpion = description;
+            Description = description;
         }
         public CategoryModel()
         {
 
+        }
+
+        public static ObservableCollection<CategoryModel> JsonListToCategoryModelObservableCollection(string json)
+        {
+            var jsonData = JsonSerializer.Deserialize<ObservableCollection<CategoryModel>>(json);
+            return jsonData;
+        }
+
+        public string ConvertToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 

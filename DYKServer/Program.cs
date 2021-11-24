@@ -19,6 +19,7 @@ namespace DYKServer
         LoginResult = 2,
         LobbiesList = 20,
         AddToLobbyRequest = 21,
+        CategoryListRequest = 22,
     }
 
     class Program
@@ -157,6 +158,11 @@ namespace DYKServer
                             "*** Please insert at least 1 categiry into DB ***"
                 );
             }
+        }
+
+        public static string GetCategoriesAsJson()
+        {
+            return JsonSerializer.Serialize(_categories);
         }
 
         static bool IsListEmpty(List<CategoryModel> list)
