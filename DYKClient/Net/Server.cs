@@ -26,7 +26,6 @@ namespace DYKClient.Net
         public event Action connectToLobbyViewEvent;
         public event Action unlockLoginButtonEvent;
         public event Func<bool> receivedLoginResultEvent;
-        //public event Action LoginCredentialsEvent;
 
         
 
@@ -71,8 +70,6 @@ namespace DYKClient.Net
                     try
                     {
                         Console.WriteLine("Server.cs -> ReadPacket() try. CanRead?: " + PacketReader._ns.CanRead);
-
-                        //opcode =  PacketReader.Read();
                         opcode =  PacketReader.ReadByte();
                         Console.WriteLine("OPCODE: "+opcode);
                     }catch(System.IO.IOException IOE)
@@ -102,7 +99,6 @@ namespace DYKClient.Net
                             {
                                 return;
                             }
-                            //GetLoginCredentialsResult();
                             break;
                         case 5:
                             messageEvent?.Invoke();
@@ -120,8 +116,6 @@ namespace DYKClient.Net
                             Console.WriteLine("Server.ReadPacket = default");
                             break;
                     }
-                    //Task.Delay(1000);
-                    //System.Threading.Thread.Sleep(1000);
                 }
             });
         }
@@ -156,10 +150,6 @@ namespace DYKClient.Net
                 if (ConnectToServer())
                 {
                     string message = String.Concat(userEmail, "%%^^&&", hashedPassword);
-                    /*var messagePacket = new PacketBuilder();
-                    messagePacket.WriteOpCode(2);
-                    messagePacket.WriteString(message);
-                    _client.Client.Send(messagePacket.GetPacketBytes());*/
                     SendMessageToServerOpCode(message, Convert.ToByte(OpCodes.SendLogin));
                     ReadPacket();
                 }
@@ -168,16 +158,6 @@ namespace DYKClient.Net
 
         public bool GetLoginCredentialsResult()
         {
-            /*            UserModel user = new UserModel
-                        {
-                            Username = _server.PacketReader.ReadMessage(),
-                            UID = _server.PacketReader.ReadMessage()
-                        };
-
-                        if (Users.Any(x => x.UID == user.UID) == false)
-                        {
-                            Application.Current.Dispatcher.Invoke(() => Users.Add(user));
-                        }*/
             var message = this.PacketReader.ReadMessage();
             if (string.IsNullOrEmpty(message) == false)
             {
@@ -191,15 +171,13 @@ namespace DYKClient.Net
                 }
                 else
                 {
-                    //DisconnectFromServer();
+                    //DisconnectFromServer
                     return false;
                 }
             }else
             {
                 return false;
             }
-
-            //return true;
         }
     }
 }

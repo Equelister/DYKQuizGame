@@ -27,8 +27,7 @@ namespace DYKServer
         static List<Hub> _hubs;
         static List<CategoryModel> _categories;
         static TcpListener _listener;
-
-        
+                
 
         static void Main(string[] args)
         {
@@ -46,13 +45,6 @@ namespace DYKServer
             while (true)
             {
                 _users.Add(new Client(_listener.AcceptTcpClient()));
-                //_users.Add(client);
-                //Console.WriteLine($"Client connected! [{client.UID}]");
-
-                //BroadcastConnection();
-
-
-
             }
         }
         static void OutPutInitializeToConsole()
@@ -69,10 +61,6 @@ namespace DYKServer
 
 
 
-        static CategoryModel GetFirstCategoryFromList()
-        {
-            return _categories.ElementAt(0);
-        }
 
 
 
@@ -164,7 +152,10 @@ namespace DYKServer
             _categories = hc.GetCategoriesList(); 
             if(IsListEmpty(_categories))
             {
-                throw new ArgumentException("*** Categories do not exists in database ***");
+                throw new ArgumentException(
+                     "*** Categories do not exists in database ***\r\n" +
+                            "*** Please insert at least 1 categiry into DB ***"
+                );
             }
         }
 
@@ -178,12 +169,10 @@ namespace DYKServer
             return list.Count == 0;
         }
 
-
-
-
-
-
-
+        static CategoryModel GetFirstCategoryFromList()
+        {
+            return _categories.ElementAt(0);
+        }
 
 
 
