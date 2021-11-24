@@ -131,6 +131,12 @@ namespace DYKServer.Net
         private void SendCategoriesList()
         {
             var categoriesString = Program.GetCategoriesAsJson();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Wusyłam kategorie!");
+            Console.WriteLine(categoriesString);
+            Console.WriteLine();
+            Console.WriteLine();
             Program.BroadcastMessageToSpecificUser(this.GUID.ToString(), categoriesString, OpCodes.CategoryListRequest);
         }
 

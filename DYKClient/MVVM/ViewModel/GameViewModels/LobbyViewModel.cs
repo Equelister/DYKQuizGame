@@ -13,9 +13,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 {
     class LobbyViewModel : ObservableObject
     {
-        public RelayCommand SendCategoriesListReqCommand { get; set; }
+        public RelayCommand UpdateLobbyDataCommand { get; set; }
+        //public RelayCommand SendCategoriesListReqCommand { get; set; }
+        public RelayCommand QuitFromLobbyCommand { get; set; }
         private MainViewModel mainViewModel;
-        private ObservableCollection<CategoryModel> _categories;
+        private ObservableCollection<CategoryModel> _categories = new ObservableCollection<CategoryModel>();
         public ObservableCollection<CategoryModel> Categories
         {
             get { return _categories; }
@@ -25,13 +27,70 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged();
             }
         }
+        private CategoryModel _selectedCategory;
+        public CategoryModel SelectedCategory
+        {
+            get
+            {
+                if (_selectedCategory is null)
+                {
+                    _selectedCategory = new CategoryModel();
+                }
+                return _selectedCategory;
+            }
+            set
+            {
+                _selectedCategory = value;
+                onPropertyChanged("SelectedCategory");
+            }
+        }
+        private string _playerNumberStr;
+        public string PlayerNumberStr
+        {
+            get
+            {
+                return _playerNumberStr;
+            }
+            set
+            {
+                if (IsTextNumeric(_playerNumberStr))
+                {
+                    _playerNumberStr = value;
+                    onPropertyChanged("PlayerNumberStr");
+                }else
+                {
+                    _playerNumberStr = "";
+                }
+            }
+        }
 
+        private bool IsTextNumeric(string str)
+        {
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("[^0-9]");
+            if (str is not null)
+            {
+                return reg.IsMatch(str);
+            }
+            return false;
+        }
 
         public LobbyViewModel(MainViewModel mainViewModel, HubModel hub)
         {
             Hub = hub;
             this.mainViewModel = mainViewModel;
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
+            mainViewModel._server.receivedNewLobbyInfoEvent += ReceivedLobbyInfo;
+
+            UpdateLobbyDataCommand = new RelayCommand(o =>
+            {
+                SendNewLobbyData();
+            });
+
+            QuitFromLobbyCommand = new RelayCommand(o =>
+            {
+                QuitFromLobby();
+                //Sendquiting info to server
+            });
 
 
             /*            SendCategoriesListReqCommand = new RelayCommand(o =>                                              //request sent after succesfull finding lobby, no need here
@@ -41,6 +100,28 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             */
             //command to start game, to get ready, etc
 
+        }
+
+        private void QuitFromLobby()
+        {
+            this.Hub = null;
+            this.Categories = null;
+            this.PlayerNumberStr = null;
+            this.SelectedCategory = null;
+            this.UpdateLobbyDataCommand = null;
+            this.QuitFromLobbyCommand = null;
+            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;
+            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;
+            mainViewModel.CurrentView = mainViewModel.LobbiesViewModel;
+        }
+
+        public void ReceivedLobbyInfo()
+        {
+            throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
+        }
+        public void SendNewLobbyData()
+        {
+            throw new NotImplementedException("SendNewLobbyData() => Not implemented");
         }
 
         public void ReceivedCategoryList()

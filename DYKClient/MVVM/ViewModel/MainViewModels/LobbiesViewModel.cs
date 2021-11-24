@@ -92,7 +92,7 @@ namespace DYKClient.MVVM.ViewModel
 
             NewLobbyViewCommand = new RelayCommand(o =>
             {
-                mainViewModel.CurrentView = LobbyViewModel;
+                CreateNewLobby();
             });
 
             SendConnectToLobbyReqCommand = new RelayCommand(o =>
@@ -149,10 +149,19 @@ namespace DYKClient.MVVM.ViewModel
             if (msg.Equals("lobbyDoesntExists") == false && msg.Equals("wrongJoinCode") == false)
             {
                 HubModel lobby = HubModel.JsonToSingleLobby(msg);
+                LobbyViewModel = null;
                 LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);
                 mainViewModel.CurrentView = LobbyViewModel;
                 mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
             }
+        }
+        
+        private void CreateNewLobby()
+        {
+            LobbyViewModel = null;
+            LobbyViewModel = new LobbyViewModel(mainViewModel, new HubModel("aaa", 0000, new CategoryModel(0, "aaa", "aaa")));
+            mainViewModel.CurrentView = LobbyViewModel;
+            mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
         }
     }    
 }
