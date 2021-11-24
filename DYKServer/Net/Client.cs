@@ -68,9 +68,9 @@ namespace DYKServer.Net
                        /* case 2:
                             //GetClientsLoginCredentials();
                             break;*/
-                        case 5:
+                       /* case 5:
                             GetAndBroadcastClientMessage();
-                            break;
+                            break;*/
                         case 20:
                             SendHubListAsJson();
                             break;
@@ -86,7 +86,6 @@ namespace DYKServer.Net
                 {
                     Console.WriteLine(e.ToString());
                     Console.WriteLine($"{GUID.ToString()} - Disconnected!");
-                    //Program.BroadcastDisconnect(UID.ToString());
                     ClientSocket.Close();
                     Program.RemoveUserFromList(GUID.ToString());
                     return;
@@ -118,10 +117,6 @@ namespace DYKServer.Net
                 var message = "wrongJoinCode";
                 Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
             }
-
-
-
-            //throw new NotImplementedException();
         }
 
         private void SendHubListAsJson()
@@ -141,10 +136,7 @@ namespace DYKServer.Net
                 return Program.BroadcastLoginResult(GUID.ToString(), "credsNotLegit");
                 
             }
-        }
-
-
-        
+        }        
 
         private void GetAndBroadcastClientMessage()
         {

@@ -35,31 +35,5 @@ namespace DYKServer.Database.ConnectionCommands
             }
             return null;
         }
-
-
-     /*   public UserModel GetUserInfo(int id)
-        {
-            UserModel usr = new UserModel();
-            var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-            string queryString = $"SELECT id, username, email, total_games FROM users WHERE id = {id}";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
-            using (var connection = new SqlConnection(connectionString))
-            {
-                var command = new SqlCommand(queryString, connection);
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        usr.ID = reader.GetInt32(reader.GetOrdinal("id"));
-                        usr.Username = (string)reader[1];
-                        usr.Email = (string)reader[2];
-                        usr.Total_games = (int)reader[3];
-                        return usr;
-                    }
-                }
-            }
-            return null;
-        }*/
     }
 }
