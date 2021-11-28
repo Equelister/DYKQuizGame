@@ -53,24 +53,30 @@
             <StackPanel Grid.Row="2"
                         Grid.RowSpan="7">
 
-                <RadioButton Content="Lobbies"
+                <RadioButton x:Name="LobbiesRadioButton"
+                             Content="Lobbies"
                              Foreground="White"
                              FontSize="18"
                              Style="{StaticResource MenuButtonStyle}"
                              IsChecked="True"
-                             Command="{Binding LobbiesViewCommand}"/>
-                
-                <RadioButton Content="About"
-                             Foreground="White"
-                             FontSize="18"
-                             Style="{StaticResource MenuButtonStyle}"
-                             Command="{Binding AboutViewCommand}"/>
+                             Command="{Binding LobbiesViewCommand}"
+                             IsEnabled="{Binding Path=MenuRadios}"/>
 
-                <RadioButton Content="Help"
+                <RadioButton x:Name="AboutRadioButton"
+                             Content="About"
                              Foreground="White"
                              FontSize="18"
                              Style="{StaticResource MenuButtonStyle}"
-                             Command="{Binding HelpViewCommand}"/>
+                             Command="{Binding AboutViewCommand}"
+                             IsEnabled="{Binding Path=MenuRadios}"/>
+
+                <RadioButton x:Name="HelpRadioButton"
+                             Content="Help"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             Command="{Binding HelpViewCommand}"
+                             IsEnabled="{Binding Path=MenuRadios}"/>
             </StackPanel>
 
             <TextBox Grid.Column="1"

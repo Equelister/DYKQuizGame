@@ -78,6 +78,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         {
             Hub = hub;
             this.mainViewModel = mainViewModel;
+            mainViewModel.MenuRadios = false;
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
             mainViewModel._server.receivedNewLobbyInfoEvent += ReceivedLobbyInfo;
 
@@ -112,6 +113,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             this.QuitFromLobbyCommand = null;
             mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;
             mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;
+            mainViewModel.MenuRadios = true;
             mainViewModel.CurrentView = mainViewModel.LobbiesViewModel;
         }
 

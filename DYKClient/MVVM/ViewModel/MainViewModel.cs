@@ -38,6 +38,17 @@ namespace DYKClient.MVVM.ViewModel
             }
         }
 
+        private bool _menuRadios = true;
+        public bool MenuRadios
+        {
+            get { return _menuRadios; }
+            set
+            {
+                _menuRadios = value;
+                onPropertyChanged();
+            }
+        }
+
         public MainViewModel()
         {
             InitializeConnectionToServer();
