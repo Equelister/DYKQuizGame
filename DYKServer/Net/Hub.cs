@@ -13,33 +13,34 @@ namespace DYKServer.Net
     {
 
         public Guid GUID { get; set; }
-        public string Name { get; set; }
+        public HubModel HubModel { get; set; }
         public List<Client> Users { get; set; }
-        public CategoryModel Category { get; set; }
-        public int MaxSize { get; set; }
-        public int JoinCode { get; set; }
-        public bool IsPrivate {get;set;}
+        
 
         public Hub(string name, CategoryModel category)
         {
             GUID = Guid.NewGuid();
-            Name = name;
             Users = new List<Client>();
-            MaxSize = 8;
-            JoinCode = GenerateJoinCode();
-            IsPrivate = false;
-            Category = category;
+            HubModel = new HubModel(
+                GenerateJoinCode(),
+                8,
+                name,
+                category,
+                false
+            );
         }
 
         public Hub(string name, int maxSize, bool isPrivate, CategoryModel category)
         {
             GUID = Guid.NewGuid();
-            Name = name;
             Users = new List<Client>();
-            MaxSize = maxSize;
-            JoinCode = GenerateJoinCode();
-            IsPrivate = isPrivate;
-            Category = category;
+            HubModel = new HubModel(
+                GenerateJoinCode(),
+                maxSize,
+                name,
+                category,
+                isPrivate
+            );
         }
 
         public int GenerateJoinCode()
@@ -49,7 +50,7 @@ namespace DYKServer.Net
 
         public bool AddClient(Client client)
         {
-            if(Users.Count <= MaxSize)
+            if(Users.Count <= HubModel.MaxSize)
             {
                 Users.Add(client);
                 return true;
@@ -63,12 +64,12 @@ namespace DYKServer.Net
 
         public static string PublicLobbiesToSendCreateJson(List<Hub> lobbies)
         {
-            var toJsonList = new List<DYKShared.Model.HubModel>();
+            var toJsonList = new List<HubModel>();
             foreach (var lobby in lobbies)
             {
-                if (lobby.IsPrivate == false)
+                if (lobby.HubModel.IsPrivate == false)
                 {
-                    toJsonList.Add(new DYKShared.Model.HubModel(lobby.Name, lobby.JoinCode, lobby.Category));
+                    toJsonList.Add(new HubModel(lobby.HubModel.Name, lobby.HubModel.JoinCode, lobby.HubModel.Category));
                 }
             }
             return JsonSerializer.Serialize(toJsonList);

@@ -52,7 +52,7 @@ namespace DYKServer
         {
             foreach (Hub hub in _hubs)
             {
-                Console.WriteLine($"Created new Hub [{hub.GUID}] - [{hub.Name}] - JoinCode [{hub.JoinCode}]");
+                Console.WriteLine($"Created new Hub [{hub.GUID}] - [{hub.HubModel.Name}] - JoinCode [{hub.HubModel.JoinCode}]");
             }
             foreach (CategoryModel category in _categories)
             {
@@ -85,7 +85,7 @@ namespace DYKServer
             {
                 foreach (Hub nextHub in _hubs)
                 {
-                    if(_hubs.ElementAt(i).JoinCode == nextHub.JoinCode && _hubs.ElementAt(i).GUID != nextHub.GUID)
+                    if(_hubs.ElementAt(i).HubModel.JoinCode == nextHub.HubModel.JoinCode && _hubs.ElementAt(i).GUID != nextHub.GUID)
                     {
                         _hubs.ElementAt(i).GenerateJoinCode();
                         i--;
@@ -103,7 +103,7 @@ namespace DYKServer
                 bool flag = true;
                 foreach (Hub nextHub in _hubs)
                 {
-                    if (hub.JoinCode == nextHub.JoinCode)
+                    if (hub.HubModel.JoinCode == nextHub.HubModel.JoinCode)
                     {
                         hub.GenerateJoinCode();
                         flag = false;
@@ -125,15 +125,16 @@ namespace DYKServer
 
         public static HubModel AddUserToHub(int receivedJoinCode, string uid)
         {
-            Hub hub = _hubs.Where(x => x.JoinCode == receivedJoinCode).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.HubModel.JoinCode == receivedJoinCode).FirstOrDefault();
             if (hub is not null)
             {
                 hub.AddClient(_users.Where(x => x.GUID.ToString() == uid).FirstOrDefault());
                 HubModel hubmodel = new HubModel(
-                    hub.JoinCode,
-                    hub.MaxSize,
-                    hub.Name,
-                    hub.Category                    
+                    hub.HubModel.JoinCode,
+                    hub.HubModel.MaxSize,
+                    hub.HubModel.Name,
+                    hub.HubModel.Category,
+                    hub.HubModel.IsPrivate
                 );
                 foreach(var user in hub.Users)
                 {

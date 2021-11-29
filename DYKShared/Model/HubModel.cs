@@ -16,6 +16,7 @@ namespace DYKShared.Model
         public List<UserModel> Users { get; set; }
         public CategoryModel Category { get; set; }
         public int MaxSize { get; set; }
+        public bool IsPrivate { get; set; }
 
         public HubModel(string name, int joinCode, CategoryModel category)
         {
@@ -25,13 +26,14 @@ namespace DYKShared.Model
             Category = category;
         }
         
-        public HubModel(int joinCode, int maxSize, string name, CategoryModel category)
+        public HubModel(int joinCode, int maxSize, string name, CategoryModel category, bool isPrivate)
         {
             Name = name;
             JoinCode = joinCode;
             Users = new List<UserModel>();
             Category = category;
             MaxSize = maxSize;
+            IsPrivate = isPrivate;
         }
 
         public HubModel(CategoryModel category)
