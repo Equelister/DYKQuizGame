@@ -44,6 +44,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged("SelectedCategory");
             }
         }
+
         private string _playerNumberStr;
         public string PlayerNumberStr
         {
@@ -53,20 +54,55 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             }
             set
             {
-                if (IsTextNumeric(_playerNumberStr))
+                if (IsTextNumeric(value))
                 {
-                    _playerNumberStr = value;
-                    onPropertyChanged("PlayerNumberStr");
+                    if (Int32.Parse(value) > 8 || Int32.Parse(value) < 2)
+                    {
+                        _playerNumberStr = "8";
+                    }
+                    else
+                    {
+                        _playerNumberStr = value;
+                        onPropertyChanged("PlayerNumberStr");
+                    }
                 }else
                 {
-                    _playerNumberStr = "";
+                    _playerNumberStr = "8";
                 }
+            }
+        }
+
+        private string _lobbyName;
+        public string LobbyName
+        {
+            get
+            {
+                return _lobbyName;
+            }
+            set
+            {
+                _lobbyName = value;
+                onPropertyChanged("LobbyName");
+            }
+        }
+
+        private bool _isPublic;
+        public bool IsPublic
+        {
+            get
+            {
+                return _isPublic;
+            }
+            set
+            {
+                _isPublic = value;
+                onPropertyChanged("IsPublic");                
             }
         }
 
         private bool IsTextNumeric(string str)
         {
-            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("[^0-9]");
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("^[0-9]$");
             if (str is not null)
             {
                 return reg.IsMatch(str);
@@ -77,6 +113,15 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         public LobbyViewModel(MainViewModel mainViewModel, HubModel hub)
         {
             Hub = hub;
+            if (hub is not null)
+            {
+                InitializeFields();
+            }
+            else
+            {
+                IsPublic = true;
+            }
+
             this.mainViewModel = mainViewModel;
             mainViewModel.MenuRadios = false;
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
@@ -84,7 +129,14 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
             UpdateLobbyDataCommand = new RelayCommand(o =>
             {
-                SendNewLobbyData();
+                if (hub is not null)
+                {
+                    SendUpdatedLobbyData();
+                }
+                else
+                {
+                    SendNewLobbyData();
+                }
             });
 
             QuitFromLobbyCommand = new RelayCommand(o =>
@@ -103,6 +155,14 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         }
 
+        private void InitializeFields()
+        {
+            SelectedCategory = Hub.Category;
+            PlayerNumberStr = Hub.MaxSize.ToString();
+            LobbyName = Hub.Name;
+            IsPublic = !Hub.IsPrivate;
+        }
+
         private void QuitFromLobby()
         {
             this.Hub = null;
@@ -111,19 +171,39 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             this.SelectedCategory = null;
             this.UpdateLobbyDataCommand = null;
             this.QuitFromLobbyCommand = null;
-            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;
-            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;
+            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;   // need fix, when 2 players are in lobby, first one quits, the lobby is bugged - 95% from client side
+            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;       // 5% because client is still in lobby (on server side) and request is sending to him, but hes on different view
+                                                                                        // make user deletion from hub on server side while quiting lobby by button and check if still not working
             mainViewModel.MenuRadios = true;
             mainViewModel.CurrentView = mainViewModel.LobbiesViewModel;
         }
 
         public void ReceivedLobbyInfo()
         {
-            throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
+            var msg = mainViewModel._server.PacketReader.ReadMessage();
+            Hub = HubModel.JsonToSingleLobby(msg);
+            InitializeFields();
+            //throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
         }
         public void SendNewLobbyData()
         {
-            throw new NotImplementedException("SendNewLobbyData() => Not implemented");
+            Hub = new HubModel();
+            SendUpdatedLobbyData();
+            //throw new NotImplementedException("SendNewLobbyData() => Not implemented");
+        }
+
+        public void SendUpdatedLobbyData()
+        {
+            Hub.Category = SelectedCategory;
+            if(Hub.Users.Count() > Int32.Parse(PlayerNumberStr))
+            {
+                return;
+            }
+            Hub.MaxSize = Int32.Parse(PlayerNumberStr);
+            Hub.IsPrivate = IsPublic;
+            Hub.Name = LobbyName;
+            var jsonMessage = Hub.ConvertToJson();
+            mainViewModel._server.SendMessageToServerOpCode(jsonMessage, OpCodes.SendNewLobbyInfo);
         }
 
         public void ReceivedCategoryList()
@@ -139,13 +219,13 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        private HubModel _Hub;
+        private HubModel _hub;
         public HubModel Hub
         {
-            get { return _Hub; }
+            get { return _hub; }
             set
             {
-                _Hub = value;
+                _hub = value;
                 onPropertyChanged();
             }
         }

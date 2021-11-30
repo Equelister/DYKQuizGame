@@ -16,6 +16,11 @@ namespace DYKServer.Net
         public HubModel HubModel { get; set; }
         public List<Client> Users { get; set; }
         
+        public Hub(HubModel hubModel)
+        {
+            GUID = Guid.NewGuid();
+            HubModel = hubModel;
+        }
 
         public Hub(string name, CategoryModel category)
         {

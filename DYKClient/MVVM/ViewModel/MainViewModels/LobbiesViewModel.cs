@@ -138,7 +138,7 @@ namespace DYKClient.MVVM.ViewModel
                 if (joinCodeNum >= 1000 && joinCodeNum < 10000)
                 {
                     string joinCodeStr = joinCodeNum.ToString();
-                    mainViewModel._server.SendMessageToServerOpCode(joinCodeStr, Convert.ToByte(OpCodes.SendLobbyJoinCode));
+                    mainViewModel._server.SendMessageToServerOpCode(joinCodeStr, OpCodes.SendLobbyJoinCode);
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace DYKClient.MVVM.ViewModel
         private void CreateNewLobby()
         {
             LobbyViewModel = null;
-            LobbyViewModel = new LobbyViewModel(mainViewModel, new HubModel("aaa", 0000, new CategoryModel(0, "aaa", "aaa")));
+            LobbyViewModel = new LobbyViewModel(mainViewModel, null);
             mainViewModel.CurrentView = LobbyViewModel;
             mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
         }

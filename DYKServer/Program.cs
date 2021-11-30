@@ -20,6 +20,7 @@ namespace DYKServer
         LobbiesList = 20,
         AddToLobbyRequest = 21,
         CategoryListRequest = 22,
+        SendUpdatedLobbyInfo = 23
     }
 
     class Program
@@ -143,6 +144,29 @@ namespace DYKServer
                 return hubmodel;
             }
             return null;
+        }
+
+        public static void UpdateReceivedLobbyInfo(string UID, HubModel newHub)
+        {
+            Hub hub = new Hub(newHub);
+            if(hub.HubModel.JoinCode == 0)
+            {
+                hub.HubModel.JoinCode = hub.GenerateJoinCode();
+                Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
+                hub.AddClient(user);
+                hub.HubModel.Users.Add(user.UserModel);
+                _hubs.Add(hub);
+            }else
+            {
+                hub = _hubs.Where(x => x.HubModel.JoinCode == newHub.JoinCode).FirstOrDefault();
+                hub.HubModel = newHub;
+            }
+
+            var message = hub.HubModel.ConvertToJson();
+            foreach (var user in hub.Users)
+            {
+                Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedLobbyInfo);
+            }
         }
 
 

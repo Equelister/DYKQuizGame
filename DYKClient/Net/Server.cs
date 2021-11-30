@@ -138,10 +138,10 @@ namespace DYKClient.Net
             _client.Client.Send(messagePacket.GetPacketBytes());
         }
 
-        public void SendMessageToServerOpCode(string message, byte opcode)
+        public void SendMessageToServerOpCode(string message, OpCodes opcode)
         {
             var messagePacket = new PacketBuilder();
-            messagePacket.WriteOpCode(opcode);
+            messagePacket.WriteOpCode(Convert.ToByte(opcode));
             messagePacket.WriteString(message);
             _client.Client.Send(messagePacket.GetPacketBytes());
         }
@@ -160,7 +160,7 @@ namespace DYKClient.Net
                 if (ConnectToServer())
                 {
                     string message = String.Concat(userEmail, "%%^^&&", hashedPassword);
-                    SendMessageToServerOpCode(message, Convert.ToByte(OpCodes.SendLogin));
+                    SendMessageToServerOpCode(message, OpCodes.SendLogin);
                     ReadPacket();
                 }
             }

@@ -80,8 +80,13 @@ namespace DYKServer.Net
                         case 22:
                             SendCategoriesList();
                             break;
-                        default:
+                        case 23:
+                            UpdateLobbyInfo();
                             break;
+                        default:
+                            Console.WriteLine("Client.ReadPacket = default");
+                            break;
+                          
                     }
 
                 }
@@ -94,6 +99,22 @@ namespace DYKServer.Net
                     return;
                 }
             }
+        }
+
+        private void UpdateLobbyInfo()
+        {
+            var message = _packetReader.ReadMessage();
+            HubModel newHub = HubModel.JsonToSingleLobby(message);
+            Program.UpdateReceivedLobbyInfo(GUID.ToString(), newHub);
+
+
+            /*message = newHub.ConvertToJson();
+            foreach (var user in newHub.Users)
+            {
+                Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+            }
+
+            throw new NotImplementedException();*/
         }
 
         private void AddToLobby()
