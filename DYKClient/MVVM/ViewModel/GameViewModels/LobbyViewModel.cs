@@ -126,6 +126,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             mainViewModel.MenuRadios = false;
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
             mainViewModel._server.receivedNewLobbyInfoEvent += ReceivedLobbyInfo;
+            mainViewModel._server.receivedNewPlayersInfoEvent += ReceivedPlayersInfo;
 
             UpdateLobbyDataCommand = new RelayCommand(o =>
             {
@@ -165,15 +166,18 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private void QuitFromLobby()
         {
+            mainViewModel._server.SendOpCodeToServer(OpCodes.SendDisconnectFromLobby);
+            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;   // need fix, when 2 players are in lobby, first one quits, the lobby is bugged - 95% from client side
+            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;       // 5% because client is still in lobby (on server side) and request is sending to him, but hes on different view
+            mainViewModel._server.receivedNewPlayersInfoEvent -= ReceivedPlayersInfo;       // 5% because client is still in lobby (on server side) and request is sending to him, but hes on different view
+                                                                                          // make user deletion from hub on server side while quiting lobby by button and check if still not working
             this.Hub = null;
             this.Categories = null;
             this.PlayerNumberStr = null;
             this.SelectedCategory = null;
             this.UpdateLobbyDataCommand = null;
             this.QuitFromLobbyCommand = null;
-            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;   // need fix, when 2 players are in lobby, first one quits, the lobby is bugged - 95% from client side
-            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;       // 5% because client is still in lobby (on server side) and request is sending to him, but hes on different view
-                                                                                        // make user deletion from hub on server side while quiting lobby by button and check if still not working
+
             mainViewModel.MenuRadios = true;
             mainViewModel.CurrentView = mainViewModel.LobbiesViewModel;
         }
@@ -183,6 +187,16 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             Hub = HubModel.JsonToSingleLobby(msg);
             InitializeFields();
+            //throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
+        }
+        
+        public void ReceivedPlayersInfo()
+        {
+            var msg = mainViewModel._server.PacketReader.ReadMessage();
+            Hub.Users = UserModel.JsonListToUserModelList(msg);
+            onPropertyChanged("Hub");
+
+            //InitializeFields();
             //throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
         }
         public void SendNewLobbyData()

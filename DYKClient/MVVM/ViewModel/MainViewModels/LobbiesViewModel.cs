@@ -117,7 +117,7 @@ namespace DYKClient.MVVM.ViewModel
 
             SendLobbiesListRequestCommand = new RelayCommand(o =>
             {
-                mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+                mainViewModel._server.SendOpCodeToServer(OpCodes.SendLobbiesList);
             });
         }
 
@@ -152,7 +152,7 @@ namespace DYKClient.MVVM.ViewModel
                 LobbyViewModel = null;
                 LobbyViewModel = new LobbyViewModel(mainViewModel, lobby);
                 mainViewModel.CurrentView = LobbyViewModel;
-                mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
+                mainViewModel._server.SendOpCodeToServer(OpCodes.SendCategoriesList);
             }
         }
         
@@ -161,7 +161,7 @@ namespace DYKClient.MVVM.ViewModel
             LobbyViewModel = null;
             LobbyViewModel = new LobbyViewModel(mainViewModel, null);
             mainViewModel.CurrentView = LobbyViewModel;
-            mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
+            mainViewModel._server.SendOpCodeToServer(OpCodes.SendCategoriesList);
         }
     }    
 }

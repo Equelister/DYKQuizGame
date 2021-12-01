@@ -14,7 +14,9 @@ namespace DYKClient.Net
         SendLobbiesList = 20,
         SendLobbyJoinCode = 21,
         SendCategoriesList = 22,
-        SendNewLobbyInfo = 23
+        SendNewLobbyInfo = 23,
+        SendDisconnectFromLobby = 24,
+        ReceivedUpdatedPlayersList = 25,
     }
     class Server
     {
@@ -27,6 +29,7 @@ namespace DYKClient.Net
         public event Action receivedPublicLobbiesListEvent;
         public event Action receivedCategoryListEvent;
         public event Action receivedNewLobbyInfoEvent;
+        public event Action receivedNewPlayersInfoEvent;
         public event Action connectToLobbyViewEvent;
         public event Action unlockLoginButtonEvent;
         public event Func<bool> receivedLoginResultEvent;
@@ -122,6 +125,9 @@ namespace DYKClient.Net
                         case 23:
                             receivedNewLobbyInfoEvent.Invoke();
                             break;
+                        case 25:
+                            receivedNewPlayersInfoEvent.Invoke();
+                            break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");
                             break;
@@ -145,11 +151,10 @@ namespace DYKClient.Net
             messagePacket.WriteString(message);
             _client.Client.Send(messagePacket.GetPacketBytes());
         }
-        public void SendOpCodeToServer(byte opcode)
+        public void SendOpCodeToServer(OpCodes opcode)
         {
             var messagePacket = new PacketBuilder();
-            messagePacket.WriteOpCode(opcode);
-            //messagePacket.WriteString(message);
+            messagePacket.WriteOpCode(Convert.ToByte(opcode));
             _client.Client.Send(messagePacket.GetPacketBytes());
         }
 

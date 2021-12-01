@@ -83,6 +83,9 @@ namespace DYKServer.Net
                         case 23:
                             UpdateLobbyInfo();
                             break;
+                        case 24:
+                            RemoveUserFromHub();
+                            break;
                         default:
                             Console.WriteLine("Client.ReadPacket = default");
                             break;
@@ -95,10 +98,16 @@ namespace DYKServer.Net
                     Console.WriteLine(e.ToString());
                     Console.WriteLine($"{GUID.ToString()} - Disconnected!");
                     ClientSocket.Close();
+                    Program.RemoveUserFromHub(GUID.ToString(), UserModel);
                     Program.RemoveUserFromList(GUID.ToString());
                     return;
                 }
             }
+        }
+
+        private void RemoveUserFromHub()
+        {
+            Program.RemoveUserFromHub(GUID.ToString(), UserModel);
         }
 
         private void UpdateLobbyInfo()

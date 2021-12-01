@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DYKShared.Model
@@ -26,6 +28,23 @@ namespace DYKShared.Model
             Username = username;
             IsReady = false;
             GameScore = 0;
+        }
+
+        public static List<UserModel> JsonListToUserModelList(string json)
+        {
+            var jsonData = JsonSerializer.Deserialize<List<UserModel>>(json);
+            return jsonData;
+        }
+
+        public static ObservableCollection<UserModel> JsonListToUserModelObservableCollection(string json)
+        {
+            var jsonData = JsonSerializer.Deserialize<ObservableCollection<UserModel>>(json);
+            return jsonData;
+        }
+
+        public string ConvertToJson()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }

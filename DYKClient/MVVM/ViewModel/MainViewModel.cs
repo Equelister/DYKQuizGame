@@ -72,13 +72,13 @@ namespace DYKClient.MVVM.ViewModel
             AboutViewModel = new AboutViewModel();
             LobbiesViewModel = new LobbiesViewModel(this);
 
-            _server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+            _server.SendOpCodeToServer(OpCodes.SendLobbiesList);
             CurrentView = LobbiesViewModel;
 
             LobbiesViewCommand = new RelayCommand(o =>
             {
                 CurrentView = LobbiesViewModel;
-                _server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendLobbiesList));
+                _server.SendOpCodeToServer(OpCodes.SendLobbiesList);
             });
 
             AboutViewCommand = new RelayCommand(o =>

@@ -20,7 +20,9 @@ namespace DYKServer
         LobbiesList = 20,
         AddToLobbyRequest = 21,
         CategoryListRequest = 22,
-        SendUpdatedLobbyInfo = 23
+        SendUpdatedLobbyInfo = 23,
+        GetUserDisconnectedHub = 24,
+        SendUpdatedPlayersList = 25
     }
 
     class Program
@@ -39,7 +41,30 @@ namespace DYKServer
             InitializeCategories();
             InitializeDefaultHubs();
             OutPutInitializeToConsole();
-            
+
+            Task.Run(() => {
+            while(true)
+                {
+                    System.Threading.Thread.Sleep(5000);
+                    Console.WriteLine("***"); 
+                    Console.WriteLine();
+                    Console.WriteLine(_hubs.ElementAt(9).Users.Count);
+                    Console.WriteLine(_hubs.ElementAt(9).HubModel.Users.Count);
+                    Console.WriteLine();
+                    foreach (var user in _hubs.ElementAt(9).Users)
+                    {
+                        Console.WriteLine(user?.UserModel.Username);
+                    }
+                    Console.WriteLine();
+                    foreach (var user in _hubs.ElementAt(9).HubModel.Users)
+                    {
+                        Console.WriteLine(user?.Username);
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("***");
+                }
+            });
+
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7710);
             _listener.Start();
 
@@ -124,12 +149,27 @@ namespace DYKServer
             return Hub.PublicLobbiesToSendCreateJson(_hubs);
         }
 
+        public static void RemoveUserFromHub(string uid, UserModel userModel)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+            if (hub is not null)
+            {
+                hub.HubModel.Users.Remove(userModel);
+                hub.Users.Remove(user);
+                Console.WriteLine($"User [{uid}] has been disconnected from hub [{hub.GUID}]");
+                SendCurrentUserListToLobby(hub);
+            }
+            Console.WriteLine($"User [{uid}] wasn't in hub while disconnecting");
+        }
+
         public static HubModel AddUserToHub(int receivedJoinCode, string uid)
         {
             Hub hub = _hubs.Where(x => x.HubModel.JoinCode == receivedJoinCode).FirstOrDefault();
             if (hub is not null)
             {
-                hub.AddClient(_users.Where(x => x.GUID.ToString() == uid).FirstOrDefault());
+                Client newClient = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+                hub.AddClient(newClient);
                 HubModel hubmodel = new HubModel(
                     hub.HubModel.JoinCode,
                     hub.HubModel.MaxSize,
@@ -137,10 +177,12 @@ namespace DYKServer
                     hub.HubModel.Category,
                     hub.HubModel.IsPrivate
                 );
-                foreach(var user in hub.Users)
+                foreach (var user in hub.Users)
                 {
-                    hubmodel.Users.Add(user.UserModel);
+                    hubmodel.Users.Add(user.UserModel);                                                 ///// cant remembere writing this...
                 }
+                hub.HubModel = hubmodel;
+                Task.Run(() => SendCurrentUserListToLobbyExceptNewClient(hub, newClient));
                 return hubmodel;
             }
             return null;
@@ -159,7 +201,9 @@ namespace DYKServer
             }else
             {
                 hub = _hubs.Where(x => x.HubModel.JoinCode == newHub.JoinCode).FirstOrDefault();
+                var usersList = hub.HubModel.Users;
                 hub.HubModel = newHub;
+                hub.HubModel.Users = usersList;
             }
 
             var message = hub.HubModel.ConvertToJson();
@@ -169,6 +213,26 @@ namespace DYKServer
             }
         }
 
+        private static void SendCurrentUserListToLobby(Hub hub)
+        {
+            var message = JsonSerializer.Serialize(hub.HubModel.Users);
+            foreach (var user in hub.Users)
+            {
+                Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedPlayersList);
+            }
+        }
+
+        private static void SendCurrentUserListToLobbyExceptNewClient(Hub hub, Client newClient)
+        {
+            var message = JsonSerializer.Serialize(hub.HubModel.Users);
+            foreach (var user in hub.Users)
+            {
+                if (user.Equals(newClient) == false)
+                {
+                    Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedPlayersList);
+                }
+            }                
+        }
 
 
 
