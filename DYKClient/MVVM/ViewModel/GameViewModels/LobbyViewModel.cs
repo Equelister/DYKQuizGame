@@ -14,6 +14,9 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
     class LobbyViewModel : ObservableObject
     {
         public RelayCommand UpdateLobbyDataCommand { get; set; }
+        public RelayCommand SetPlayerReadyCommand { get; set; }
+        public RelayCommand StartEnhancedGameCommand { get; set; }
+        public RelayCommand StartNormalGameCommand { get; set; }
         //public RelayCommand SendCategoriesListReqCommand { get; set; }
         public RelayCommand QuitFromLobbyCommand { get; set; }
         private MainViewModel mainViewModel;
@@ -34,7 +37,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             {
                 if (_selectedCategory is null)
                 {
-                    _selectedCategory = new CategoryModel();
+                    return null;
                 }
                 return _selectedCategory;
             }
@@ -42,6 +45,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             {
                 _selectedCategory = value;
                 onPropertyChanged("SelectedCategory");
+                IsHubChanged = true;
             }
         }
 
@@ -62,13 +66,29 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                     }
                     else
                     {
-                        _playerNumberStr = value;
+                        if (Hub is not null)
+                        {
+                            if (Hub.Users is not null)
+                            {
+                                if (Int32.Parse(value) < Hub.Users.Count)
+                                {
+                                    _playerNumberStr = Hub.Users.Count.ToString();
+                                    onPropertyChanged("PlayerNumberStr");
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _playerNumberStr = value;
+                        }
                         onPropertyChanged("PlayerNumberStr");
                     }
                 }else
                 {
                     _playerNumberStr = "8";
                 }
+                IsHubChanged = true;
             }
         }
 
@@ -83,20 +103,44 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             {
                 _lobbyName = value;
                 onPropertyChanged("LobbyName");
+                IsHubChanged = true;
             }
         }
 
-        private bool _isPublic;
-        public bool IsPublic
+        private bool _isPrivate;
+        public bool IsPrivate
         {
             get
             {
-                return _isPublic;
+                return _isPrivate;
             }
             set
             {
-                _isPublic = value;
-                onPropertyChanged("IsPublic");                
+                _isPrivate = value;
+                onPropertyChanged("IsPrivate");
+                IsHubChanged = true;
+            }
+        }
+
+        private bool _isHubChanged = false;
+        public bool IsHubChanged
+        {
+            get
+            {
+                return _isHubChanged;
+            }
+            set
+            {
+                _isHubChanged = value;
+                onPropertyChanged("IsHubChanged");
+                onPropertyChanged("IsHubChangedVisibility");
+            }
+        }
+        public System.Windows.Visibility IsHubChangedVisibility
+        {
+            get 
+            {
+                return IsHubChanged ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             }
         }
 
@@ -113,24 +157,34 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         public LobbyViewModel(MainViewModel mainViewModel, HubModel hub)
         {
             Hub = hub;
-            if (hub is not null)
+            if (Hub is not null)
             {
                 InitializeFields();
             }
             else
             {
-                IsPublic = true;
+                IsPrivate = true;
+                IsHubChanged = true;
             }
 
             this.mainViewModel = mainViewModel;
             mainViewModel.MenuRadios = false;
+            InitializeEvents();
+            InitializeCommands();
+        }
+
+        private void InitializeEvents()
+        {
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
             mainViewModel._server.receivedNewLobbyInfoEvent += ReceivedLobbyInfo;
             mainViewModel._server.receivedNewPlayersInfoEvent += ReceivedPlayersInfo;
+        }
 
+        private void InitializeCommands()
+        {
             UpdateLobbyDataCommand = new RelayCommand(o =>
             {
-                if (hub is not null)
+                if (Hub is not null)
                 {
                     SendUpdatedLobbyData();
                 }
@@ -146,14 +200,54 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 //Sendquiting info to server
             });
 
+            SetPlayerReadyCommand = new RelayCommand(o =>
+            {
+                SetPlayerReady();
+            });
 
-            /*            SendCategoriesListReqCommand = new RelayCommand(o =>                                              //request sent after succesfull finding lobby, no need here
-                        {
-                            mainViewModel._server.SendOpCodeToServer(Convert.ToByte(OpCodes.SendCategoriesList));
-                        });
-            */
-            //command to start game, to get ready, etc
+            StartEnhancedGameCommand = new RelayCommand(o =>
+            {
+                StartGame(OpCodes.SendNewEnhancedGame);
+                //Sendquiting info to server
+            });
 
+            StartNormalGameCommand = new RelayCommand(o =>
+            {
+                StartGame(OpCodes.SendNewNormalGame);
+            });
+        }
+
+        private void StartGame(OpCodes gameType)
+        {            
+            if(CheckArePlayersReady())
+            {
+                mainViewModel._server.SendOpCodeToServer(gameType);
+            }
+        }
+
+        private bool CheckArePlayersReady()
+        {
+            if (Hub is not null && IsHubChanged == false)
+            {
+                if (Hub.Users.Count < 2)
+                {
+                    return false;
+                }
+                foreach (var user in Hub.Users)
+                {
+                    if (user.IsReady == false)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private void SetPlayerReady()
+        {
+            mainViewModel._server.SendOpCodeToServer(OpCodes.SendUserReady);
         }
 
         private void InitializeFields()
@@ -161,7 +255,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             SelectedCategory = Hub.Category;
             PlayerNumberStr = Hub.MaxSize.ToString();
             LobbyName = Hub.Name;
-            IsPublic = !Hub.IsPrivate;
+            IsPrivate = Hub.IsPrivate;
+            IsHubChanged = false;
         }
 
         private void QuitFromLobby()
@@ -177,6 +272,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             this.SelectedCategory = null;
             this.UpdateLobbyDataCommand = null;
             this.QuitFromLobbyCommand = null;
+            this.IsHubChanged = false;
 
             mainViewModel.MenuRadios = true;
             mainViewModel.CurrentView = mainViewModel.LobbiesViewModel;
@@ -208,16 +304,36 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         public void SendUpdatedLobbyData()
         {
-            Hub.Category = SelectedCategory;
-            if(Hub.Users.Count() > Int32.Parse(PlayerNumberStr))
+            if (IsHubChanged)
             {
-                return;
+                if (CheckIfInputFieldsAreEmpty() == false)
+                {
+                    Hub.Category = SelectedCategory;
+                    if (Hub.Users is not null)
+                    {
+                        if (Hub.Users.Count() > Int32.Parse(PlayerNumberStr))
+                        {
+                            return;
+                        }
+                    }
+                    Hub.MaxSize = Int32.Parse(PlayerNumberStr);
+                    Hub.IsPrivate = IsPrivate;
+                    Hub.Name = LobbyName;
+                    var jsonMessage = Hub.ConvertToJson();
+                    mainViewModel._server.SendMessageToServerOpCode(jsonMessage, OpCodes.SendNewLobbyInfo);
+                }
             }
-            Hub.MaxSize = Int32.Parse(PlayerNumberStr);
-            Hub.IsPrivate = IsPublic;
-            Hub.Name = LobbyName;
-            var jsonMessage = Hub.ConvertToJson();
-            mainViewModel._server.SendMessageToServerOpCode(jsonMessage, OpCodes.SendNewLobbyInfo);
+        }
+
+        private bool CheckIfInputFieldsAreEmpty()
+        {
+            if(SelectedCategory is null ||
+                PlayerNumberStr is null ||
+                LobbyName is null)
+            {
+                return true;
+            }
+            return false;
         }
 
         public void ReceivedCategoryList()

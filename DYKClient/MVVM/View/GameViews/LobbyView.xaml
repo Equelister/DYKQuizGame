@@ -95,18 +95,12 @@
                     <Label FontWeight="Bold" 
                            Foreground="#6483e8">
                         Widoczność
-                    </Label>
-                    <RadioButton GroupName="gameVisibility"
-                                 Foreground="#6483e8"
-                                 FontWeight="SemiBold"
-                                 IsChecked="{Binding Path=IsPublic}">
+                    </Label>                    
+                    <CheckBox Foreground="#6483e8"
+                              FontWeight="SemiBold"
+                              IsChecked="{Binding Path=IsPrivate}">
                         Prywatna
-                    </RadioButton>
-                    <RadioButton GroupName="gameVisibility" 
-                                 Foreground="#6483e8"
-                                 FontWeight="SemiBold">
-                        Publiczna
-                    </RadioButton>
+                    </CheckBox>
                 </StackPanel>
 
                 <StackPanel>
@@ -121,6 +115,13 @@
                              Text="{Binding Path=PlayerNumberStr}"/>
                 </StackPanel>
             </DockPanel>
+
+            <Label Content="Lobby settings not saved!" 
+                   Visibility="{Binding Path=IsHubChangedVisibility}"
+                   Foreground="#F483e8"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
+
         </StackPanel>
         
         
@@ -151,11 +152,13 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Button Content="Zwykła" 
-                            Style="{StaticResource StandardButtonStyle}"/>
+                            Style="{StaticResource StandardButtonStyle}"
+                            Command="{Binding StartNormalGameCommand}"/>
 
                     <Button Grid.Column="1" 
                             Content="Urozmaicona"
-                            Style="{StaticResource StandardButtonStyle}"/>
+                            Style="{StaticResource StandardButtonStyle}"
+                            Command="{Binding StartEnhancedGameCommand}"/>
                 </Grid>
             </DockPanel>
             <TextBlock Text="JoinCode" Margin="5"
@@ -173,7 +176,8 @@
                        Style="{StaticResource StandardTextBlockStyle}"/>
 
             <Button Content="Gotowość"
-                    Style="{StaticResource StandardButtonStyle}"/>
+                    Style="{StaticResource StandardButtonStyle}"
+                    Command="{Binding SetPlayerReadyCommand}"/>
 
         </StackPanel>
 

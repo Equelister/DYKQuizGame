@@ -15,7 +15,8 @@ namespace DYKServer.Net
         public Guid GUID { get; set; }
         public HubModel HubModel { get; set; }
         public List<Client> Users { get; set; }
-        
+        public bool IsDefault = false;
+
         public Hub(HubModel hubModel)
         {
             GUID = Guid.NewGuid();
@@ -55,7 +56,7 @@ namespace DYKServer.Net
 
         public bool AddClient(Client client)
         {
-            if(Users.Count <= HubModel.MaxSize)
+            if(Users.Count < HubModel.MaxSize)
             {
                 Users.Add(client);
                 return true;
@@ -80,6 +81,17 @@ namespace DYKServer.Net
             return JsonSerializer.Serialize(toJsonList);
         }
 
+        public bool CheckNotDefaultHubIsEmpty()
+        {
+            if (this.Users.Count < 1 && this.IsDefault == false)
+            {
+                return true;
 
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

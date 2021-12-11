@@ -48,8 +48,9 @@ namespace DYKServer
                     System.Threading.Thread.Sleep(5000);
                     Console.WriteLine("***"); 
                     Console.WriteLine();
-                    Console.WriteLine(_hubs.ElementAt(9).Users.Count);
-                    Console.WriteLine(_hubs.ElementAt(9).HubModel.Users.Count);
+                    Console.WriteLine("HUB USER COUNT: " + _hubs.ElementAt(9).Users.Count);
+                    Console.WriteLine("HUBMODEL USER COUNT: "+_hubs.ElementAt(9).HubModel.Users.Count);
+                    Console.WriteLine("TOTAL HUB COUNT: "+_hubs.Count);
                     Console.WriteLine();
                     foreach (var user in _hubs.ElementAt(9).Users)
                     {
@@ -97,9 +98,10 @@ namespace DYKServer
         static void InitializeDefaultHubs()
         {
 
-            for(int i = 0; i<20;i++)
+            for(int i = 0; i<15;i++)
             {
                 Hub newHub = new Hub(i + 1 + ". Hub", GetFirstCategoryFromList());
+                newHub.IsDefault = true;
                 _hubs.Add(newHub);
             }
             CheckHubUniqueJoinCodeAll();
@@ -143,10 +145,23 @@ namespace DYKServer
             } while (unique == false);
         }
 
+
         public static string GetHubListAsJson(string UID)
         {
             Console.WriteLine($"User [{UID}] requested a lobby list.");
             return Hub.PublicLobbiesToSendCreateJson(_hubs);
+        }
+
+        internal static void SetThisPlayerReady(string uid)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+            if (hub is not null && user.UserModel.IsReady == false)
+            {
+                user.UserModel.IsReady = true;
+                SendCurrentUserListToLobby(hub);
+            }
+            Console.WriteLine($"User [{uid}] can't be or already is ready");
         }
 
         public static void RemoveUserFromHub(string uid, UserModel userModel)
@@ -158,9 +173,20 @@ namespace DYKServer
                 hub.HubModel.Users.Remove(userModel);
                 hub.Users.Remove(user);
                 Console.WriteLine($"User [{uid}] has been disconnected from hub [{hub.GUID}]");
-                SendCurrentUserListToLobby(hub);
+                if (hub.CheckNotDefaultHubIsEmpty())
+                {
+                    _hubs.Remove(hub);
+                    Console.WriteLine($"Hub [{hub.GUID}] removed, because it was empty.");
+                }
+                else
+                {
+                    SendCurrentUserListToLobby(hub);
+                }
             }
-            Console.WriteLine($"User [{uid}] wasn't in hub while disconnecting");
+            else
+            {
+                Console.WriteLine($"User [{uid}] wasn't in hub while disconnecting");
+            }
         }
 
         public static HubModel AddUserToHub(int receivedJoinCode, string uid)
@@ -169,21 +195,23 @@ namespace DYKServer
             if (hub is not null)
             {
                 Client newClient = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
-                hub.AddClient(newClient);
-                HubModel hubmodel = new HubModel(
-                    hub.HubModel.JoinCode,
-                    hub.HubModel.MaxSize,
-                    hub.HubModel.Name,
-                    hub.HubModel.Category,
-                    hub.HubModel.IsPrivate
-                );
-                foreach (var user in hub.Users)
+                if (hub.AddClient(newClient))
                 {
-                    hubmodel.Users.Add(user.UserModel);                                                 ///// cant remembere writing this...
+                    HubModel hubmodel = new HubModel(
+                        hub.HubModel.JoinCode,
+                        hub.HubModel.MaxSize,
+                        hub.HubModel.Name,
+                        hub.HubModel.Category,
+                        hub.HubModel.IsPrivate
+                    );
+                    foreach (var user in hub.Users)
+                    {
+                        hubmodel.Users.Add(user.UserModel);                                                 ///// cant remembere writing this...
+                    }
+                    hub.HubModel = hubmodel;
+                    Task.Run(() => SendCurrentUserListToLobbyExceptNewClient(hub, newClient));
+                    return hubmodel;
                 }
-                hub.HubModel = hubmodel;
-                Task.Run(() => SendCurrentUserListToLobbyExceptNewClient(hub, newClient));
-                return hubmodel;
             }
             return null;
         }
@@ -195,6 +223,8 @@ namespace DYKServer
             {
                 hub.HubModel.JoinCode = hub.GenerateJoinCode();
                 Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
+                hub.Users = new List<Client>();
+                hub.HubModel.Users = new List<UserModel>();
                 hub.AddClient(user);
                 hub.HubModel.Users.Add(user.UserModel);
                 _hubs.Add(hub);

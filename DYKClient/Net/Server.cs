@@ -17,6 +17,9 @@ namespace DYKClient.Net
         SendNewLobbyInfo = 23,
         SendDisconnectFromLobby = 24,
         ReceivedUpdatedPlayersList = 25,
+        SendUserReady = 26,
+        SendNewEnhancedGame = 27,
+        SendNewNormalGame = 28,
     }
     class Server
     {
