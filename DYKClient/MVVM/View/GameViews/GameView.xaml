@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="DYKClient.MVVM.View.GameViews.GameView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DYKClient.MVVM.View.GameViews"
+             xmlns:gameviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
+             d:DataContext="{d:DesignInstance Type=gameviewmodels:GameViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Background="Pink">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0"
+                   Grid.ColumnSpan="8" Grid.RowSpan="5"
+                   HorizontalAlignment="Center"
+                   Foreground="#6483e8"
+                   FontWeight="Bold"
+                   FontSize="20"
+                   Margin="20"
+                   TextWrapping="Wrap"
+                   Text="{Binding Path=CurrentQuestion.Question}"/>
+
+        <Button Grid.Row="5" Grid.Column="1"
+                Grid.RowSpan="2" Grid.ColumnSpan="3"
+                Margin="10"                        
+                Content="{Binding Path=AnswerA}"
+                Command="{Binding UserSelectedAnswerCommand}"
+                CommandParameter="{Binding Path=AnswerA}"/>
+
+        <Button Grid.Row="5" Grid.Column="4"
+                Grid.RowSpan="2" Grid.ColumnSpan="3"
+                Margin="10"                        
+                Content="{Binding Path=AnswerB}"
+                Command="{Binding UserSelectedAnswerCommand}" 
+                CommandParameter="{Binding Path=AnswerB}"/>
+        
+        <Button Grid.Row="7" Grid.Column="1"
+                Grid.RowSpan="2" Grid.ColumnSpan="3"
+                Margin="10"                        
+                Content="{Binding Path=AnswerC}" 
+                Command="{Binding UserSelectedAnswerCommand}" 
+                CommandParameter="{Binding Path=AnswerC}"/>
+
+        <Button Grid.Row="7" Grid.Column="4"
+                Grid.RowSpan="2" Grid.ColumnSpan="3"
+                Margin="10"                        
+                Content="{Binding Path=AnswerD}"
+                Command="{Binding UserSelectedAnswerCommand}" 
+                CommandParameter="{Binding Path=AnswerD}"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </Grid>
+</UserControl>

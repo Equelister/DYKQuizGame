@@ -35,6 +35,8 @@ namespace DYKClient.Net
         public event Action receivedNewPlayersInfoEvent;
         public event Action connectToLobbyViewEvent;
         public event Action unlockLoginButtonEvent;
+        public event Action startEnhancedGameEvent;
+        public event Action startNormalGameEvent;
         public event Func<bool> receivedLoginResultEvent;
 
         
@@ -130,6 +132,12 @@ namespace DYKClient.Net
                             break;
                         case 25:
                             receivedNewPlayersInfoEvent.Invoke();
+                            break;
+                        case 26:
+                            startEnhancedGameEvent.Invoke();
+                            break;
+                        case 27:
+                            startNormalGameEvent.Invoke();
                             break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");

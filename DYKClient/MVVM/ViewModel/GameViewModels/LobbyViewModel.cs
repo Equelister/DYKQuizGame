@@ -178,6 +178,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
             mainViewModel._server.receivedNewLobbyInfoEvent += ReceivedLobbyInfo;
             mainViewModel._server.receivedNewPlayersInfoEvent += ReceivedPlayersInfo;
+            mainViewModel._server.receivedNewPlayersInfoEvent += EnhancedGameChangeView;
+            mainViewModel._server.receivedNewPlayersInfoEvent += NormalGameChangeView;
         }
 
         private void InitializeCommands()
@@ -262,10 +264,12 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private void QuitFromLobby()
         {
             mainViewModel._server.SendOpCodeToServer(OpCodes.SendDisconnectFromLobby);
-            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;   // need fix, when 2 players are in lobby, first one quits, the lobby is bugged - 95% from client side
-            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;       // 5% because client is still in lobby (on server side) and request is sending to him, but hes on different view
-            mainViewModel._server.receivedNewPlayersInfoEvent -= ReceivedPlayersInfo;       // 5% because client is still in lobby (on server side) and request is sending to him, but hes on different view
-                                                                                          // make user deletion from hub on server side while quiting lobby by button and check if still not working
+            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;   
+            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;       
+            mainViewModel._server.receivedNewPlayersInfoEvent -= ReceivedPlayersInfo;      
+            mainViewModel._server.startEnhancedGameEvent -= EnhancedGameChangeView;      
+            mainViewModel._server.startNormalGameEvent -= NormalGameChangeView;      
+                                                                                          
             this.Hub = null;
             this.Categories = null;
             this.PlayerNumberStr = null;
@@ -276,6 +280,23 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
             mainViewModel.MenuRadios = true;
             mainViewModel.CurrentView = mainViewModel.LobbiesViewModel;
+        }
+
+        private GameViewModel gameViewModel;
+        private void EnhancedGameChangeView()
+        {         
+/*            gameViewModel = null;
+            gameViewModel = new GameViewModel(mainViewModel);
+            mainViewModel.CurrentView = gameViewModel;   */         
+        
+            throw new NotImplementedException("ENHANCED MODE NOT IMPLEMENTED YET");
+        }
+
+        private void NormalGameChangeView()
+        {
+            gameViewModel = null;
+            gameViewModel = new GameViewModel(mainViewModel);
+            mainViewModel.CurrentView = gameViewModel;
         }
 
         public void ReceivedLobbyInfo()

@@ -36,6 +36,14 @@
                 <gameView:LobbyView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type gameViewModel:GameViewModel}">
+                <gameView:GameView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type gameViewModel:SummaryViewModel}">
+                <gameView:SummaryView/>
+            </DataTemplate>
+
 
 
         </ResourceDictionary>
