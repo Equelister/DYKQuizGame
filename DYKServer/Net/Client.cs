@@ -89,6 +89,9 @@ namespace DYKServer.Net
                         case 26:
                             SetThisPlayerReady();
                             break;
+                        case 28:
+                            StartNormalGame();
+                            break;
                         default:
                             Console.WriteLine("Client.ReadPacket = default");
                             break;
@@ -106,6 +109,11 @@ namespace DYKServer.Net
                     return;
                 }
             }
+        }
+
+        private void StartNormalGame()
+        {
+            Program.StartNormalGame(GUID.ToString());
         }
 
         private void SetThisPlayerReady()

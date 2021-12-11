@@ -1,4 +1,5 @@
 ﻿using DYKServer.Database.MenuCommands;
+using DYKServer.Database.GameCommands;
 using DYKServer.Net;
 using DYKServer.Net.IO;
 using DYKShared.Model;
@@ -22,7 +23,9 @@ namespace DYKServer
         CategoryListRequest = 22,
         SendUpdatedLobbyInfo = 23,
         GetUserDisconnectedHub = 24,
-        SendUpdatedPlayersList = 25
+        SendUpdatedPlayersList = 25,
+        SendQuestions = 27
+
     }
 
     class Program
@@ -145,6 +148,19 @@ namespace DYKServer
             } while (unique == false);
         }
 
+        internal static void StartNormalGame(string uid)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+
+            QuestionsReceiver qr = new QuestionsReceiver();
+            List<QuestionModel> questionsFromDB = qr.GetRandomQuestions(hub.HubModel.Category.ID, 3);
+
+            SendToEveryoneInLobby(
+                                hub,
+                                JsonSerializer.Serialize(questionsFromDB),       //Send Questions To Everyone in lobby
+                                OpCodes.SendQuestions);
+        }
 
         public static string GetHubListAsJson(string UID)
         {
@@ -159,7 +175,10 @@ namespace DYKServer
             if (hub is not null && user.UserModel.IsReady == false)
             {
                 user.UserModel.IsReady = true;
-                SendCurrentUserListToLobby(hub);
+                SendToEveryoneInLobby(
+                                hub,
+                                JsonSerializer.Serialize(hub.HubModel.Users),       //Send Updated UserList To Everyone in lobby
+                                OpCodes.SendUpdatedPlayersList);
             }
             Console.WriteLine($"User [{uid}] can't be or already is ready");
         }
@@ -180,7 +199,10 @@ namespace DYKServer
                 }
                 else
                 {
-                    SendCurrentUserListToLobby(hub);
+                    SendToEveryoneInLobby(
+                                hub,
+                                JsonSerializer.Serialize(hub.HubModel.Users),    //Send Updated UserList To Everyone in lobby
+                                OpCodes.SendUpdatedPlayersList);
                 }
             }
             else
@@ -206,10 +228,15 @@ namespace DYKServer
                     );
                     foreach (var user in hub.Users)
                     {
-                        hubmodel.Users.Add(user.UserModel);                                                 ///// cant remembere writing this...
+                        hubmodel.Users.Add(user.UserModel);          
                     }
                     hub.HubModel = hubmodel;
-                    Task.Run(() => SendCurrentUserListToLobbyExceptNewClient(hub, newClient));
+                    Task.Run(() => SendToEveryoneInLobbyExceptThisClient(
+                                                            hub,
+                                                            newClient,
+                                                            JsonSerializer.Serialize(hub.HubModel.Users),
+                                                            OpCodes.SendUpdatedPlayersList)
+                    );
                     return hubmodel;
                 }
             }
@@ -243,23 +270,21 @@ namespace DYKServer
             }
         }
 
-        private static void SendCurrentUserListToLobby(Hub hub)
-        {
-            var message = JsonSerializer.Serialize(hub.HubModel.Users);
+        private static void SendToEveryoneInLobby(Hub hub, string message, OpCodes opcode)
+        {            
             foreach (var user in hub.Users)
             {
-                Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedPlayersList);
+                Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, opcode);
             }
         }
 
-        private static void SendCurrentUserListToLobbyExceptNewClient(Hub hub, Client newClient)
+        private static void SendToEveryoneInLobbyExceptThisClient(Hub hub, Client newClient, string message, OpCodes opcode)
         {
-            var message = JsonSerializer.Serialize(hub.HubModel.Users);
             foreach (var user in hub.Users)
             {
                 if (user.Equals(newClient) == false)
                 {
-                    Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedPlayersList);
+                    Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, opcode);
                 }
             }                
         }

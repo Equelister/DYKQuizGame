@@ -29,44 +29,51 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             set
             {
                 _currentQuestion = value;
-                onPropertyChanged();
+                onPropertyChanged("CurrentQuestion");
             }
         }
-        
+
+        private string _answerA = "";
         public string AnswerA
         {
-            get { return AnswerA; }
+            get { return _answerA; }
             set
             {
-                AnswerA = value;
+                _answerA = value;
                 onPropertyChanged();
             }
         }
+
+        private string _answerB = "";
         public string AnswerB
         {
-            get { return AnswerB; }
+            get { return _answerB; }
             set
             {
-                AnswerB = value;
+                _answerB = value;
                 onPropertyChanged();
             }
         }
+
+        private string _answerC = "";
         public string AnswerC
         {
-            get { return AnswerC; }
+            get { return _answerC; }
             set
             {
-                AnswerC = value;
-                onPropertyChanged();
+                _answerC = value;
+                onPropertyChanged("AnswerC");
             }
         }
+
+        private string _answerD = "";
         public string AnswerD
         {
-            get { return AnswerD; }
+            get { return _answerD; }
             set
             {
-                AnswerD = value;
-                onPropertyChanged();
+                _answerD = value;
+                onPropertyChanged("AnswerD");
             }
         }
 
@@ -78,7 +85,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         public GameViewModel(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
-            Run();            
+           /* Task.Run(() =>
+            {*/
+                //System.Threading.Thread.Sleep(5000);
+                Run();
+           // });
         }
 
         private async Task Run()
@@ -94,13 +105,13 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             GetAnsweredTime();
             GetAnsweredResult(userChosedAnswer);
 
-            if (currentQuestionIndex++ > Questions.Count)
+            if (++currentQuestionIndex >= Questions.Count)
             {
                 GoToSummaryViewAsync();
             }
             else
             {
-                ShowQuestion(++currentQuestionIndex);
+                ShowQuestion(currentQuestionIndex);
             }
         }
 
@@ -166,6 +177,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private void ReadQuestions()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
+            Console.WriteLine("\r\n OTO SA PYTANIA: " + msg + "\r\n");
             Questions = QuestionModel.JsonListToQuestionModelObservableCollection(msg);
             onPropertyChanged("Questions");
         }

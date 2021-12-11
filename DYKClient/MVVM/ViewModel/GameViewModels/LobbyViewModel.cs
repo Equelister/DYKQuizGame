@@ -178,8 +178,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             mainViewModel._server.receivedCategoryListEvent += ReceivedCategoryList;
             mainViewModel._server.receivedNewLobbyInfoEvent += ReceivedLobbyInfo;
             mainViewModel._server.receivedNewPlayersInfoEvent += ReceivedPlayersInfo;
-            mainViewModel._server.receivedNewPlayersInfoEvent += EnhancedGameChangeView;
-            mainViewModel._server.receivedNewPlayersInfoEvent += NormalGameChangeView;
+            mainViewModel._server.startEnhancedGameEvent += EnhancedGameChangeView;
+            mainViewModel._server.startNormalGameEvent += NormalGameChangeView;
         }
 
         private void InitializeCommands()
