@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DYKClient.MVVM.ViewModel.GameViewModels
@@ -107,12 +108,27 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
             if (++currentQuestionIndex >= Questions.Count)
             {
+                string message = CreateQuestionsSummaryToSend();
+                mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);
                 GoToSummaryViewAsync();
             }
             else
             {
                 ShowQuestion(currentQuestionIndex);
             }
+        }
+
+        private string CreateQuestionsSummaryToSend()
+        {
+            foreach(var question in Questions)
+            {
+                question.Question = null;
+                question.CorrectAnswer = null;
+                question.WrongAnswerA = null;
+                question.WrongAnswerB = null;
+                question.WrongAnswerC = null;
+            }
+            return JsonSerializer.Serialize(Questions);          
         }
 
         private SummaryViewModel summaryViewModel;

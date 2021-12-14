@@ -92,6 +92,9 @@ namespace DYKServer.Net
                         case 28:
                             StartNormalGame();
                             break;
+                        case 30:
+                            GiveSummaryIfGameEnded();
+                            break;
                         default:
                             Console.WriteLine("Client.ReadPacket = default");
                             break;
@@ -109,6 +112,13 @@ namespace DYKServer.Net
                     return;
                 }
             }
+        }
+
+        private void GiveSummaryIfGameEnded()
+        {
+            var message = _packetReader.ReadMessage();
+            List<QuestionModel> questionsFromUser = QuestionModel.JsonListToQuestionModelList(message);
+            Program.CreateSummaryForTheGame(GUID.ToString(), questionsFromUser);
         }
 
         private void StartNormalGame()

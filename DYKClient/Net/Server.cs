@@ -20,6 +20,7 @@ namespace DYKClient.Net
         SendUserReady = 26,
         SendNewEnhancedGame = 27,
         SendNewNormalGame = 28,
+        SendIHaveEndedGame = 30,
     }
     class Server
     {
@@ -37,6 +38,7 @@ namespace DYKClient.Net
         public event Action unlockLoginButtonEvent;
         public event Action startEnhancedGameEvent;
         public event Action startNormalGameEvent;
+        public event Action getGameSummaryEvent;
         public event Func<bool> receivedLoginResultEvent;
 
         
@@ -138,6 +140,9 @@ namespace DYKClient.Net
                             break;
                         case 27:
                             startNormalGameEvent.Invoke();
+                            break;
+                        case 30:
+                            getGameSummaryEvent.Invoke();
                             break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");

@@ -15,12 +15,15 @@ namespace DYKServer.Net
         public Guid GUID { get; set; }
         public HubModel HubModel { get; set; }
         public List<Client> Users { get; set; }
+        public List<QuestionModel> Questions { get; set; }
+        public List<SummaryModel> Summary { get; set; }
         public bool IsDefault = false;
 
         public Hub(HubModel hubModel)
         {
             GUID = Guid.NewGuid();
             HubModel = hubModel;
+            Summary = new List<SummaryModel>();
         }
 
         public Hub(string name, CategoryModel category)
@@ -34,6 +37,7 @@ namespace DYKServer.Net
                 category,
                 false
             );
+            Summary = new List<SummaryModel>();
         }
 
         public Hub(string name, int maxSize, bool isPrivate, CategoryModel category)
@@ -47,6 +51,7 @@ namespace DYKServer.Net
                 category,
                 isPrivate
             );
+            Summary = new List<SummaryModel>();
         }
 
         public int GenerateJoinCode()

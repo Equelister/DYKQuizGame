@@ -16,7 +16,9 @@ namespace DYKShared.Model
         public List<UserModel> Users { get; set; }
         public CategoryModel Category { get; set; }
         public int MaxSize { get; set; }
+        public int PlayersThatEndedGame { get; set; }
         public bool IsPrivate { get; set; }
+        public bool IsGameStarted { get; set; }
 
         public HubModel(string name, int joinCode, CategoryModel category)
         {
@@ -24,6 +26,8 @@ namespace DYKShared.Model
             JoinCode = joinCode;
             Users = new List<UserModel>();
             Category = category;
+            IsGameStarted = false;
+            PlayersThatEndedGame = 0;
         }
         
         public HubModel(int joinCode, int maxSize, string name, CategoryModel category, bool isPrivate)
@@ -34,12 +38,16 @@ namespace DYKShared.Model
             Category = category;
             MaxSize = maxSize;
             IsPrivate = isPrivate;
+            IsGameStarted = false;
+            PlayersThatEndedGame = 0;
         }
 
         public HubModel(CategoryModel category)
         {
             Users = new List<UserModel>();
             Category = category;
+            IsGameStarted = false;
+            PlayersThatEndedGame = 0;
         }
 
         public HubModel()
