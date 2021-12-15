@@ -73,8 +73,9 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                                 if (Int32.Parse(value) < Hub.Users.Count)
                                 {
                                     _playerNumberStr = Hub.Users.Count.ToString();
-                                    onPropertyChanged("PlayerNumberStr");
-                                    return;
+                                }else
+                                {
+                                    _playerNumberStr = value;
                                 }
                             }
                         }
@@ -82,12 +83,12 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                         {
                             _playerNumberStr = value;
                         }
-                        onPropertyChanged("PlayerNumberStr");
                     }
                 }else
                 {
                     _playerNumberStr = "8";
                 }
+                onPropertyChanged("PlayerNumberStr");
                 IsHubChanged = true;
             }
         }
