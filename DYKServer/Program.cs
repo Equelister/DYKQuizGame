@@ -232,15 +232,16 @@ namespace DYKServer
             {
                 user.UserModel.IsReady = false;
                 user.UserModel.Total_games++;
-                UpdateDBWithUserScoresAsync();
+                UpdateDBWithUserScoresAsync(hub);
             }
             SendToEveryoneInLobby(
                     hub,
                     hub.HubModel.ConvertToJson(),
                     OpCodes.SendUpdatedLobbyInfo);
+            hub.Summary.Clear();
         }
 
-        private static void UpdateDBWithUserScoresAsync()
+        private static void UpdateDBWithUserScoresAsync(Hub hub)
         {
             Console.WriteLine("\r\n UpdateDBWithUserScoresAsync => Please implement me!");                      //////////////////////////
             Console.WriteLine("throw new NotImplementedException();\r\n");
