@@ -172,7 +172,7 @@ namespace DYKServer
             {
                 if (questionsFromUser.ElementAt(i).IsAnsweredCorrectly)
                 {
-                    if (hub.Summary.ElementAt(i).FastestAnswerLong > questionsFromUser.ElementAt(i).AnswerTimeMS)
+                    if (hub.Summary.ElementAt(i).FastestAnswerLong > questionsFromUser.ElementAt(i).AnswerTimeMS || hub.Summary.ElementAt(i).FastestAnswerLong == 0)
                     {
                         hub.Summary.ElementAt(i).FastestAnswerName = user.UserModel.Username;
                         hub.Summary.ElementAt(i).FastestAnswerLong = questionsFromUser.ElementAt(i).AnswerTimeMS;
@@ -215,13 +215,35 @@ namespace DYKServer
                                 hub,
                                 JsonSerializer.Serialize(hub.Summary),       //Send Questions To Everyone in lobby
                                 OpCodes.SendSummary);
+                MakeAnUpdateOnALobbyAfterGame(hub);
             }
             else
             {
                 Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
                 return;
             }
+        }
 
+        private static void MakeAnUpdateOnALobbyAfterGame(Hub hub)
+        {
+            hub.HubModel.IsGameStarted = false;
+            hub.HubModel.PlayersThatEndedGame = 0;
+            foreach(var user in hub.Users)
+            {
+                user.UserModel.IsReady = false;
+                user.UserModel.Total_games++;
+                UpdateDBWithUserScoresAsync();
+            }
+            SendToEveryoneInLobby(
+                    hub,
+                    hub.HubModel.ConvertToJson(),
+                    OpCodes.SendUpdatedLobbyInfo);
+        }
+
+        private static void UpdateDBWithUserScoresAsync()
+        {
+            Console.WriteLine("\r\n UpdateDBWithUserScoresAsync => Please implement me!");                      //////////////////////////
+            Console.WriteLine("throw new NotImplementedException();\r\n");
         }
 
         internal static void StartNormalGame(string uid)
@@ -267,6 +289,7 @@ namespace DYKServer
             {
                 hub.HubModel.Users.Remove(userModel);
                 hub.Users.Remove(user);
+                user.UserModel.IsReady = false;
                 Console.WriteLine($"User [{uid}] has been disconnected from hub [{hub.GUID}]");
                 if (hub.CheckNotDefaultHubIsEmpty())
                 {
@@ -339,11 +362,16 @@ namespace DYKServer
                 hub.HubModel.Users = usersList;
             }
 
-            var message = hub.HubModel.ConvertToJson();
+
+            SendToEveryoneInLobby(
+                    hub,
+                    hub.HubModel.ConvertToJson(),
+                    OpCodes.SendUpdatedLobbyInfo);
+/*                            var message = hub.HubModel.ConvertToJson();
             foreach (var user in hub.Users)
             {
                 Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedLobbyInfo);
-            }
+            }*/
         }
 
         private static void SendToEveryoneInLobby(Hub hub, string message, OpCodes opcode)

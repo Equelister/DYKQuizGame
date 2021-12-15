@@ -39,7 +39,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         {
             get
             {
-                return !GameInProgress ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+                return GameInProgress ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
             }
         }
 
@@ -54,6 +54,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             }
         }
 
+        public RelayCommand GoBackToLobbyCommand { get; set; }
         private MainViewModel mainViewModel;
 
         public SummaryViewModel(MainViewModel mainViewModel)
@@ -61,6 +62,15 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             this.mainViewModel = mainViewModel;
 
             mainViewModel._server.getGameSummaryEvent += DisplaySummary;
+            GoBackToLobbyCommand = new RelayCommand(o =>
+            {
+                if (GameInProgress == false)
+                {
+                    mainViewModel._server.getGameSummaryEvent -= DisplaySummary;
+                    mainViewModel.CurrentView = mainViewModel.LobbiesViewModel.LobbyViewModel;
+                }
+            });
+
             /*
             Summary.Add(new SummaryModel("a", "b", "c", new List<string> { "a", "bc" }));
             Summary.Add(new SummaryModel("avbc", "b", "c", new List<string> {}));

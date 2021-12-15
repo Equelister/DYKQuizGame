@@ -181,6 +181,14 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             mainViewModel._server.startEnhancedGameEvent += EnhancedGameChangeView;
             mainViewModel._server.startNormalGameEvent += NormalGameChangeView;
         }
+        private void UnInitializeEvents()
+        {
+            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;
+            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;
+            mainViewModel._server.receivedNewPlayersInfoEvent -= ReceivedPlayersInfo;
+            mainViewModel._server.startEnhancedGameEvent -= EnhancedGameChangeView;
+            mainViewModel._server.startNormalGameEvent -= NormalGameChangeView;
+        }
 
         private void InitializeCommands()
         {
@@ -264,12 +272,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private void QuitFromLobby()
         {
             mainViewModel._server.SendOpCodeToServer(OpCodes.SendDisconnectFromLobby);
-            mainViewModel._server.receivedCategoryListEvent -= ReceivedCategoryList;   
-            mainViewModel._server.receivedNewLobbyInfoEvent -= ReceivedLobbyInfo;       
-            mainViewModel._server.receivedNewPlayersInfoEvent -= ReceivedPlayersInfo;      
-            mainViewModel._server.startEnhancedGameEvent -= EnhancedGameChangeView;      
-            mainViewModel._server.startNormalGameEvent -= NormalGameChangeView;      
-                                                                                          
+            UnInitializeEvents();
             this.Hub = null;
             this.Categories = null;
             this.PlayerNumberStr = null;

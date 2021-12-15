@@ -109,7 +109,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             if (++currentQuestionIndex >= Questions.Count)
             {
                 string message = CreateQuestionsSummaryToSend();
-                mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);
+                mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
                 GoToSummaryViewAsync();
             }
             else

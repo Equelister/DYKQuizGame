@@ -12,9 +12,11 @@ namespace DYKShared.Model
     {
         public string Question { get; set; }
         public string Answer { get; set; }
-        public string FastestAnswer { get
+        public string FastestAnswer 
+        { 
+            get
             {
-                return this.FastestAnswerName + " [" + this.FastestAnswerLong + "ms]"; 
+                return $"{this.FastestAnswerName} - [{this.FastestAnswerLong}ms]"; 
             }
         }        //"User001 [132ms]"  
         public string FastestAnswerName { get; set; }        //"User001 [132ms]"  
