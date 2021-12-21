@@ -80,7 +80,15 @@ namespace DYKServer.Net
             {
                 if (lobby.HubModel.IsPrivate == false)
                 {
-                    toJsonList.Add(new HubModel(lobby.HubModel.Name, lobby.HubModel.JoinCode, lobby.HubModel.Category));
+                    toJsonList.Add(new HubModel(
+                            lobby.HubModel.Name,
+                            lobby.HubModel.JoinCode,
+                            lobby.HubModel.Category,
+                            lobby.HubModel.MaxSize,
+                            lobby.HubModel.Users.Count,
+                            lobby.HubModel.IsGameStarted
+                        )
+                    );
                 }
             }
             return JsonSerializer.Serialize(toJsonList);

@@ -75,6 +75,9 @@ namespace DYKClient.MVVM.View
                 case "Kategoria":
                     header = "Category.Name";
                     break;
+                case "Ilość Graczy":
+                    header = "LobbySlotsStr";
+                    break;
                 default:
                     header = "";
                     break;

@@ -70,6 +70,9 @@
                     <GridViewColumn Header="Kategoria" Width="auto" 
                         DisplayMemberBinding="{Binding Category.Name}" >
                     </GridViewColumn>
+                    <GridViewColumn Header="Ilość Graczy" Width="auto" 
+                        DisplayMemberBinding="{Binding LobbySlotsStr}" >
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
