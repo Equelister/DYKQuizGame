@@ -83,6 +83,7 @@ namespace DYKClient.MVVM.ViewModel
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             Hubs = HubModel.JsonListToHubModelObservableCollection(msg);
+            hubListTemp = new List<HubModel>(Hubs);
         }
 
         private void InitializeCommands()
@@ -118,6 +119,7 @@ namespace DYKClient.MVVM.ViewModel
             SendLobbiesListRequestCommand = new RelayCommand(o =>
             {
                 mainViewModel._server.SendOpCodeToServer(OpCodes.SendLobbiesList);
+                HubFilter = "";
             });
         }
 
@@ -162,6 +164,49 @@ namespace DYKClient.MVVM.ViewModel
             LobbyViewModel = new LobbyViewModel(mainViewModel, null);
             mainViewModel.CurrentView = LobbyViewModel;
             mainViewModel._server.SendOpCodeToServer(OpCodes.SendCategoriesList);
+        }
+
+
+
+        private List<HubModel> hubListTemp;
+        private string _hubFilter = "";
+        public string HubFilter
+        {
+            get
+            {
+
+                return _hubFilter;
+            }
+            set
+            {
+                _hubFilter = value;
+                onPropertyChanged();
+                if (_hubFilter.Equals(""))
+                {
+                    Hubs = new ObservableCollection<HubModel>(hubListTemp);
+                    onPropertyChanged("Hubs");
+                }
+                else
+                {
+                    Hubs = new ObservableCollection<HubModel>(hubListTemp);
+                    Hubs = DoAFilter();
+                    onPropertyChanged("Hubs");
+                }
+            }
+        }
+
+        private ObservableCollection<HubModel> DoAFilter()
+        {
+            ObservableCollection<HubModel> filteredList = new ObservableCollection<HubModel>();
+            foreach (var elem in Hubs)
+            {
+                if (elem.Name.ToLower().Contains(HubFilter.ToLower()) ||
+                    elem.Category.Name.ToLower().Contains(HubFilter.ToLower()))
+                {
+                    filteredList.Add(elem);
+                }
+            }
+            return filteredList;
         }
     }    
 }
