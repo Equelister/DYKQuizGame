@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace DYKServer
 {
@@ -148,6 +149,13 @@ namespace DYKServer
             } while (unique == false);
         }
 
+
+
+
+
+
+
+
         internal static void CreateSummaryForTheGame(string uid, List<QuestionModel> questionsFromUser)
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();         //
@@ -216,12 +224,53 @@ namespace DYKServer
                                 JsonSerializer.Serialize(hub.Summary),       //Send Questions To Everyone in lobby
                                 OpCodes.SendSummary);
                 MakeAnUpdateOnALobbyAfterGame(hub);
+                Task.Run(() =>
+                {
+                    InsertSummaryToDB(hub);
+                    hub.Summary.Clear();
+                    hub.Questions.Clear();
+                });
             }
             else
             {
                 Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
                 return;
             }
+        }
+
+        private static void InsertSummaryToDB(Hub hub)
+        {
+            /*int summaryID = -1;
+            foreach(var user in hub.Users)
+            {
+                summaryID = SummaryQueries.InsertSummaryForUser(user.UserModel.ID);
+            }
+
+            foreach (var question in hub.Questions)
+            {
+                SummaryQueries.InsertQuestionsForGame(question.ID, summaryID);
+            }*/
+
+            SummaryQueries sq = new SummaryQueries();
+            decimal gameID = sq.InsertNewGameToTable();
+            if(gameID > 0)
+            {
+                List<int> usersID = new List<int>();
+                foreach(var user in hub.Users)
+                {
+                    usersID.Add(user.UserModel.ID);
+                }
+                int result = sq.InsertUsersToGameID(usersID, gameID);
+                if(result > 0)
+                {
+                    result = sq.InsertQuestionSummariesToGame(hub, gameID);
+                    if(result > 0)
+                    {
+                        return;
+                    }
+                }
+            }
+            Console.WriteLine($"Something went wrong with inserting summary to DB in Hub [{hub.GUID}]!");
         }
 
         private static void MakeAnUpdateOnALobbyAfterGame(Hub hub)
@@ -238,7 +287,6 @@ namespace DYKServer
                     hub,
                     hub.HubModel.ConvertToJson(),
                     OpCodes.SendUpdatedLobbyInfo);
-            hub.Summary.Clear();
         }
 
         private static void UpdateDBWithUserScoresAsync(Hub hub)

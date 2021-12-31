@@ -10,6 +10,7 @@ namespace DYKShared.Model
 {
     public class SummaryModel
     {
+        public int ID { get; set; }                                                 // id, questionID, fastestAnswerName, fastestAnswerLong, usernames, created_at
         public string Question { get; set; }
         public string Answer { get; set; }
         public string FastestAnswer 
@@ -22,6 +23,7 @@ namespace DYKShared.Model
         public string FastestAnswerName { get; set; }        //"User001 [132ms]"  
         public long FastestAnswerLong{ get; set; }        //"User001 [132ms]"  
         public List<string> UsersNicknames { get; set; } //Those with CorrectAnswer
+        public DateTime CreatedAt { get; set; }
 
         public SummaryModel()
         {             

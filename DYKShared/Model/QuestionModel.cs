@@ -10,6 +10,7 @@ namespace DYKShared.Model
 {
     public class QuestionModel
     {
+        public int ID { get; set; }
         public string Question { get; set; }
         public string CorrectAnswer { get; set; }
         public string WrongAnswerA { get; set; }
@@ -27,7 +28,8 @@ namespace DYKShared.Model
             string correctAnswer,
             string wrongAnswerA,
             string wrongAnswerB,
-            string wrongAnswerC
+            string wrongAnswerC,
+            int id
             )
         {
             Question = question;
@@ -35,6 +37,7 @@ namespace DYKShared.Model
             WrongAnswerA = wrongAnswerA;
             WrongAnswerB = wrongAnswerB;
             WrongAnswerC = wrongAnswerC;
+            ID = id;
         }
 
 
