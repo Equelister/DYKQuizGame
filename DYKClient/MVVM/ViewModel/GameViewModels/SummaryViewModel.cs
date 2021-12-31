@@ -70,11 +70,25 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                     mainViewModel.CurrentView = mainViewModel.LobbiesViewModel.LobbyViewModel;
                 }
             });
+        }
 
-            /*
-            Summary.Add(new SummaryModel("a", "b", "c", new List<string> { "a", "bc" }));
-            Summary.Add(new SummaryModel("avbc", "b", "c", new List<string> {}));
-            Summary.Add(new SummaryModel("a", "basddasadsdasad", "c", new List<string> { "a" }));*/
+        public SummaryViewModel(MainViewModel mainViewModel, string summary)
+        {
+            this.mainViewModel = mainViewModel;
+            mainViewModel.MenuRadios = false;
+            DisplaySummaryFromHistory(summary);
+            GoBackToLobbyCommand = new RelayCommand(o =>
+            {
+                mainViewModel.CurrentView = mainViewModel.SummariesListViewModel;
+                mainViewModel.MenuRadios = true;
+            });
+        }
+
+        private void DisplaySummaryFromHistory(string msg)
+        {
+            Summary = SummaryModel.JsonToObservableCollection(msg);
+            onPropertyChanged("Summary");
+            GameInProgress = false;
         }
 
         private void DisplaySummary()

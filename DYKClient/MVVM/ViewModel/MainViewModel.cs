@@ -1,5 +1,6 @@
 ﻿using DYKClient.Core;
 using DYKClient.MVVM.Model;
+using DYKClient.MVVM.ViewModel.GameHistoryViewModels;
 using DYKClient.MVVM.ViewModel.GameViewModels;
 using DYKClient.Net;
 using System;
@@ -19,9 +20,11 @@ namespace DYKClient.MVVM.ViewModel
 
         public RelayCommand SendMessageCommand { get; set; }
         public RelayCommand HelpViewCommand { get; set; }
+        public RelayCommand SummariesListViewCommand { get; set; }
         public RelayCommand AboutViewCommand { get; set; }
         public RelayCommand LobbiesViewCommand { get; set; }
         public HelpViewModel HelpViewModel { get; set; }
+        public SummariesListViewModel SummariesListViewModel { get; set; }
         public AboutViewModel AboutViewModel { get; set; }
         public LobbiesViewModel LobbiesViewModel { get; set; }
         
@@ -70,6 +73,7 @@ namespace DYKClient.MVVM.ViewModel
         {
             HelpViewModel = new HelpViewModel();
             AboutViewModel = new AboutViewModel();
+            SummariesListViewModel = new SummariesListViewModel(this);
             LobbiesViewModel = new LobbiesViewModel(this);
 
             _server.SendOpCodeToServer(OpCodes.SendLobbiesList);
@@ -89,6 +93,12 @@ namespace DYKClient.MVVM.ViewModel
             HelpViewCommand = new RelayCommand(o =>
             {
                 CurrentView = HelpViewModel;
+            });
+
+            SummariesListViewCommand = new RelayCommand(o =>
+            {
+                CurrentView = SummariesListViewModel;
+                _server.SendOpCodeToServer(OpCodes.SendGamesHistoriesList);
             });
         }
 

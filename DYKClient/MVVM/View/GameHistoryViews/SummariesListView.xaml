@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="DYKClient.MVVM.View.GameHistoryViews.SummariesListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DYKClient.MVVM.View.GameHistoryViews"
+               xmlns:viewModel="clr-namespace:DYKClient.MVVM.ViewModel"
+             xmlns:gamehistoryviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameHistoryViewModels"
+             d:DataContext="{d:DesignInstance Type=gamehistoryviewmodels:SummariesListViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="Pink">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <ListView x:Name="lobbiesListView" 
+                  Grid.Column="1"
+                  Grid.ColumnSpan="6"
+                  Grid.Row="1"
+                  Grid.RowSpan="5"
+                  Margin="5"
+                  Padding="5"
+                  SelectionMode="Single"
+                  ItemsSource="{Binding Path=GameHistories, 
+                                Mode=TwoWay, 
+                                UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding Path=SelectedGameHistory}">
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Data gry" Width="auto" 
+                        DisplayMemberBinding="{Binding CreatedAt}" >
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"                    
+                    Grid.Row="6"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="4">
+            <Button Content="Zobacz szczegóły"
+                        Style="{StaticResource StandardButtonStyle}"
+                        Command="{Binding GetGameHistoryDetailsCommand}"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

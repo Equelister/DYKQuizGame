@@ -1,4 +1,5 @@
 ﻿using DYKShared.Model;
+using DYKShared.ModelHelpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -120,8 +121,57 @@ namespace DYKServer.Database.GameCommands
         }
 
 
+        public List<GameModelHelper> GetAllGamesHistoriesWhereUserID(int userID)
+        {
+            List<GameModelHelper> gameHistoryList = new List<GameModelHelper>();
+            var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            string queryString = $"SELECT id, CreatedDateTime FROM games_summaries WHERE id IN (Select gameId FROM summaries_users where userId = {userID})";
+            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        gameHistoryList.Add(new GameModelHelper((int)reader[0], (DateTime)reader[1]));
+                    }
+                }
+            }
+            return gameHistoryList;
+        }
 
-
+        public List<SummaryModel> GetAllQuestionsFromGameHistoryWhereGameID(int gameID)
+        {
+            List<SummaryModel> summaryList = new List<SummaryModel>();
+            var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            string queryString = $"SELECT questionId ,fastestAnswerName, fastestAnswerLong, userNicknames FROM summaries_questions WHERE gameId = {gameID}";
+            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    QuestionsReceiver qr = new QuestionsReceiver();
+                    QuestionModel question = new QuestionModel();
+                    while (reader.Read())
+                    {
+                        question = qr.GetQuestionAndAnswerWhereId((int)reader[0]);
+                        string nicknames = (string)reader[3];
+                        summaryList.Add(new SummaryModel(
+                                question.Question,
+                                question.CorrectAnswer,
+                                (string)reader[1],
+                                (long)reader[2],
+                                nicknames.Split(',').ToList()
+                                ));
+                    }
+                }
+            }
+            return summaryList;
+        }
 
         /// <summary>
         /// Inserts userID with gameID and re

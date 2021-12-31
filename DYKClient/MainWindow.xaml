@@ -78,6 +78,14 @@
                              Style="{StaticResource MenuButtonStyle}"
                              Command="{Binding HelpViewCommand}"
                              IsEnabled="{Binding Path=MenuRadios}"/>
+                
+                <RadioButton x:Name="GamesHistoriesRadioButton"
+                             Content="Game History"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             Command="{Binding SummariesListViewCommand}"
+                             IsEnabled="{Binding Path=MenuRadios}"/>
             </StackPanel>
 
             <TextBox Grid.Column="1"

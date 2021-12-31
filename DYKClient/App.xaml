@@ -4,8 +4,10 @@
              xmlns:local="clr-namespace:DYKClient"
              xmlns:viewModel="clr-namespace:DYKClient.MVVM.ViewModel"
              xmlns:gameViewModel="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
+             xmlns:gameHistoryViewModel="clr-namespace:DYKClient.MVVM.ViewModel.GameHistoryViewModels"
              xmlns:view="clr-namespace:DYKClient.MVVM.View" 
-             xmlns:gameView="clr-namespace:DYKClient.MVVM.View.GameViews"
+             xmlns:gameView="clr-namespace:DYKClient.MVVM.View.GameViews" 
+             xmlns:gameHistoryView="clr-namespace:DYKClient.MVVM.View.GameHistoryViews"
              StartupUri="LoginWindow/LoginWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -42,6 +44,10 @@
 
             <DataTemplate DataType="{x:Type gameViewModel:SummaryViewModel}">
                 <gameView:SummaryView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type gameHistoryViewModel:SummariesListViewModel}">
+                <gameHistoryView:SummariesListView/>
             </DataTemplate>
 
 

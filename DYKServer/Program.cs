@@ -26,7 +26,9 @@ namespace DYKServer
         GetUserDisconnectedHub = 24,
         SendUpdatedPlayersList = 25,
         SendQuestions = 27,
-        SendSummary = 30
+        SendSummary = 30,
+        SendgamesHistoriesList = 31,
+        SendGameHistoryDetails = 32
     }
 
     class Program
@@ -149,12 +151,28 @@ namespace DYKServer
             } while (unique == false);
         }
 
+        internal static void GetUserGameHistoryDetails(string uid, string message)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            bool success = Int32.TryParse(message, out int gameId);
+            if(success)
+            {
+                SummaryQueries sq = new SummaryQueries();
+                string msg = JsonSerializer.Serialize(sq.GetAllQuestionsFromGameHistoryWhereGameID(gameId));
+                BroadcastMessageToSpecificUser(uid, msg, OpCodes.SendGameHistoryDetails);
+            }else
+            {
+                Console.WriteLine($"Something went wrong with sending GameHistoryDetails to user [{user.GUID}]");
+            }
+        }
 
-
-
-
-
-
+        internal static void GetAllUserGameHistories(string uid)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            SummaryQueries sq = new SummaryQueries();
+            string msg = JsonSerializer.Serialize(sq.GetAllGamesHistoriesWhereUserID(user.UserModel.ID));
+            BroadcastMessageToSpecificUser(uid, msg, OpCodes.SendgamesHistoriesList);
+        }
 
         internal static void CreateSummaryForTheGame(string uid, List<QuestionModel> questionsFromUser)
         {

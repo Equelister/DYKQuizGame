@@ -39,5 +39,29 @@ namespace DYKServer.Database.GameCommands
             }
             return questionsList;
         }
+
+
+        public QuestionModel GetQuestionAndAnswerWhereId(int questionID)
+        {
+            QuestionModel question = new QuestionModel();
+            var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            string queryString = $"SELECT question, correct_answer FROM questions WHERE id = {questionID}";
+            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        question = new QuestionModel(
+                            (string)reader[0],
+                            (string)reader[1]);
+                    }
+                }
+            }
+            return question;
+        }
     }
 }

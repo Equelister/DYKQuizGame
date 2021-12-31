@@ -95,6 +95,12 @@ namespace DYKServer.Net
                         case 30:
                             GiveSummaryIfGameEnded();
                             break;
+                        case 31:
+                            GiveGamesHistoriesList();
+                            break;
+                        case 32:
+                            GiveGameHistoryDetails();
+                            break;
                         default:
                             Console.WriteLine("Client.ReadPacket = default");
                             break;
@@ -112,6 +118,17 @@ namespace DYKServer.Net
                     return;
                 }
             }
+        }
+
+        private void GiveGameHistoryDetails()
+        {
+            var message = _packetReader.ReadMessage();
+            Program.GetUserGameHistoryDetails(GUID.ToString(), message);
+        }
+
+        private void GiveGamesHistoriesList()
+        {
+            Program.GetAllUserGameHistories(GUID.ToString());
         }
 
         private void GiveSummaryIfGameEnded()
