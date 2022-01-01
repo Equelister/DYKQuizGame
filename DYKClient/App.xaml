@@ -46,6 +46,10 @@
                 <gameView:SummaryView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type gameViewModel:ActionChooserViewModel}">
+                <gameView:ActionChooserView/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type gameHistoryViewModel:SummariesListViewModel}">
                 <gameHistoryView:SummariesListView/>
             </DataTemplate>
