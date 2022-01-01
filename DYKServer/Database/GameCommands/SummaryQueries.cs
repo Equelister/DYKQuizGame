@@ -18,7 +18,6 @@ namespace DYKServer.Database.GameCommands
             SummaryModel summary;
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             string queryString = $"SELECT ID, created_at FROM summaries WHERE User_ID = {userID}";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -43,7 +42,6 @@ namespace DYKServer.Database.GameCommands
             decimal newGameId = -1;
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             string queryString = $"Insert into games_summaries values (GETDATE()) SELECT SCOPE_IDENTITY();";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -126,7 +124,6 @@ namespace DYKServer.Database.GameCommands
             List<GameModelHelper> gameHistoryList = new List<GameModelHelper>();
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             string queryString = $"SELECT id, CreatedDateTime FROM games_summaries WHERE id IN (Select gameId FROM summaries_users where userId = {userID})";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -146,25 +143,21 @@ namespace DYKServer.Database.GameCommands
         {
             List<SummaryModel> summaryList = new List<SummaryModel>();
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-            string queryString = $"SELECT questionId ,fastestAnswerName, fastestAnswerLong, userNicknames FROM summaries_questions WHERE gameId = {gameID}";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
+            string queryString = $"SELECT q.question, q.correct_answer, sq.fastestAnswerName, sq.fastestAnswerLong, sq.userNicknames FROM summaries_questions sq JOIN questions q ON sq.questionId = q.id WHERE sq.gameId = {gameID}";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
                 connection.Open();
                 using (var reader = command.ExecuteReader())
                 {
-                    QuestionsReceiver qr = new QuestionsReceiver();
-                    QuestionModel question = new QuestionModel();
                     while (reader.Read())
-                    {
-                        question = qr.GetQuestionAndAnswerWhereId((int)reader[0]);
-                        string nicknames = (string)reader[3];
+                    {                        
+                        string nicknames = (string)reader[4];
                         summaryList.Add(new SummaryModel(
-                                question.Question,
-                                question.CorrectAnswer,
+                                (string)reader[0],
                                 (string)reader[1],
-                                (long)reader[2],
+                                (string)reader[2],
+                                (long)reader[3],
                                 nicknames.Split(',').ToList()
                                 ));
                     }

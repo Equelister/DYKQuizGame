@@ -131,22 +131,18 @@ namespace DYKServer
 
         static void CheckHubUniqueJoinCodeSingle(Hub hub)
         {
-            bool unique = false;
+            bool unique;
             do
             {
-                bool flag = true;
+                unique = true;
                 foreach (Hub nextHub in _hubs)
                 {
                     if (hub.HubModel.JoinCode == nextHub.HubModel.JoinCode)
                     {
                         hub.GenerateJoinCode();
-                        flag = false;
+                        unique = false;
                         break;
                     }
-                }
-                if (flag)
-                {
-                    unique = true;
                 }
             } while (unique == false);
         }
@@ -258,17 +254,6 @@ namespace DYKServer
 
         private static void InsertSummaryToDB(Hub hub)
         {
-            /*int summaryID = -1;
-            foreach(var user in hub.Users)
-            {
-                summaryID = SummaryQueries.InsertSummaryForUser(user.UserModel.ID);
-            }
-
-            foreach (var question in hub.Questions)
-            {
-                SummaryQueries.InsertQuestionsForGame(question.ID, summaryID);
-            }*/
-
             SummaryQueries sq = new SummaryQueries();
             decimal gameID = sq.InsertNewGameToTable();
             if(gameID > 0)
@@ -415,6 +400,7 @@ namespace DYKServer
             if(hub.HubModel.JoinCode == 0)
             {
                 hub.HubModel.JoinCode = hub.GenerateJoinCode();
+                CheckHubUniqueJoinCodeSingle(hub);
                 Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
                 hub.Users = new List<Client>();
                 hub.HubModel.Users = new List<UserModel>();
