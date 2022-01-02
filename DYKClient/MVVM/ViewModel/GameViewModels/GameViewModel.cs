@@ -117,35 +117,38 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private void EnhanceQuestions()
         {
-            ReadMyEnhancements();
-            Enhancements = Enhancements.Distinct().ToList();
-            foreach(var enhancement in Enhancements)
+            if (_gameRound == 1)
             {
-                switch(enhancement.ID)
+                ReadMyEnhancements();
+                Enhancements = Enhancements.Distinct().ToList();
+                foreach (var enhancement in Enhancements)
                 {
-                    case (int)InGameActionTypes.DeleteSomeLettersAnswers:
-                        Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
-                        break;
-                    case (int)InGameActionTypes.DeleteSomeLettersQuestions:
-                        Questions = QuestionEnhancer.DeleteLettersQuestions(Questions);
-                        break;
-                    case (int)InGameActionTypes.SwitchFirstWithLastLetterAnswers:
-                        Questions = QuestionEnhancer.SwitchLettersAnswers(Questions);
-                        break;
-                    case (int)InGameActionTypes.SwitchFirstWithLastLetterQuestions:
-                        Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
-                        break;
-                    case (int)InGameActionTypes.DisplayOnlyOnHoverAnswers:
-                        // Change Buttons Style with Opacity and animation
-                        break;
-                    case (int)InGameActionTypes.HitIt5TimesAnswers:
-                        // Add Counter and clear it after every question send
-                        break;
-                    case (int)InGameActionTypes.FloatingAnswers:
-                        // Change buttons Style
-                        break;
-                    default:
-                        break;
+                    switch (enhancement.ID)
+                    {
+                        case (int)InGameActionTypes.DeleteSomeLettersAnswers:
+                            Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
+                            break;
+                        case (int)InGameActionTypes.DeleteSomeLettersQuestions:
+                            Questions = QuestionEnhancer.DeleteLettersQuestions(Questions);
+                            break;
+                        case (int)InGameActionTypes.SwitchFirstWithLastLetterAnswers:
+                            Questions = QuestionEnhancer.SwitchLettersAnswers(Questions);
+                            break;
+                        case (int)InGameActionTypes.SwitchFirstWithLastLetterQuestions:
+                            Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
+                            break;
+                        case (int)InGameActionTypes.DisplayOnlyOnHoverAnswers:
+                            // Change Buttons Style with Opacity and animation
+                            break;
+                        case (int)InGameActionTypes.HitIt5TimesAnswers:
+                            // Add Counter and clear it after every question send
+                            break;
+                        case (int)InGameActionTypes.FloatingAnswers:
+                            // Change buttons Style
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }

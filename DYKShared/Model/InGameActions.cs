@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -23,6 +24,19 @@ namespace DYKShared.Model
             ID = id;
             Name = name;
             Description = desc;
+        }
+
+        public InGameActions(int  id, string name, string desc, string username) : this(id, name, desc)
+        {
+            UserNickname = username;
+        } 
+        
+        public InGameActions(InGameActions enhancement, string username)
+        {
+            ID = enhancement.ID;
+            Name = enhancement.Name;
+            Description = enhancement.Description;
+            UserNickname = username;
         }
 
         public static List<InGameActions> GenerateActions()
@@ -61,6 +75,12 @@ namespace DYKShared.Model
         public static List<InGameActions> JsonToList(string json)
         {
             var jsonData = JsonSerializer.Deserialize<List<InGameActions>>(json);
+            return jsonData;
+        }
+
+        public static ObservableCollection<InGameActions> JsonToObservableCollection(string json)
+        {
+            var jsonData = JsonSerializer.Deserialize<ObservableCollection<InGameActions>>(json);
             return jsonData;
         }
     }

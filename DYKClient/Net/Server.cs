@@ -23,6 +23,9 @@ namespace DYKClient.Net
         SendIHaveEndedGame = 30,
         SendGamesHistoriesList = 31,
         SendGameHistoryDetails = 32,
+        SendPickedEnhancements = 33,
+        ReceivedACEnhancements = 34,
+        ReceivedACUsers = 35
     }
     class Server
     {
@@ -38,6 +41,9 @@ namespace DYKClient.Net
         public event Action receivedNewPlayersInfoEvent;
         public event Action receivedGameHistoriesListEvent;
         public event Action receiveGameHistoryDetailsEvent;
+        public event Action receivedACEnhancementsEvent;
+        public event Action receivedACUsersEvent;
+        public event Action startEnhancendGameNextRoundEvent;
         public event Action connectToLobbyViewEvent;
         public event Action unlockLoginButtonEvent;
         public event Action startEnhancedGameEvent;
@@ -153,6 +159,15 @@ namespace DYKClient.Net
                             break;
                         case 32:
                             receiveGameHistoryDetailsEvent.Invoke();
+                            break;
+                        case 33:
+                            startEnhancendGameNextRoundEvent.Invoke();
+                            break;
+                        case 34:
+                            receivedACEnhancementsEvent.Invoke();
+                            break;
+                        case 35:
+                            receivedACUsersEvent.Invoke();
                             break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");
