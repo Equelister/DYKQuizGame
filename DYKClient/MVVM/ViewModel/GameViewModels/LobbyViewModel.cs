@@ -297,7 +297,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private void NormalGameChangeView()
         {
             gameViewModel = null;
-            gameViewModel = new GameViewModel(mainViewModel, 0, DYKShared.Enums.GameTypes.NormalQuizGame);
+            gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.NormalQuizGame);
             mainViewModel.CurrentView = gameViewModel;
         }
 

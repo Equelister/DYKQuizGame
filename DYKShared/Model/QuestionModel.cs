@@ -10,9 +10,6 @@ namespace DYKShared.Model
 {
     public class QuestionModel
     {
-        private string v1;
-        private string v2;
-
         public int ID { get; set; }
         public string Question { get; set; }
         public string CorrectAnswer { get; set; }

@@ -13,6 +13,7 @@ using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Text;
+using DYKShared.Enums;
 
 namespace DYKServer
 {
@@ -28,7 +29,10 @@ namespace DYKServer
         SendQuestions = 27,
         SendSummary = 30,
         SendgamesHistoriesList = 31,
-        SendGameHistoryDetails = 32
+        SendGameHistoryDetails = 32,
+        SendUsersPartialSummary = 35,
+        SendMidGameEnhancements = 34,
+        SendStartEnhancedGameRoundTwo = 33
     }
 
     class Program
@@ -37,6 +41,7 @@ namespace DYKServer
         static List<Hub> _hubs;
         static List<CategoryModel> _categories;
         static TcpListener _listener;
+        private readonly static int _numberOfQuesions = 6; //Only even
                 
 
         static void Main(string[] args)
@@ -147,6 +152,32 @@ namespace DYKServer
             } while (unique == false);
         }
 
+        internal static void StartEnhancedQuizRoundTwo(string uid, string message)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+
+
+            throw new NotImplementedException();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
         internal static void GetUserGameHistoryDetails(string uid, string message)
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
@@ -160,6 +191,14 @@ namespace DYKServer
             {
                 Console.WriteLine($"Something went wrong with sending GameHistoryDetails to user [{user.GUID}]");
             }
+        }
+
+        internal static void GetQuestionsForANewGame(string uid)
+        {
+            QuestionsReceiver qr = new QuestionsReceiver();
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+            hub.Questions = qr.GetRandomQuestions(hub.HubModel.Category.ID, _numberOfQuesions);
         }
 
         internal static void GetAllUserGameHistories(string uid)
@@ -227,23 +266,50 @@ namespace DYKServer
 
         internal static void GiveSummaryIfGameEnded(Hub hub)
         {
-        //    Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();         //
-        //    Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();             // To separate method that collects from users questionsList => compares best times and adds usersnickanmes to summary.nickanmes list
-        //    hub.HubModel.PlayersThatEndedGame++;                                                              //
             if(hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
             {
                 GiveUserExtraPointsForTime(hub);
-                SendToEveryoneInLobby(
-                                hub,
-                                JsonSerializer.Serialize(hub.Summary),       //Send Questions To Everyone in lobby
-                                OpCodes.SendSummary);
-                MakeAnUpdateOnALobbyAfterGame(hub);
-                Task.Run(() =>
+
+                if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundOne))
                 {
-                    InsertSummaryToDB(hub);
-                    hub.Summary.Clear();
-                    hub.Questions.Clear();
-                });
+                    List<UserModel> usersSummary = new List<UserModel>();
+                    foreach(var user in hub.Users)
+                    {
+                        UserModel usertoSumm = new UserModel();
+                        usertoSumm.Username = user.UserModel.Username;
+                        usertoSumm.GameScore = user.UserModel.GameScore;
+
+                    }
+                    SendToEveryoneInLobby(
+                           hub,
+                           JsonSerializer.Serialize(usersSummary),
+                           OpCodes.SendUsersPartialSummary);
+
+                    List<InGameActions> enhancementsToSend = InGameActions.GetRandomAmoutOfActions(InGameActions.GenerateActions(), hub.Users.Count);
+
+                    SendToEveryoneInLobby(
+                            hub,
+                            JsonSerializer.Serialize(enhancementsToSend),
+                            OpCodes.SendMidGameEnhancements);
+
+                    hub.HubModel.GameRound = (int)GameTypes.EnhancedQuizGameRoundTwo; // For QuizEnhancedMode
+                    hub.HubModel.PlayersThatEndedGame = 0;
+                    StartQuizGame(hub.Users.ElementAt(0).GUID.ToString(),GameTypes.EnhancedQuizGame);
+                }
+                else if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo) || hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
+                {
+                    SendToEveryoneInLobby(
+                           hub,
+                           JsonSerializer.Serialize(hub.Summary),
+                           OpCodes.SendSummary);
+                    MakeAnUpdateOnALobbyAfterGame(hub);
+                    Task.Run(() =>
+                    {
+                        InsertSummaryToDB(hub);
+                        hub.Summary.Clear();
+                        hub.Questions.Clear();
+                    });
+                }
             }
             else
             {
@@ -298,19 +364,111 @@ namespace DYKServer
             Console.WriteLine("throw new NotImplementedException();\r\n");
         }
 
-        internal static void StartNormalGame(string uid)
+        internal static void StartQuizGame(string uid, GameTypes gameType)
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
 
+            if(gameType.Equals(GameTypes.EnhancedQuizGame))
+            {
+                int i = 0;                
+                List<QuestionModel> halfQuestions = new List<QuestionModel>();
+                if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo))
+                {
+                    i += (int)Math.Ceiling((double)(_numberOfQuesions / 2));
+                    for (; i < _numberOfQuesions; i++)
+                    {
+                        halfQuestions.Add(hub.Questions.ElementAt(i));
+                    }
+                }
+                else
+                {
+                    for (; i < _numberOfQuesions / 2; i++)
+                    {
+                        halfQuestions.Add(hub.Questions.ElementAt(i));
+                    }
+                }
+                SendToEveryoneInLobby(
+                    hub,
+                    JsonSerializer.Serialize(halfQuestions),       //Send Questions To Everyone in lobby
+                    OpCodes.SendQuestions);                
+            }
+            else if (gameType.Equals(GameTypes.NormalQuizGame))
+            {
+                hub.HubModel.GameRound = (int)GameTypes.NormalQuizGame;
+                SendToEveryoneInLobby(
+                                    hub,
+                                    JsonSerializer.Serialize(hub.Questions),       //Send Questions To Everyone in lobby
+                                    OpCodes.SendQuestions);
+            }
+        }
+/*
+        internal static void StartQuizGame(string uid)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             QuestionsReceiver qr = new QuestionsReceiver();
-            hub.Questions = qr.GetRandomQuestions(hub.HubModel.Category.ID, 3);
+            hub.Questions = qr.GetRandomQuestions(hub.HubModel.Category.ID, _numberOfQuesions);
+            List<QuestionModel> halfQuestions = new List<QuestionModel>();
+            for(int i = 0; i<_numberOfQuesions/2; i++ )
+            {
+                halfQuestions.Add(hub.Questions.ElementAt(i));
+            }
 
             SendToEveryoneInLobby(
                                 hub,
-                                JsonSerializer.Serialize(hub.Questions),       //Send Questions To Everyone in lobby
+                                JsonSerializer.Serialize(halfQuestions),       //Send Questions To Everyone in lobby
                                 OpCodes.SendQuestions);
+        }*/
+
+        internal static void CreatePartialSummaryForTheGame(string uid, List<QuestionModel> questionsFromUser)
+        {
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();         //
+            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();             // To separate method that collects from users questionsList => compares best times and adds usersnickanmes to summary.nickanmes list
+            hub.HubModel.PlayersThatEndedGame++;
+
+            if (hub.Summary.Count <= 0)
+            {
+                ///hub.Summary = new List<SummaryModel>();
+                for (int j = 0; j < hub.Questions.Count; j++)
+                {
+                    hub.Summary.Add(new SummaryModel(
+                        hub.Questions.ElementAt(j).Question,
+                        hub.Questions.ElementAt(j).CorrectAnswer,
+                        "",
+                        0
+                    ));
+                }
+            }
+            int i = 0;
+            int k = 0;
+            if(hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo))
+            {
+                k += (int)Math.Ceiling((double)(_numberOfQuesions / 2));
+            }
+            for (; i < hub.Questions.Count; i++)
+            {
+                if (questionsFromUser.ElementAt(i).IsAnsweredCorrectly)
+                {
+                    if (hub.Summary.ElementAt(k).FastestAnswerLong > questionsFromUser.ElementAt(i).AnswerTimeMS || hub.Summary.ElementAt(k).FastestAnswerLong == 0)
+                    {
+                        hub.Summary.ElementAt(k).FastestAnswerName = user.UserModel.Username;
+                        hub.Summary.ElementAt(k).FastestAnswerLong = questionsFromUser.ElementAt(i).AnswerTimeMS;
+                    }
+                    hub.Summary.ElementAt(k).UsersNicknames.Add(user.UserModel.Username);
+                    user.UserModel.GameScore += 2;
+                }
+            }
+
+            Task.Run(() =>
+            {
+                GiveSummaryIfGameEnded(hub);
+            });
         }
+
+
+
+
 
         public static string GetHubListAsJson(string UID)
         {

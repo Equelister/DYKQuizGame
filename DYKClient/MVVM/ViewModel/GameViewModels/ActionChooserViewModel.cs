@@ -90,12 +90,23 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             mainViewModel._server.receivedACEnhancementsEvent += ReceivedEnhancementList;
             mainViewModel._server.receivedACUsersEvent += ReceivedUsersList;
             mainViewModel._server.startEnhancendGameNextRoundEvent += EnhancedGameChangeView;
+            mainViewModel._server.getGameSummaryEvent += DisplaySummary;
         }
-        private void UnInitializeEvents()
+
+        private void DisplaySummary()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UnInitializeViewChangerEvent()
+        {
+            mainViewModel._server.startEnhancendGameNextRoundEvent -= EnhancedGameChangeView;
+        }
+        private void UnInitializeEventsExceptViewChanger()
         {
             mainViewModel._server.receivedACEnhancementsEvent -= ReceivedEnhancementList;
             mainViewModel._server.receivedACUsersEvent -= ReceivedUsersList;
-            mainViewModel._server.startEnhancendGameNextRoundEvent -= EnhancedGameChangeView;
+            mainViewModel._server.getGameSummaryEvent -= DisplaySummary;
         }
 
         private void InitializeCommands()
@@ -127,6 +138,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             gameViewModel = null;
             gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.EnhancedQuizGame);
             mainViewModel.CurrentView = gameViewModel;
+            UnInitializeViewChangerEvent();
         }
 
 
@@ -142,6 +154,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 SelectedUser = null;
                 if(Enhancements.Count <= 0)
                 {
+                    UnInitializeEventsExceptViewChanger();
                     string json = JsonSerializer.Serialize(PickedActions);
                     mainViewModel._server.SendMessageToServerOpCode(json, Net.OpCodes.SendPickedEnhancements);
                     PickedActions.Clear();

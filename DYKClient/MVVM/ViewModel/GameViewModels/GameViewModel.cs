@@ -186,8 +186,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 {
                     string message = CreateQuestionsSummaryToSend();
                     mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
-                    GoToSummaryViewAsync();
-                    
+                    GoToSummaryViewAsync();                    
                 }
             }
             else

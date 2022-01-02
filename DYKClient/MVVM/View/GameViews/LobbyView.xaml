@@ -45,13 +45,13 @@
                     <GridViewColumn Header="Username" Width="auto" 
                         DisplayMemberBinding="{Binding Username}" >
                     </GridViewColumn>
-                    <GridViewColumn Header="Username" Width="auto" 
+                    <GridViewColumn Header="Total Games" Width="auto" 
                         DisplayMemberBinding="{Binding Total_games}">
                     </GridViewColumn>
-                    <GridViewColumn Header="Username" Width="auto" 
+                    <GridViewColumn Header="Previous Game Score" Width="auto" 
                         DisplayMemberBinding="{Binding GameScore}" >
                     </GridViewColumn>
-                    <GridViewColumn Header="Username" Width="auto" 
+                    <GridViewColumn Header="Ready" Width="auto" 
                         DisplayMemberBinding="{Binding IsReady}" >
                     </GridViewColumn>
                 </GridView>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DYKClient.MVVM.View.GameViews"
              xmlns:gameviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
-             d:DataContext="{d:DesignInstance Type=gameviewmodels:SummaryViewModel}"
+             d:DataContext="{d:DesignInstance Type=gameviewmodels:ActionChooserViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="Brown">
@@ -32,9 +32,36 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        
+        
+  <!--      <ListView Name="ResultsList" Grid.Row="0" Grid.RowSpan="3"
+                  Grid.Column="0" Grid.ColumnSpan="8" Margin="5" Padding="5"                   
+                  ItemsSource="{Binding Summary}"
+                  HorizontalAlignment="Stretch"
+                  Visibility="{Binding Path=IsGameEndedVisibility}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Question" 
+                                DisplayMemberBinding="{Binding Question}" Width="200"/>
+                    <GridViewColumn Header="Answer" 
+                                DisplayMemberBinding="{Binding Answer}" Width="100"/>
+                    <GridViewColumn Header="FastestAnswer" 
+                                DisplayMemberBinding="{Binding FastestAnswer}"  Width="100"/>
+                    <GridViewColumn Header="UsersNicknames" Width="auto" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding UsersNicknames}">
+                                </ItemsControl>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView> -->
+        
 
         <ListView Grid.Column="4" Grid.ColumnSpan="4"
-                  Grid.Row="1" Grid.RowSpan="4"
+                  Grid.Row="3" Grid.RowSpan="4"
                   Margin="5"
                   Padding="5"
                   SelectionMode="Single"
@@ -55,12 +82,12 @@
             </ListView.View>
         </ListView>
 
-        <ListView Grid.Row="1" Grid.RowSpan="4"
+        <ListView Grid.Row="3" Grid.RowSpan="4"
                   Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Padding="5"
                   SelectionMode="Single"
-                  ItemsSource="{Binding Path=Actions}" 
+                  ItemsSource="{Binding Path=Enhancements}" 
                   HorizontalAlignment="Stretch"
-                  SelectedItem="{Binding Path=SelectedAction}">
+                  SelectedItem="{Binding Path=SelectedEnhancement}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="auto" 
@@ -73,9 +100,9 @@
             </ListView.View>
         </ListView>
 
-        <Button Content="Pick" Grid.Column="3" Grid.Row="6"
-                Grid.ColumnSpan="2"
-                Command="{Binding IHavePickedActionForThisUser}"/>
+        <Button Content="Pick" Grid.Column="2" Grid.Row="7"
+                Grid.ColumnSpan="4" Grid.RowSpan="2" Margin="15"
+                Command="{Binding PickedActionAndUserCommand}"/>
 
 
 

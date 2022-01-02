@@ -89,6 +89,9 @@ namespace DYKServer.Net
                         case 26:
                             SetThisPlayerReady();
                             break;
+                        case 27:
+                            StartEnhancedGame();
+                            break;
                         case 28:
                             StartNormalGame();
                             break;
@@ -100,6 +103,9 @@ namespace DYKServer.Net
                             break;
                         case 32:
                             GiveGameHistoryDetails();
+                            break;
+                        case 33:
+                            StartRoundTwoIfEveryoneGaveEnhancementList();
                             break;
                         default:
                             Console.WriteLine("Client.ReadPacket = default");
@@ -118,6 +124,18 @@ namespace DYKServer.Net
                     return;
                 }
             }
+        }
+
+        private void StartRoundTwoIfEveryoneGaveEnhancementList()
+        {
+            var message = _packetReader.ReadMessage();
+            Program.StartEnhancedQuizRoundTwo(GUID.ToString(), message);
+        }
+
+        private void StartEnhancedGame()
+        {
+            Program.GetQuestionsForANewGame(GUID.ToString());
+            Program.StartQuizGame(GUID.ToString(), DYKShared.Enums.GameTypes.EnhancedQuizGame);
         }
 
         private void GiveGameHistoryDetails()
@@ -140,7 +158,8 @@ namespace DYKServer.Net
 
         private void StartNormalGame()
         {
-            Program.StartNormalGame(GUID.ToString());
+            Program.GetQuestionsForANewGame(GUID.ToString());
+            Program.StartQuizGame(GUID.ToString(), DYKShared.Enums.GameTypes.NormalQuizGame);
         }
 
         private void SetThisPlayerReady()

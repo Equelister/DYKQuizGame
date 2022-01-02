@@ -9,6 +9,8 @@ namespace DYKShared.Enums
     public enum GameTypes
     {
         NormalQuizGame,
-        EnhancedQuizGame
+        EnhancedQuizGame,
+        EnhancedQuizGameRoundOne,
+        EnhancedQuizGameRoundTwo            
     }
 }

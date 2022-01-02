@@ -16,18 +16,18 @@ namespace DYKShared.Model
         public int Total_games { get; set; }
         public bool IsReady { get; set; }
         public int GameScore { get; set; }
+        public List<InGameActions> AppliedEnhancements { get; set; }
 
         public UserModel()
         {
             IsReady = false;
             GameScore = 0;
+            AppliedEnhancements = new List<InGameActions>();
         }
 
-        public UserModel(string username)
+        public UserModel(string username) : this()
         {
             Username = username;
-            IsReady = false;
-            GameScore = 0;
         }
 
         public static List<UserModel> JsonListToUserModelList(string json)

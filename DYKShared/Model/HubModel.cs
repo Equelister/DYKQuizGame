@@ -18,6 +18,7 @@ namespace DYKShared.Model
         public int MaxSize { get; set; }
         public int PlayerCount { get; set; }
         public int PlayersThatEndedGame { get; set; }
+        public int GameRound { get; set; }
         public bool IsPrivate { get; set; }
         public bool IsGameStarted { get; set; }
         public string LobbySlotsStr
@@ -36,6 +37,7 @@ namespace DYKShared.Model
             Users = new List<UserModel>();
             IsGameStarted = false;
             PlayersThatEndedGame = 0;
+            GameRound = 0;
         }
         
         public HubModel(int joinCode, int maxSize, string name, CategoryModel category, bool isPrivate)
@@ -48,6 +50,7 @@ namespace DYKShared.Model
             IsPrivate = isPrivate;
             IsGameStarted = false;
             PlayersThatEndedGame = 0;
+            GameRound = 0;
         }
 
         public HubModel(CategoryModel category)
@@ -55,7 +58,8 @@ namespace DYKShared.Model
             Users = new List<UserModel>();
             Category = category;
             IsGameStarted = false;
-            PlayersThatEndedGame = 0;
+            PlayersThatEndedGame = 0; 
+            GameRound = 0;
         }
 
         public HubModel()
