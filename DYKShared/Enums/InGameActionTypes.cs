@@ -12,8 +12,8 @@ namespace DYKShared.Enums
         SwitchFirstWithLastLetterAnswers,
         DeleteSomeLettersQuestions,
         DeleteSomeLettersAnswers,
-        FloatingAnswers,
         HitIt5TimesAnswers,
-        DisplayOnlyOnHoverAnswers
+        DisplayOnlyOnHoverAnswers,
+        FloatingAnswers
     }
 }

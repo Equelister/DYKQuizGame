@@ -288,18 +288,16 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private GameViewModel gameViewModel;
         private void EnhancedGameChangeView()
-        {         
-/*            gameViewModel = null;
-            gameViewModel = new GameViewModel(mainViewModel);
-            mainViewModel.CurrentView = gameViewModel;   */         
-        
-            throw new NotImplementedException("ENHANCED MODE NOT IMPLEMENTED YET");
+        {
+            gameViewModel = null;
+            gameViewModel = new GameViewModel(mainViewModel, 0, DYKShared.Enums.GameTypes.EnhancedQuizGame);
+            mainViewModel.CurrentView = gameViewModel;
         }
 
         private void NormalGameChangeView()
         {
             gameViewModel = null;
-            gameViewModel = new GameViewModel(mainViewModel);
+            gameViewModel = new GameViewModel(mainViewModel, 0, DYKShared.Enums.GameTypes.NormalQuizGame);
             mainViewModel.CurrentView = gameViewModel;
         }
 

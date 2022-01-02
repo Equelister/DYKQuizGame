@@ -8,5 +8,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 {
     class ActionChooserViewModel
     {
+        private MainViewModel mainViewModel;
+
+        public ActionChooserViewModel(MainViewModel mainViewModel)
+        {
+            this.mainViewModel = mainViewModel;
+        }
     }
 }
