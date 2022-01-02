@@ -87,7 +87,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         private int _gameRound;
         private GameTypes _gameType;
-        private List<InGameActions> Enhancements = new List<InGameActions>();
+        private List<int> Enhancements = new List<int>();
         private SummaryViewModel summaryViewModel;
         private ActionChooserViewModel actionChooserViewModel;
 
@@ -102,6 +102,15 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 //System.Threading.Thread.Sleep(5000);
                 Run();
            // });
+        }
+
+        public GameViewModel(MainViewModel mainViewModel, int gameRound, GameTypes gameType, List<int> inGameActions)
+        {
+            this.mainViewModel = mainViewModel;
+            _gameRound = gameRound;
+            _gameType = gameType;
+            Enhancements = inGameActions;
+            Run();
         }
 
         private async Task Run()
@@ -119,11 +128,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         {
             if (_gameRound == 1)
             {
-                ReadMyEnhancements();
+                //ReadMyEnhancements();
                 Enhancements = Enhancements.Distinct().ToList();
                 foreach (var enhancement in Enhancements)
                 {
-                    switch (enhancement.ID)
+                    switch (enhancement)
                     {
                         case (int)InGameActionTypes.DeleteSomeLettersAnswers:
                             Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
@@ -153,12 +162,12 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             }
         }
 
-        private void ReadMyEnhancements()
+/*        private void ReadMyEnhancements()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             Console.WriteLine("\r\n My Enhancements: " + msg + "\r\n");
             Enhancements = InGameActions.JsonToList(msg);
-        }
+        }*/
 
         private void SumQuestion(object param)
         {

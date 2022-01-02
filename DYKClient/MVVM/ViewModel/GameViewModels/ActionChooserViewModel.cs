@@ -135,10 +135,24 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private void EnhancedGameChangeView()
         {
+            //ReadMyEnhancements();
             gameViewModel = null;
-            gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.EnhancedQuizGame);
+            gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.EnhancedQuizGame, ReadMyEnhancements());
             mainViewModel.CurrentView = gameViewModel;
             UnInitializeViewChangerEvent();
+        }
+
+/*        private List<InGameActions> ReadMyEnhancements()
+        {
+            var msg = mainViewModel._server.PacketReader.ReadMessage();
+            Console.WriteLine("\r\n My Enhancements: " + msg + "\r\n");
+            return InGameActions.JsonToList(msg);
+        }*/
+        private List<int> ReadMyEnhancements()
+        {
+            var msg = mainViewModel._server.PacketReader.ReadMessage();
+            Console.WriteLine("\r\n My Enhancements: " + msg + "\r\n");
+            return JsonSerializer.Deserialize<List<int>>(msg);
         }
 
 

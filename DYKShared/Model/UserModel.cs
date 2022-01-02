@@ -16,13 +16,13 @@ namespace DYKShared.Model
         public int Total_games { get; set; }
         public bool IsReady { get; set; }
         public int GameScore { get; set; }
-        public List<InGameActions> AppliedEnhancements { get; set; }
+        public List<int> AppliedEnhancementsIDs { get; set; }
 
         public UserModel()
         {
             IsReady = false;
             GameScore = 0;
-            AppliedEnhancements = new List<InGameActions>();
+            AppliedEnhancementsIDs = new List<int>();
         }
 
         public UserModel(string username) : this()
