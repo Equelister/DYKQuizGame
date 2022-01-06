@@ -135,16 +135,16 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                     switch (enhancement)
                     {
                         case (int)InGameActionTypes.DeleteSomeLettersAnswers:
-                            Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
+        //                    Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
                             break;
                         case (int)InGameActionTypes.DeleteSomeLettersQuestions:
-                            Questions = QuestionEnhancer.DeleteLettersQuestions(Questions);
+        //                    Questions = QuestionEnhancer.DeleteLettersQuestions(Questions);
                             break;
                         case (int)InGameActionTypes.SwitchFirstWithLastLetterAnswers:
-                            Questions = QuestionEnhancer.SwitchLettersAnswers(Questions);
+        //                    Questions = QuestionEnhancer.SwitchLettersAnswers(Questions);
                             break;
                         case (int)InGameActionTypes.SwitchFirstWithLastLetterQuestions:
-                            Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
+        //                    Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
                             break;
                         case (int)InGameActionTypes.DisplayOnlyOnHoverAnswers:
                             // Change Buttons Style with Opacity and animation
@@ -187,7 +187,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                     }
                     else if (_gameRound == 1)
                     {
-                        string message = CreateQuestionsSummaryToSend();
+                        string message = CreateQuestionsSummaryToSend();                                                        //swap new view with sending message
                         mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
                         GoToSummaryViewAsync();
                     }

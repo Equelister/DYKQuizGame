@@ -33,7 +33,8 @@ namespace DYKServer
         SendGameHistoryDetails = 32,
         SendUsersPartialSummary = 35,
         SendMidGameEnhancements = 34,
-        SendStartEnhancedGameRoundTwo = 33
+        SendStartEnhancedGameRoundTwo = 33,
+        SendSecondHalfQuestions = 36
     }
 
     class Program
@@ -185,7 +186,8 @@ namespace DYKServer
                         JsonSerializer.Serialize(userToSend.UserModel.AppliedEnhancementsIDs),
                         OpCodes.SendStartEnhancedGameRoundTwo);
                 }
-                StartQuizGame(hub.Users.ElementAt(0).GUID.ToString(), GameTypes.EnhancedQuizGame);
+                hub.HubModel.PlayersThatEndedGame = 0;
+                StartQuizGame(hub.Users.ElementAt(0).GUID.ToString(), GameTypes.EnhancedQuizGame);      //////////////////////////////////////////////////////////////////////////////
             }
         }
 
@@ -225,7 +227,7 @@ namespace DYKServer
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();         //
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
 
-            if(hub.HubModel.GameRound.Equals(GameTypes.NormalQuizGame))
+            if(hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
             {
                 CreateFullSummaryForTheGame(questionsFromUser, user, hub);
             }else
@@ -344,6 +346,7 @@ namespace DYKServer
         {
             if(hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
             {
+                hub.HubModel.PlayersThatEndedGame = 0;
                 GiveUserExtraPointsForTime(hub);
 
                 if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundOne))
@@ -443,13 +446,16 @@ namespace DYKServer
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+            //hub.HubModel.PlayersThatEndedGame = 0;
 
             if(gameType.Equals(GameTypes.EnhancedQuizGame))
             {
-                int i = 0;                
+                int i = 0;
+                OpCodes opcode;
                 List<QuestionModel> halfQuestions = new List<QuestionModel>();
                 if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo))
                 {
+                    opcode = OpCodes.SendSecondHalfQuestions;
                     i += (int)Math.Ceiling((double)(_numberOfQuesions / 2));
                     for (; i < _numberOfQuesions; i++)
                     {
@@ -458,6 +464,8 @@ namespace DYKServer
                 }
                 else
                 {
+                    hub.HubModel.GameRound = (int)GameTypes.EnhancedQuizGameRoundOne;
+                    opcode = OpCodes.SendHalfQuestions;
                     for (; i < _numberOfQuesions / 2; i++)
                     {
                         halfQuestions.Add(hub.Questions.ElementAt(i));
@@ -466,7 +474,7 @@ namespace DYKServer
                 SendToEveryoneInLobby(
                     hub,
                     JsonSerializer.Serialize(halfQuestions),       //Send Questions To Everyone in lobby
-                    OpCodes.SendHalfQuestions);                
+                    opcode);                
             }
             else if (gameType.Equals(GameTypes.NormalQuizGame))
             {

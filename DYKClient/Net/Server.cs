@@ -43,6 +43,7 @@ namespace DYKClient.Net
         public event Action receiveGameHistoryDetailsEvent;
         public event Action receivedACEnhancementsEvent;
         public event Action receivedACUsersEvent;
+        public event Action receivedSendSecondHalfQuestionsEvent;
         public event Action startEnhancendGameNextRoundEvent;
         public event Action connectToLobbyViewEvent;
         public event Action unlockLoginButtonEvent;
@@ -168,6 +169,9 @@ namespace DYKClient.Net
                             break;
                         case 35:
                             receivedACUsersEvent.Invoke();
+                            break;
+                        case 36:
+                            receivedSendSecondHalfQuestionsEvent.Invoke();
                             break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");

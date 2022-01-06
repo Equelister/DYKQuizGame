@@ -73,9 +73,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             }
         }
 
+
         public List<InGameActions> PickedActions = new List<InGameActions>();
         private MainViewModel mainViewModel;
         private GameViewModel gameViewModel;
+        private List<int> EnhancementsForMe = new List<int>();
 
         public ActionChooserViewModel(MainViewModel mainViewModel)
         {
@@ -91,6 +93,15 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             mainViewModel._server.receivedACUsersEvent += ReceivedUsersList;
             mainViewModel._server.startEnhancendGameNextRoundEvent += EnhancedGameChangeView;
             mainViewModel._server.getGameSummaryEvent += DisplaySummary;
+            mainViewModel._server.receivedSendSecondHalfQuestionsEvent += ChangeViewForRoundTwo;
+        }
+
+        private void ChangeViewForRoundTwo()
+        {
+            gameViewModel = null;
+            gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.EnhancedQuizGame, EnhancementsForMe);
+            mainViewModel.CurrentView = gameViewModel;
+            mainViewModel._server.receivedSendSecondHalfQuestionsEvent -= ChangeViewForRoundTwo;
         }
 
         private void DisplaySummary()
@@ -135,10 +146,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private void EnhancedGameChangeView()
         {
-            //ReadMyEnhancements();
-            gameViewModel = null;
-            gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.EnhancedQuizGame, ReadMyEnhancements());
-            mainViewModel.CurrentView = gameViewModel;
+            EnhancementsForMe = ReadMyEnhancements();
             UnInitializeViewChangerEvent();
         }
 
