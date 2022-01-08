@@ -80,12 +80,33 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged("AnswerD");
             }
         }
+        
+        private int _answerHitCounter = 1;
+        public int AnswerHitCounter
+        {
+            get { return _answerHitCounter; }
+            set
+            {
+                _answerHitCounter = value;
+                onPropertyChanged("AnswerHitCounter");
+            }
+        }
+
+        public System.Windows.Visibility IsAnswerHitCounterVisible
+        {
+            get
+            {
+                return AnswerHitCounter > 1 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+            }
+        }
+
 
 
         public RelayCommand UserSelectedAnswerCommand { get; set; }
         private MainViewModel mainViewModel;
         private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         private int _gameRound;
+        private bool _isHitCounterActive = false;
         private GameTypes _gameType;
         private List<int> Enhancements = new List<int>();
         private SummaryViewModel summaryViewModel;
@@ -128,29 +149,29 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         {
             if (_gameRound == 1)
             {
-                //ReadMyEnhancements();
                 Enhancements = Enhancements.Distinct().ToList();
                 foreach (var enhancement in Enhancements)
                 {
                     switch (enhancement)
                     {
                         case (int)InGameActionTypes.DeleteSomeLettersAnswers:
-        //                    Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
+                            Questions = QuestionEnhancer.DeleteLettersAnswers(Questions);
                             break;
                         case (int)InGameActionTypes.DeleteSomeLettersQuestions:
-        //                    Questions = QuestionEnhancer.DeleteLettersQuestions(Questions);
+                            Questions = QuestionEnhancer.DeleteLettersQuestions(Questions);
                             break;
                         case (int)InGameActionTypes.SwitchFirstWithLastLetterAnswers:
-        //                    Questions = QuestionEnhancer.SwitchLettersAnswers(Questions);
+                            Questions = QuestionEnhancer.SwitchLettersAnswers(Questions);
                             break;
                         case (int)InGameActionTypes.SwitchFirstWithLastLetterQuestions:
-        //                    Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
+                            Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
                             break;
                         case (int)InGameActionTypes.DisplayOnlyOnHoverAnswers:
                             // Change Buttons Style with Opacity and animation
                             break;
                         case (int)InGameActionTypes.HitIt5TimesAnswers:
-                            // Add Counter and clear it after every question send
+                            _isHitCounterActive = true;
+                            AnswerHitCounter = 5;
                             break;
                         case (int)InGameActionTypes.FloatingAnswers:
                             // Change buttons Style
@@ -171,36 +192,46 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private void SumQuestion(object param)
         {
-            string userChosedAnswer = param as string;
-            GetAnsweredTime();
-            GetAnsweredResult(userChosedAnswer);
-
-            if (++currentQuestionIndex >= Questions.Count)
+            if (_isHitCounterActive == false || AnswerHitCounter <= 0)
             {
-                if(GameTypes.EnhancedQuizGame.Equals(_gameType))
+                string userChosedAnswer = param as string;
+                GetAnsweredTime();
+                GetAnsweredResult(userChosedAnswer);
+                if (_isHitCounterActive)
                 {
-                    if (_gameRound == 0)
+                    AnswerHitCounter = 5;
+                }
+                if (++currentQuestionIndex >= Questions.Count)
+                {
+                    if (GameTypes.EnhancedQuizGame.Equals(_gameType))
+                    {
+                        if (_gameRound == 0)
+                        {
+                            string message = CreateQuestionsSummaryToSend();
+                            mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
+                            GoToActionChooserView();
+                        }
+                        else if (_gameRound == 1)
+                        {
+                            string message = CreateQuestionsSummaryToSend();                                                        //swap new view with sending message
+                            mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
+                            GoToSummaryViewAsync();
+                        }
+                    }
+                    else
                     {
                         string message = CreateQuestionsSummaryToSend();
                         mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
-                        GoToActionChooserView();
-                    }
-                    else if (_gameRound == 1)
-                    {
-                        string message = CreateQuestionsSummaryToSend();                                                        //swap new view with sending message
-                        mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
                         GoToSummaryViewAsync();
                     }
-                }else
-                {
-                    string message = CreateQuestionsSummaryToSend();
-                    mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
-                    GoToSummaryViewAsync();                    
                 }
-            }
-            else
+                else
+                {
+                    ShowQuestion(currentQuestionIndex);
+                }
+            }else
             {
-                ShowQuestion(currentQuestionIndex);
+                AnswerHitCounter--;
             }
         }
 

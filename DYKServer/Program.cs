@@ -424,10 +424,12 @@ namespace DYKServer
         {
             hub.HubModel.IsGameStarted = false;
             hub.HubModel.PlayersThatEndedGame = 0;
-            foreach(var user in hub.Users)
+            hub.HubModel.GameRound = (int)GameTypes.NormalQuizGame;
+            foreach (var user in hub.Users)
             {
                 user.UserModel.IsReady = false;
                 user.UserModel.Total_games++;
+                user.UserModel.AppliedEnhancementsIDs.Clear();
                 UpdateDBWithUserScoresAsync(hub);
             }
             SendToEveryoneInLobby(

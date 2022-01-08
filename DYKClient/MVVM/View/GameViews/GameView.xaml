@@ -71,7 +71,13 @@
                 Command="{Binding UserSelectedAnswerCommand}" 
                 CommandParameter="{Binding Path=AnswerD}"/>
 
-
+        <TextBlock Grid.Row="6" Grid.Column="3"
+                   Grid.ColumnSpan="2" Grid.RowSpan="2"
+                   Text="{Binding AnswerHitCounter}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="24"
+                   Visibility="{Binding IsAnswerHitCounterVisible}"/>
 
 
 
