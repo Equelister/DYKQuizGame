@@ -25,7 +25,7 @@ namespace DYKClient.Net.IO
             var msgLength = msg.Length;
             Console.WriteLine(msgLength + ", msg: " + msg);
             _ms.Write(BitConverter.GetBytes(msgLength));
-            _ms.Write(Encoding.ASCII.GetBytes(msg));
+            _ms.Write(Encoding.UTF8.GetBytes(msg));
         }
 
         public byte[] GetPacketBytes()

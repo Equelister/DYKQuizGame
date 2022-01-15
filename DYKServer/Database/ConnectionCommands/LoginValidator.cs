@@ -32,6 +32,7 @@ namespace DYKServer.Database.ConnectionCommands
                         return usr;
                     }
                 }
+                connection.Close();
             }
             return null;
         }

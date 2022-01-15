@@ -32,6 +32,7 @@ namespace DYKServer.Database.GameCommands
                         summaryList.Add(summary);
                     }
                 }
+                connection.Close();
             }
             return summaryList;
         }
@@ -53,6 +54,7 @@ namespace DYKServer.Database.GameCommands
                         newGameId = (decimal)reader[0];                        
                     }
                 }
+                connection.Close();
             }
             return newGameId;
         }
@@ -79,6 +81,7 @@ namespace DYKServer.Database.GameCommands
                 // Check Error
                 if (result < 0)
                     Console.WriteLine("Error inserting data into Database!");
+                connection.Close();
             }
             return result;
         }
@@ -114,6 +117,7 @@ namespace DYKServer.Database.GameCommands
                 // Check Error
                 if (result < 0)
                     Console.WriteLine("Error inserting data into Database!");
+                connection.Close();
             }
             return result;
         }
@@ -123,7 +127,7 @@ namespace DYKServer.Database.GameCommands
         {
             List<GameModelHelper> gameHistoryList = new List<GameModelHelper>();
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-            string queryString = $"SELECT id, CreatedDateTime FROM games_summaries WHERE id IN (Select gameId FROM summaries_users where userId = {userID})";
+            string queryString = $"SELECT id, CreatedDateTime FROM games_summaries WHERE id IN (Select gameId FROM summaries_users where userId = {userID}) ORDER BY CreatedDateTime DESC";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -135,6 +139,7 @@ namespace DYKServer.Database.GameCommands
                         gameHistoryList.Add(new GameModelHelper((int)reader[0], (DateTime)reader[1]));
                     }
                 }
+                connection.Close();
             }
             return gameHistoryList;
         }
@@ -162,6 +167,7 @@ namespace DYKServer.Database.GameCommands
                                 ));
                     }
                 }
+                connection.Close();
             }
             return summaryList;
         }

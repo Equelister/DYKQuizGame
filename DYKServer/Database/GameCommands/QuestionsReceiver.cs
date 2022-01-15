@@ -16,7 +16,7 @@ namespace DYKServer.Database.GameCommands
             List<QuestionModel> questionsList = new List<QuestionModel>();
             QuestionModel question;
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-            string queryString = $"SELECT TOP {numberOfQuestions} question, correct_answer, wrong_answer_1, wrong_answer_2, wrong_answer_3, id FROM questions WHERE category_id = {categoryID} ORDER BY NEWID()";
+            string queryString = $"SELECT TOP {numberOfQuestions} question, correct_answer, wrong_answer_1, wrong_answer_2, wrong_answer_3, id FROM questions WHERE category_id = {categoryID} AND archive = 0 ORDER BY NEWID()";
             //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
@@ -36,6 +36,7 @@ namespace DYKServer.Database.GameCommands
                         questionsList.Add(question);
                     }
                 }
+                connection.Close();
             }
             return questionsList;
         }
@@ -60,6 +61,7 @@ namespace DYKServer.Database.GameCommands
                             (string)reader[1]);
                     }
                 }
+                connection.Close();
             }
             return question;
         }

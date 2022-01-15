@@ -37,7 +37,7 @@ namespace DYKClient.Net.IO
                 Console.WriteLine(abc);
                 return null;
             }
-            var msg = Encoding.ASCII.GetString(msgBuffer.ToArray());
+            var msg = Encoding.UTF8.GetString(msgBuffer.ToArray());
             return msg;
         }
 
