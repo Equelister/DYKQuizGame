@@ -47,8 +47,8 @@ namespace DYKShared.Model
             list.Add(new InGameActions(2, "Question Remover", "Deletes 15% of letters in a question."));
             list.Add(new InGameActions(3, "Answer Remover", "Deletes 15% of letters in each answer."));
             list.Add(new InGameActions(4, "Multi-Clicker", "You need to click 5 times in order to select your answer."));
-            list.Add(new InGameActions(5, "Flashlight", "Shows answer only if you have your mouse cursor on it."));
-            list.Add(new InGameActions(6, "It Floats!", "Makes Answers float"));
+            //list.Add(new InGameActions(5, "Flashlight", "Shows answer only if you have your mouse cursor on it."));
+            //list.Add(new InGameActions(6, "It Floats!", "Makes Answers float"));
             return list;
         }
 

@@ -46,30 +46,35 @@
         <Button Grid.Row="5" Grid.Column="1"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
                 Margin="10"                        
-                Content="{Binding Path=AnswerA}"
                 Command="{Binding UserSelectedAnswerCommand}"
-                CommandParameter="{Binding Path=AnswerA}"/>
+                CommandParameter="{Binding Path=AnswerA}">
+            <TextBlock Text="{Binding Path=AnswerA}" TextWrapping="Wrap" TextAlignment="Center"/>
+        </Button>
 
         <Button Style="{DynamicResource QuizStandardAnswerButton}" Grid.Row="5" Grid.Column="4"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
-                Margin="10"                        
-                Content="{Binding Path=AnswerB}"
+                Margin="10"                     
                 Command="{Binding UserSelectedAnswerCommand}" 
-                CommandParameter="{Binding Path=AnswerB}"/>
+                CommandParameter="{Binding Path=AnswerB}">
+            <TextBlock Text="{Binding Path=AnswerB}" TextWrapping="Wrap" TextAlignment="Center"/>
+        </Button>
         
         <Button Grid.Row="7" Grid.Column="1"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
-                Margin="10"                        
-                Content="{Binding Path=AnswerC}" 
+                Margin="10"                       
                 Command="{Binding UserSelectedAnswerCommand}" 
-                CommandParameter="{Binding Path=AnswerC}"/>
+                CommandParameter="{Binding Path=AnswerC}">
+            <TextBlock Text="{Binding Path=AnswerC}" TextWrapping="Wrap" TextAlignment="Center"/>
+        </Button>
 
         <Button Grid.Row="7" Grid.Column="4"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
-                Margin="10"                        
-                Content="{Binding Path=AnswerD}"
+                Margin="10"                      
                 Command="{Binding UserSelectedAnswerCommand}" 
-                CommandParameter="{Binding Path=AnswerD}" Style="{DynamicResource QuizHiddenAnswerButton}"/>
+                CommandParameter="{Binding Path=AnswerD}">
+            <!--   Style="{DynamicResource QuizHiddenAnswerButton}"> -->
+            <TextBlock Text="{Binding Path=AnswerD}" TextWrapping="Wrap" TextAlignment="Center"/>
+        </Button>
 
         <TextBlock Grid.Row="6" Grid.Column="3"
                    Grid.ColumnSpan="2" Grid.RowSpan="2"
