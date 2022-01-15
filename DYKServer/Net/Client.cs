@@ -198,26 +198,26 @@ namespace DYKServer.Net
                 if (hub is not null)
                 {
                     var message = hub.ConvertToJson();
-                    Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+                    Program.BroadcastMessageToSpecificClient(this.ClientSocket, message, OpCodes.AddToLobbyRequest);
                     //add user to hub and send hubmodel
                 }
                 else
                 {
                     var message = "lobbyDoesntExists";
-                    Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+                    Program.BroadcastMessageToSpecificClient(this.ClientSocket, message, OpCodes.AddToLobbyRequest);
                     // lobby doesnt exist return to user
                 }                
             }else
             {
                 var message = "wrongJoinCode";
-                Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+                Program.BroadcastMessageToSpecificClient(this.ClientSocket, message, OpCodes.AddToLobbyRequest);
             }
         }
 
         private void SendHubListAsJson()
         {
             var lobbiesString = Program.GetHubListAsJson(this.GUID.ToString());
-            Program.BroadcastMessageToSpecificUser(this.GUID.ToString(),lobbiesString, OpCodes.LobbiesList);
+            Program.BroadcastMessageToSpecificClient(this.ClientSocket,lobbiesString, OpCodes.LobbiesList);
         }
 
         private void SendCategoriesList()
@@ -229,7 +229,7 @@ namespace DYKServer.Net
             Console.WriteLine(categoriesString);
             Console.WriteLine();
             Console.WriteLine();
-            Program.BroadcastMessageToSpecificUser(this.GUID.ToString(), categoriesString, OpCodes.CategoryListRequest);
+            Program.BroadcastMessageToSpecificClient(this.ClientSocket, categoriesString, OpCodes.CategoryListRequest);
         }
 
         private bool GetClientsLoginCredentials(bool status)

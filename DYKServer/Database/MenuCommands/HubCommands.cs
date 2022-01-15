@@ -33,6 +33,34 @@ namespace DYKServer.Database.MenuCommands
                         categories.Add(category);
                     }
                 }
+                connection.Close();
+            }
+            return categories;
+        }
+
+        public List<CategoryModel> GetCategoriesListNotArchived()
+        {
+            List<CategoryModel> categories = new List<CategoryModel>();
+            var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            string queryString = $"SELECT id, name, description FROM categories WHERE archive = 0";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        CategoryModel category = new CategoryModel
+                        (
+                            reader.GetInt32(reader.GetOrdinal("id")),
+                            (string)reader[1],
+                            (string)reader[2]
+                        );
+                        categories.Add(category);
+                    }
+                }
+                connection.Close();
             }
             return categories;
         }

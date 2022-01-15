@@ -181,8 +181,8 @@ namespace DYKServer
             {
                 foreach(var userToSend in hub.Users)
                 {
-                    BroadcastMessageToSpecificUser(
-                        userToSend.GUID.ToString(),
+                    BroadcastMessageToSpecificClient(
+                        user.ClientSocket,
                         JsonSerializer.Serialize(userToSend.UserModel.AppliedEnhancementsIDs),
                         OpCodes.SendStartEnhancedGameRoundTwo);
                 }
@@ -199,7 +199,7 @@ namespace DYKServer
             {
                 SummaryQueries sq = new SummaryQueries();
                 string msg = JsonSerializer.Serialize(sq.GetAllQuestionsFromGameHistoryWhereGameID(gameId));
-                BroadcastMessageToSpecificUser(uid, msg, OpCodes.SendGameHistoryDetails);
+                BroadcastMessageToSpecificClient(user.ClientSocket, msg, OpCodes.SendGameHistoryDetails);
             }else
             {
                 Console.WriteLine($"Something went wrong with sending GameHistoryDetails to user [{user.GUID}]");
@@ -219,7 +219,7 @@ namespace DYKServer
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             SummaryQueries sq = new SummaryQueries();
             string msg = JsonSerializer.Serialize(sq.GetAllGamesHistoriesWhereUserID(user.UserModel.ID));
-            BroadcastMessageToSpecificUser(uid, msg, OpCodes.SendgamesHistoriesList);
+            BroadcastMessageToSpecificClient(user.ClientSocket, msg, OpCodes.SendgamesHistoriesList);
         }
 
         internal static void CreateSummaryForTheGame(string uid, List<QuestionModel> questionsFromUser)
@@ -631,7 +631,7 @@ namespace DYKServer
             Console.WriteLine(message);
             foreach (var user in hub.Users)
             {
-                Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, opcode);
+                Program.BroadcastMessageToSpecificClient(user.ClientSocket, message, opcode);
             }
         }
 
@@ -641,7 +641,7 @@ namespace DYKServer
             {
                 if (user.Equals(newClient) == false)
                 {
-                    Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, opcode);
+                    Program.BroadcastMessageToSpecificClient(user.ClientSocket, message, opcode);
                 }
             }                
         }
@@ -651,12 +651,12 @@ namespace DYKServer
         static void InitializeCategories()
         {
             HubCommands hc = new HubCommands();
-            _categories = hc.GetCategoriesList(); 
+            _categories = hc.GetCategoriesListNotArchived(); 
             if(IsListEmpty(_categories))
             {
                 throw new ArgumentException(
                      "*** Categories do not exists in database ***\r\n" +
-                            "*** Please insert at least 1 categiry into DB ***"
+                            "*** Please insert at least 1 category into DB ***"
                 );
             }
         }
@@ -802,6 +802,14 @@ namespace DYKServer
             msgPacket.WriteOpCode(Convert.ToByte(opcode));
             msgPacket.WriteMessage(message);
             user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
+        }
+
+        public static void BroadcastMessageToSpecificClient(TcpClient client, string message, OpCodes opcode)
+        {
+            var msgPacket = new PacketBuilder();
+            msgPacket.WriteOpCode(Convert.ToByte(opcode));
+            msgPacket.WriteMessage(message);
+            client.Client.Send(msgPacket.GetPacketBytes());
         }
 
         public static void BroadcastDisconnect(string uid)
