@@ -102,6 +102,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             gameViewModel = new GameViewModel(mainViewModel, 1, DYKShared.Enums.GameTypes.EnhancedQuizGame, EnhancementsForMe);
             mainViewModel.CurrentView = gameViewModel;
             mainViewModel._server.receivedSendSecondHalfQuestionsEvent -= ChangeViewForRoundTwo;
+            UnInitializeViewChangerEvent();
         }
 
         private void DisplaySummary()
@@ -147,7 +148,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private void EnhancedGameChangeView()
         {
             EnhancementsForMe = ReadMyEnhancements();
-            UnInitializeViewChangerEvent();
         }
 
 /*        private List<InGameActions> ReadMyEnhancements()
