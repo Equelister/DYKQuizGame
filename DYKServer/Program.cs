@@ -226,6 +226,7 @@ namespace DYKServer
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();         //
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+            user.UserModel.IsReady = true;
 
             if(hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
             {
@@ -342,10 +343,28 @@ namespace DYKServer
             }
         }
 
+        private static bool IsEverybodyInHubEndedGame(Hub hub)
+        {
+            foreach(var user in hub.Users)
+            {
+                if(user.UserModel.IsReady == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         internal static void GiveSummaryIfGameEnded(Hub hub)
         {
             if(hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
             {
+                if(IsEverybodyInHubEndedGame(hub) == false)
+                {
+                    Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
+                    return;
+                }
+
                 hub.HubModel.PlayersThatEndedGame = 0;
                 GiveUserExtraPointsForTime(hub);
 
@@ -449,8 +468,12 @@ namespace DYKServer
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             hub.HubModel.IsGameStarted = true;
+            foreach (var usr in hub.Users)
+            {
+                usr.UserModel.IsReady = false;
+            }
 
-            if(gameType.Equals(GameTypes.EnhancedQuizGame))
+            if (gameType.Equals(GameTypes.EnhancedQuizGame))
             {
                 int i = 0;
                 OpCodes opcode;
@@ -549,6 +572,10 @@ namespace DYKServer
                 }
                 else
                 {
+                    if(hub.HubModel.IsGameStarted == true)
+                    {
+                        GiveSummaryIfGameEnded(hub);
+                    }
                     SendToEveryoneInLobby(
                                 hub,
                                 JsonSerializer.Serialize(hub.HubModel.Users),    //Send Updated UserList To Everyone in lobby
