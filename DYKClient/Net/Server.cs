@@ -50,6 +50,7 @@ namespace DYKClient.Net
         public event Action startEnhancedGameEvent;
         public event Action startNormalGameEvent;
         public event Action getGameSummaryEvent;
+        public event Action closeWindowEvent;
         public event Func<bool> receivedLoginResultEvent;
 
         
@@ -100,14 +101,20 @@ namespace DYKClient.Net
                     }catch(System.IO.IOException IOE)
                     {
                         Console.WriteLine(IOE.ToString());
+                        System.Windows.MessageBox.Show("Unexpected error occured. Please check your network connection.", "DidYouKnow", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                        closeWindowEvent.Invoke();
                         return;
                     }catch(System.InvalidOperationException invalidOperationE)
                     {
                         Console.WriteLine("Propably user was clicking to fast at login phase \r\n" + invalidOperationE.ToString());
+                        System.Windows.MessageBox.Show("Unexpected error occured. Please check your network connection.", "DidYouKnow", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                        closeWindowEvent.Invoke();
                         return;
                     }catch(Exception e)
                     {
                         Console.WriteLine(e.ToString());
+                        System.Windows.MessageBox.Show("Unexpected error occured. Please check your network connection.", "DidYouKnow", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                        closeWindowEvent.Invoke();
                     }
                     switch (opcode)
                     {

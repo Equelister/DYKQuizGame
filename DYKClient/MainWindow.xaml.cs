@@ -24,6 +24,7 @@ namespace DYKClient
         public MainWindow()
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            GlobalClass.Server.closeWindowEvent += CloseWindow;
             InitializeComponent();
         }
 
@@ -31,6 +32,14 @@ namespace DYKClient
         {
             if (e.ChangedButton == MouseButton.Left && Mouse.GetPosition(this).Y < 30)
                 this.DragMove();
+        }
+
+        public void CloseWindow()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                App.Current.Shutdown();
+            });
         }
     }
 }
