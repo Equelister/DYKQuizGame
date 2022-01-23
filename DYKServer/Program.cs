@@ -448,7 +448,7 @@ namespace DYKServer
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
-            //hub.HubModel.PlayersThatEndedGame = 0;
+            hub.HubModel.IsGameStarted = true;
 
             if(gameType.Equals(GameTypes.EnhancedQuizGame))
             {

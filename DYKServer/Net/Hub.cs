@@ -61,14 +61,14 @@ namespace DYKServer.Net
 
         public bool AddClient(Client client)
         {
-            if(Users.Count < HubModel.MaxSize)
+            if(Users.Count < HubModel.MaxSize && HubModel.IsGameStarted == false)
             {
                 Users.Add(client);
                 return true;
             }
             else
             {
-                Console.WriteLine($"Client [{client.GUID}] tried to connect into hub [{this.GUID}] but it was full.");
+                Console.WriteLine($"Client [{client.GUID}] tried to connect into hub [{this.GUID}] but it was full or during game.");
                 return false;
             }
         }
