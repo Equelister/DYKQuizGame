@@ -166,7 +166,7 @@
         </ListView>
 
         <Button Style="{DynamicResource StandardButtonStyle}" Height="80" 
-                Content="Pick" Grid.Column="2" Grid.Row="7"
+                Content="Wybierz" Grid.Column="2" Grid.Row="7"
                 Grid.ColumnSpan="4" Grid.RowSpan="2" Margin="15"
                 Command="{Binding PickedActionAndUserCommand}"
                 Visibility="{Binding Path=IsGameEndedVisibility}"/>
@@ -180,6 +180,15 @@
                    FontSize="36"
                    TextAlignment="Center"
                    Visibility="{Binding IsUserWaitingVisibility}"/>
+
+        <TextBlock Grid.Row="0" Grid.Column="0"
+                   Grid.RowSpan="2" Grid.ColumnSpan="8" 
+                   Text="Wybierz akcję przeszkadzającą dla pozostałych uczestników!"
+                   TextWrapping="Wrap"
+                   Style="{StaticResource StandardTextBlockStyle}"
+                   FontSize="36"
+                   TextAlignment="Center"
+                   Visibility="{Binding IsGameEndedVisibility}"/>
 
     </Grid>
 </UserControl>

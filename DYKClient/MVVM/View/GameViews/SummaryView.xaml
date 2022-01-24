@@ -59,7 +59,7 @@
         <TextBlock Text="Poprawnie odpowiedzieli" Style="{StaticResource StandardTextBlockStyle}" Grid.Column="10" Grid.ColumnSpan="4"
                    Visibility="{Binding Path=IsGameEndedVisibility}"/>
         <ListView Name="ResultsList" Grid.Row="1" Grid.RowSpan="7"
-                  Grid.Column="0" Grid.ColumnSpan="14" Margin="5" Padding="5"                   
+                  Grid.Column="0" Grid.ColumnSpan="14" Margin="15" Padding="5"                   
                   ItemsSource="{Binding Summary}"
                   HorizontalAlignment="Stretch"
                   Visibility="{Binding Path=IsGameEndedVisibility}"
@@ -71,7 +71,7 @@
                     <GridViewColumn Header="Question" Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=Question}" Style="{StaticResource StandardTextBlockStyle}"/>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=Question}" Style="{StaticResource StandardTextBlockStyle}" Padding="10"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -106,7 +106,7 @@
                 Grid.ColumnSpan="6" Grid.RowSpan="2"
                 Margin="20"
                 MinHeight="60"
-                Content="Go Back To Lobby"
+                Content="Powrót do poczekalni"
                 Command="{Binding GoBackToLobbyCommand}"
                 Style="{StaticResource StandardButtonStyle}"
                 Visibility="{Binding Path=IsGameEndedVisibility}"/>

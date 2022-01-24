@@ -52,22 +52,22 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="16">
 
-            <TextBlock Text="Nazwa gracza}" Margin="0,0,0,5"/>
+            <TextBlock Text="Nazwa gracza" Margin="0,0,0,5"/>
             <TextBox x:Name="firstNameTextBox" Style="{StaticResource CustomTextBox}"
                      MaxHeight="24"/>
 
-            <TextBlock Text="Email}" Margin="0,0,0,5"/>
+            <TextBlock Text="Email" Margin="0,0,0,5"/>
             <TextBox x:Name="emailTextBox" Style="{StaticResource CustomTextBox}"
                      MaxHeight="24"/>
 
-            <TextBlock Text="Password}" Margin="0,0,0,5"/>
+            <TextBlock Text="Hasło" Margin="0,0,0,5"/>
             <PasswordBox x:Name="passwordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}" MaxHeight="24"/>
 
-            <TextBlock Text="RetypePassword}" Margin="0,0,0,5"/>
+            <TextBlock Text="Powtórz hasło" Margin="0,0,0,5"/>
             <PasswordBox x:Name="retypePasswordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}" MaxHeight="24"/>
 
             <Button x:Name="registerButton" Style="{StaticResource StandardButtonStyle}"
-                    Content="Register}" 
+                    Content="Zarejestruj" 
                     HorizontalAlignment="Center" VerticalAlignment="Center" 
                     MinWidth="70"
                     Margin="0,0,0,10" Click="registerButton_Click"/>

@@ -268,7 +268,7 @@
                             Command="{Binding StartEnhancedGameCommand}"/>
                 </Grid>
             </DockPanel>
-            <TextBlock Text="JoinCode" Margin="5"
+            <TextBlock Text="Kod dołączenia" Margin="5"
                        Style="{StaticResource StandardTextBlockStyle}"/>
             <TextBlock Text="{Binding Path=Hub.JoinCode}" 
                        Style="{StaticResource StandardTextBlockStyle}"/>

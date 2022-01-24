@@ -22,11 +22,11 @@
             <StackPanel Grid.Row="15" Grid.Column="1" Grid.ColumnSpan="3" 
                         Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Button x:Name="LoginPageButton" Style="{StaticResource StandardButtonStyle}"
-                    Content="LoginPageButton"
+                    Content="Logowanie"
                     MinWidth="80" MinHeight="20" Width="Auto" Height="Auto" Margin="10,0,0,0" 
                     Click="LoginPageButton_Click"/>
                 <Button x:Name="RegisterPageButton" Style="{StaticResource StandardButtonStyle}"
-                    Content="RegisterPageButton" 
+                    Content="Rejestracja" 
                     MinWidth="80" MinHeight="25" Width="Auto" Height="Auto" Margin="10,0,0,0" 
                     Click="RegisterPageButton_Click"/>
             </StackPanel>

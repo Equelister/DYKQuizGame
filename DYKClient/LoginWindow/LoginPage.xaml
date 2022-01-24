@@ -17,7 +17,7 @@
             <TextBox Style="{StaticResource CustomTextBox}"
                      x:Name="emailTextBox" />
 
-            <TextBlock Text="Password" Margin="0,5,0,5"/>
+            <TextBlock Text="Hasło" Margin="0,5,0,5"/>
             <PasswordBox x:Name="passwordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}"/>
 
             <Button x:Name="loginButton" Style="{StaticResource StandardButtonStyle}" Content="Login" 

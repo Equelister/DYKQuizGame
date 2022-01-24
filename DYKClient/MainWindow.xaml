@@ -60,7 +60,7 @@
                         Grid.RowSpan="7">
 
                 <RadioButton x:Name="LobbiesRadioButton"
-                             Content="Lobbies"
+                             Content="Poczekalnie"
                              Foreground="White"
                              FontSize="18"
                              Style="{StaticResource MenuButtonStyle}"
@@ -68,29 +68,32 @@
                              Command="{Binding LobbiesViewCommand}"
                              IsEnabled="{Binding Path=MenuRadios}"/>
 
+                <RadioButton x:Name="GamesHistoriesRadioButton"
+                             Content="Historia Gier"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             Command="{Binding SummariesListViewCommand}"
+                             IsEnabled="{Binding Path=MenuRadios}"/>
+                
+                <RadioButton x:Name="HelpRadioButton"
+                             Content="Pomoc"
+                             Foreground="White"
+                             FontSize="18"
+                             Style="{StaticResource MenuButtonStyle}"
+                             Command="{Binding HelpViewCommand}"
+                             IsEnabled="{Binding Path=MenuRadios}"/>
+                
                 <RadioButton x:Name="AboutRadioButton"
-                             Content="About"
+                             Content="O Aplikacji"
                              Foreground="White"
                              FontSize="18"
                              Style="{StaticResource MenuButtonStyle}"
                              Command="{Binding AboutViewCommand}"
                              IsEnabled="{Binding Path=MenuRadios}"/>
 
-                <RadioButton x:Name="HelpRadioButton"
-                             Content="Help"
-                             Foreground="White"
-                             FontSize="18"
-                             Style="{StaticResource MenuButtonStyle}"
-                             Command="{Binding HelpViewCommand}"
-                             IsEnabled="{Binding Path=MenuRadios}"/>
 
-                <RadioButton x:Name="GamesHistoriesRadioButton"
-                             Content="Game History"
-                             Foreground="White"
-                             FontSize="18"
-                             Style="{StaticResource MenuButtonStyle}"
-                             Command="{Binding SummariesListViewCommand}"
-                             IsEnabled="{Binding Path=MenuRadios}"/>
+
             </StackPanel>
 
             <ContentControl Grid.Row="1" Grid.RowSpan="8"
