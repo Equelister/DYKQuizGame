@@ -8,10 +8,16 @@
              d:DataContext="{d:DesignInstance Type=gameviewmodels:SummaryViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Yellow">
+             Background="Transparent">
     <Grid>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -36,7 +42,7 @@
 
 
         <TextBlock Grid.Row="2" Grid.Column="1"
-                   Grid.RowSpan="3" Grid.ColumnSpan="6" 
+                   Grid.RowSpan="3" Grid.ColumnSpan="12" 
                    Text="Proszę czekać na zakończenie rozgrywki przez pozostałych uczestników!"
                    TextWrapping="Wrap"
                    Style="{StaticResource StandardTextBlockStyle}"
@@ -44,23 +50,50 @@
                    TextAlignment="Center"
                    Visibility="{Binding IsUserWaitingVisibility}"/>
 
-        <ListView Name="ResultsList" Grid.Row="0" Grid.RowSpan="7"
-                  Grid.Column="0" Grid.ColumnSpan="8" Margin="5" Padding="5"                   
+        <TextBlock Text="Pytanie" Style="{StaticResource StandardTextBlockStyle}" Grid.Column="2"
+                   Visibility="{Binding Path=IsGameEndedVisibility}"/>
+        <TextBlock Text="Odpowiedż" Style="{StaticResource StandardTextBlockStyle}" Grid.Column="5" Grid.ColumnSpan="3"
+                   Visibility="{Binding Path=IsGameEndedVisibility}"/>
+        <TextBlock Text="Najszybciej" Style="{StaticResource StandardTextBlockStyle}" Grid.Column="8" Grid.ColumnSpan="2"
+                   Visibility="{Binding Path=IsGameEndedVisibility}"/>
+        <TextBlock Text="Poprawnie odpowiedzieli" Style="{StaticResource StandardTextBlockStyle}" Grid.Column="10" Grid.ColumnSpan="4"
+                   Visibility="{Binding Path=IsGameEndedVisibility}"/>
+        <ListView Name="ResultsList" Grid.Row="1" Grid.RowSpan="7"
+                  Grid.Column="0" Grid.ColumnSpan="14" Margin="5" Padding="5"                   
                   ItemsSource="{Binding Summary}"
                   HorizontalAlignment="Stretch"
-                  Visibility="{Binding Path=IsGameEndedVisibility}">
+                  Visibility="{Binding Path=IsGameEndedVisibility}"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  >
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Question" 
-                                DisplayMemberBinding="{Binding Question}" Width="200"/>
-                    <GridViewColumn Header="Answer" 
-                                DisplayMemberBinding="{Binding Answer}" Width="100"/>
-                    <GridViewColumn Header="FastestAnswer" 
-                                DisplayMemberBinding="{Binding FastestAnswer}"  Width="100"/>
+                <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                    <GridViewColumn Header="Question" Width="400">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=Question}" Style="{StaticResource StandardTextBlockStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Answer" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=Answer}" Style="{StaticResource StandardTextBlockStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="FastestAnswer"  Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=FastestAnswer}" Style="{StaticResource StandardTextBlockStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="UsersNicknames" Width="auto" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <ItemsControl ItemsSource="{Binding UsersNicknames}">
+                                <ItemsControl ItemsSource="{Binding UsersNicknames}" Foreground="#6483e8" FontSize="18" FontWeight="SemiBold">
+
                                 </ItemsControl>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -69,21 +102,14 @@
             </ListView.View>
         </ListView>
 
-        <Button Grid.Column="2" Grid.Row="7"
-                Grid.ColumnSpan="4" Grid.RowSpan="2"
+        <Button Grid.Column="4" Grid.Row="7"
+                Grid.ColumnSpan="6" Grid.RowSpan="2"
                 Margin="20"
                 MinHeight="60"
                 Content="Go Back To Lobby"
                 Command="{Binding GoBackToLobbyCommand}"
                 Style="{StaticResource StandardButtonStyle}"
                 Visibility="{Binding Path=IsGameEndedVisibility}"/>
-
-
-
-
-
-
-
 
     </Grid>
 </UserControl>

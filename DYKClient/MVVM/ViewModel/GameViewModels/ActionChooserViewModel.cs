@@ -14,6 +14,36 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
     {
         public RelayCommand PickedActionAndUserCommand { get; set; }
 
+        private bool _gameInProgress = true;
+        public bool GameInProgress
+        {
+            get
+            {
+                return _gameInProgress;
+            }
+            set
+            {
+                _gameInProgress = value;
+                onPropertyChanged("GameInProgress");
+                onPropertyChanged("IsUserWaitingVisibility");
+                onPropertyChanged("IsGameEndedVisibility");
+            }
+        }
+        public System.Windows.Visibility IsUserWaitingVisibility
+        {
+            get
+            {
+                return GameInProgress ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+            }
+        }
+
+        public System.Windows.Visibility IsGameEndedVisibility
+        {
+            get
+            {
+                return GameInProgress ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+            }
+        }
 
         private ObservableCollection<InGameActions> _enhancements = new ObservableCollection<InGameActions>();
         public ObservableCollection<InGameActions> Enhancements
@@ -135,6 +165,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             Console.WriteLine("\r\n Enhancements: " + msg + "\r\n");
             Enhancements = InGameActions.JsonToObservableCollection(msg);
             onPropertyChanged("Enhancements");
+            GameInProgress = false;
         }
         
         private void ReceivedUsersList()

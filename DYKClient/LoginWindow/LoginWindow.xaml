@@ -16,7 +16,7 @@
 
     <Border CornerRadius="20" BorderThickness="3" BorderBrush="#000" Background="{StaticResource MainWindowsBrush}">
         <Grid>
-            <Button x:Name="closeButton" Grid.Column="4" Style="{StaticResource StandardButtonStyle}" 
+            <Button x:Name="closeButton" Grid.Column="4" Style="{StaticResource CustomCloseButtonStyle}" 
                 Click="CloseButton_Click"/>
 
             <StackPanel Grid.Row="15" Grid.Column="1" Grid.ColumnSpan="3" 

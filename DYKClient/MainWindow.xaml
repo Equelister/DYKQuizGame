@@ -20,6 +20,7 @@
 
     <Border Background="{StaticResource MainWindowsBrush}"
             CornerRadius="20">
+        
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -43,6 +44,10 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
+
+            <Button x:Name="closeButton" Grid.Column="6" Style="{StaticResource CustomCloseButtonStyle}" 
+                    Click="CloseButton_Click" Width="50" Height="30"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"/>
 
             <TextBlock Text="DidYouKnow"
                    Foreground="White"
@@ -78,7 +83,7 @@
                              Style="{StaticResource MenuButtonStyle}"
                              Command="{Binding HelpViewCommand}"
                              IsEnabled="{Binding Path=MenuRadios}"/>
-                
+
                 <RadioButton x:Name="GamesHistoriesRadioButton"
                              Content="Game History"
                              Foreground="White"
@@ -87,10 +92,6 @@
                              Command="{Binding SummariesListViewCommand}"
                              IsEnabled="{Binding Path=MenuRadios}"/>
             </StackPanel>
-
-            <TextBox Grid.Column="1"
-                     Text="123"
-                     Style="{StaticResource TextBoxStyle}"/>
 
             <ContentControl Grid.Row="1" Grid.RowSpan="8"
                             Grid.Column="1" Grid.ColumnSpan="6"

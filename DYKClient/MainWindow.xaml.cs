@@ -41,5 +41,15 @@ namespace DYKClient
                 App.Current.Shutdown();
             });
         }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var Result = MessageBox.Show("Did You Know", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (Result == MessageBoxResult.Yes)
+            {
+                SystemCommands.CloseWindow(this);
+            }
+        }
     }
 }

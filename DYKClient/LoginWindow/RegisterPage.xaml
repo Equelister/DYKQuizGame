@@ -53,10 +53,12 @@
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="16">
 
             <TextBlock Text="Nazwa gracza}" Margin="0,0,0,5"/>
-            <TextBox x:Name="firstNameTextBox" Style="{StaticResource TextBoxStyle}" MaxHeight="24"/>
+            <TextBox x:Name="firstNameTextBox" Style="{StaticResource CustomTextBox}"
+                     MaxHeight="24"/>
 
             <TextBlock Text="Email}" Margin="0,0,0,5"/>
-            <TextBox x:Name="emailTextBox" Style="{StaticResource TextBoxStyle}" MaxHeight="24"/>
+            <TextBox x:Name="emailTextBox" Style="{StaticResource CustomTextBox}"
+                     MaxHeight="24"/>
 
             <TextBlock Text="Password}" Margin="0,0,0,5"/>
             <PasswordBox x:Name="passwordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}" MaxHeight="24"/>

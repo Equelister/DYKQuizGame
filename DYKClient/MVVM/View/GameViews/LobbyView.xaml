@@ -3,12 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DYKClient.MVVM.View.GameViews"
+             xmlns:local="clr-namespace:DYKClient.MVVM.View"
+             xmlns:converters="clr-namespace:DYKClient.MVVM.ViewModel.Converters"
              xmlns:gameviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
              d:DataContext="{d:DesignInstance Type=gameviewmodels:LobbyViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Purple">
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <converters:BoolToObjConverter x:Key="boolConverter"/>
+    </UserControl.Resources>
     
     <Grid>
         <Grid.ColumnDefinitions>
@@ -34,12 +39,29 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <ListView Grid.Column="4" Grid.ColumnSpan="4"
+
+        <Grid Grid.Column="4" Grid.ColumnSpan="4"
                   Grid.Row="5" Grid.RowSpan="4"
-                  Margin="5"
+                  Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Gracze" Grid.Row="0"
+                       Style="{StaticResource StandardTextBlockStyle}"
+                       FontWeight="ExtraBold"
+                       HorizontalAlignment="Center"/>
+
+            <ListView Grid.Row="1"
                   Padding="5"
                   SelectionMode="Single"
-                  ItemsSource="{Binding Path=Hub.Users}" HorizontalAlignment="Stretch">
+                  ItemsSource="{Binding Path=Hub.Users}" 
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  Background="Transparent"
+                  BorderThickness="0">
+                <!--
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Username" Width="auto" 
@@ -56,14 +78,79 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
-        </ListView>
+            -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Transparent" BorderThickness="3" Margin="2" CornerRadius="8" Padding="2" >
+                            <StackPanel >
+                                <TextBlock Text="{Binding Username}" FontSize="14" Margin="0 0 0 5" FontWeight="SemiBold"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Liczba rozegranych gier" FontSize="12" HorizontalAlignment="Left" 
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                                    <TextBlock Text="{Binding Total_games}" FontSize="12" HorizontalAlignment="Right" Grid.Column="1"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Wynik ostatniej gry" FontSize="12" HorizontalAlignment="Left"
+                                           Style="{StaticResource StandardTextBlockStyle}" />
+                                    <TextBlock Text="{Binding GameScore}" FontSize="12" HorizontalAlignment="Right" Grid.Column="1"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Gotowość" FontSize="12" HorizontalAlignment="Left"
+                                           Style="{StaticResource StandardTextBlockStyle}" />
+                                    <TextBlock Text="{Binding Path=IsReady, Converter={StaticResource boolConverter}}"
+                                           Style="{StaticResource StandardTextBlockStyle}"
+                                           FontSize="12" HorizontalAlignment="Right" Grid.Column="1"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 
-        <ListView Grid.Row="5" Grid.RowSpan="4"
-                  Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Padding="5"
+            </ListView>
+        </Grid>
+
+
+
+
+
+        <Grid Grid.Row="5" Grid.RowSpan="4"
+              Grid.Column="0" Grid.ColumnSpan="4" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Text="Kategorie" Grid.Row="0"
+                       Style="{StaticResource StandardTextBlockStyle}"
+                       FontWeight="ExtraBold"
+                       HorizontalAlignment="Center"/>
+            
+            <ListView Padding="5" Grid.Row="1"
                   SelectionMode="Single"
                   ItemsSource="{Binding Path=Categories}" 
                   HorizontalAlignment="Stretch"
-                  SelectedItem="{Binding Path=SelectedCategory}">
+                  VerticalAlignment="Stretch"
+                  
+                  HorizontalContentAlignment="Stretch"
+                  SelectedItem="{Binding Path=SelectedCategory}"   
+                  Background="Transparent"
+                  BorderThickness="0">
+ <!--           
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="auto" 
@@ -74,7 +161,26 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
+-->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Transparent" BorderThickness="0" Margin="2" CornerRadius="8" Padding="2" >
+                        <StackPanel >
+                            <TextBlock Text="{Binding Name}" FontSize="14" Margin="0 0 0 5" Style="{StaticResource StandardTextBlockStyle}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Description}" FontSize="12" HorizontalAlignment="Left"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
+        </Grid>
 
 
         <StackPanel Grid.Row="0" Grid.RowSpan="3"  
@@ -85,7 +191,8 @@
                    Foreground="#6483e8">
                 Nazwa poczekalni
             </Label>
-            <TextBox x:Name="lobbyNameTextBox" 
+            <TextBox Style="{StaticResource CustomTextBox}"
+                     x:Name="lobbyNameTextBox" 
                              TextWrapping="Wrap" 
                              HorizontalAlignment="Center"
                              MinWidth="160"
@@ -116,7 +223,7 @@
                 </StackPanel>
             </DockPanel>
 
-            <Label Content="Lobby settings not saved!" 
+            <Label Content="Ustawienia nie są zapisane!" 
                    Visibility="{Binding Path=IsHubChangedVisibility}"
                    Foreground="#F483e8"
                    FontWeight="Bold"

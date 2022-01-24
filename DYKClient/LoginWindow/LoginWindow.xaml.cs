@@ -52,5 +52,10 @@ namespace DYKClient.LoginWindow
             if (e.ChangedButton == MouseButton.Left && Mouse.GetPosition(this).Y < 30)
                 this.DragMove();
         }
+
+        private void LoginWindowFrameTopBar_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+
+        }
     }
 }

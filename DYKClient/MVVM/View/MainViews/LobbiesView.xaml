@@ -8,7 +8,7 @@
              d:DataContext="{d:DesignInstance Type=viewModel:LobbiesViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Purple">
+             Background="Transparent">
 
 
 
@@ -40,7 +40,8 @@
                     HorizontalAlignment="Stretch"
                     Width="auto"
                     >
-            <TextBox Margin="15" 
+            <TextBox Style="{StaticResource CustomTextBox}"
+                     Margin="15" 
                      Text="{Binding Path=HubFilter}"
                      x:Name="filterTextBox"
                      MinWidth="250" MaxHeight="20" TextAlignment="Left"/>
@@ -60,21 +61,36 @@
                                 Mode=TwoWay, 
                                 UpdateSourceTrigger=PropertyChanged}"
                   SelectedItem="{Binding Path=SelectedHub}"
-                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+                  Background="Transparent"
+                  BorderThickness="0">
 
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Nazwa" Width="auto" 
-                        DisplayMemberBinding="{Binding Name}" >
+                <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                    <GridViewColumn Header="Nazwa" Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Name}" Style="{StaticResource StandardTextBlockStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Kategoria" Width="auto" 
-                        DisplayMemberBinding="{Binding Category.Name}" >
+                    <GridViewColumn Header="Kategoria" Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Category.Name}" Style="{StaticResource StandardTextBlockStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Ilość Graczy" Width="auto" 
-                        DisplayMemberBinding="{Binding LobbySlotsStr}" >
+                    <GridViewColumn Header="Ilość Graczy" Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=LobbySlotsStr}" Style="{StaticResource StandardTextBlockStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
+            
         </ListView>
 
         <StackPanel VerticalAlignment="Center"
@@ -113,7 +129,8 @@
             <TextBlock Text="Wpisz kod poczekalni"
                        Style="{StaticResource StandardTextBlockStyle}"/>
 
-            <TextBox x:Name="JoinCodeTextBox"
+            <TextBox Style="{StaticResource CustomTextBox}"
+                     x:Name="JoinCodeTextBox"
                      Margin="3"
                      Text="{Binding Path=JoinCode}"
                      />

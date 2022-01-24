@@ -354,61 +354,69 @@ namespace DYKServer
 
         internal static void GiveSummaryIfGameEnded(Hub hub)
         {
-            if(hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
+            if (hub.Users.Count > 0)
             {
-                if(IsEverybodyInHubEndedGame(hub) == false)
+                if (hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
+                {
+                    if (IsEverybodyInHubEndedGame(hub) == false)
+                    {
+                        Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
+                        return;
+                    }
+
+                    hub.HubModel.PlayersThatEndedGame = 0;
+                    GiveUserExtraPointsForTime(hub);
+
+                    if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundOne))
+                    {
+                        List<UserModel> usersSummary = new List<UserModel>();
+                        foreach (var user in hub.Users)
+                        {
+                            UserModel usertoSumm = new UserModel();
+                            usertoSumm.Username = user.UserModel.Username;
+                            usertoSumm.GameScore = user.UserModel.GameScore;
+                            usersSummary.Add(usertoSumm);
+                        }
+                        SendToEveryoneInLobby(
+                               hub,
+                               JsonSerializer.Serialize(usersSummary),
+                               OpCodes.SendUsersPartialSummary);
+
+                        List<InGameActions> enhancementsToSend = InGameActions.GetRandomAmoutOfActions(InGameActions.GenerateActions(), hub.Users.Count);
+
+                        SendToEveryoneInLobby(
+                                hub,
+                                JsonSerializer.Serialize(enhancementsToSend),
+                                OpCodes.SendMidGameEnhancements);
+
+                        hub.HubModel.GameRound = (int)GameTypes.EnhancedQuizGameRoundTwo; // For QuizEnhancedMode
+                        hub.HubModel.PlayersThatEndedGame = 0;
+                    }
+                    else if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo) || hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
+                    {
+                        SendToEveryoneInLobby(
+                               hub,
+                               JsonSerializer.Serialize(hub.Summary),
+                               OpCodes.SendSummary);
+                        MakeAnUpdateOnALobbyAfterGame(hub);
+                        Task.Run(() =>
+                        {
+                            InsertSummaryToDB(hub);
+                            hub.Summary.Clear();
+                            hub.Questions.Clear();
+                        });
+                    }
+                }
+                else
                 {
                     Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
                     return;
                 }
-
-                hub.HubModel.PlayersThatEndedGame = 0;
-                GiveUserExtraPointsForTime(hub);
-
-                if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundOne))
-                {
-                    List<UserModel> usersSummary = new List<UserModel>();
-                    foreach(var user in hub.Users)
-                    {
-                        UserModel usertoSumm = new UserModel();
-                        usertoSumm.Username = user.UserModel.Username;
-                        usertoSumm.GameScore = user.UserModel.GameScore;
-                        usersSummary.Add(usertoSumm);
-                    }
-                    SendToEveryoneInLobby(
-                           hub,
-                           JsonSerializer.Serialize(usersSummary),
-                           OpCodes.SendUsersPartialSummary);
-
-                    List<InGameActions> enhancementsToSend = InGameActions.GetRandomAmoutOfActions(InGameActions.GenerateActions(), hub.Users.Count);
-
-                    SendToEveryoneInLobby(
-                            hub,
-                            JsonSerializer.Serialize(enhancementsToSend),
-                            OpCodes.SendMidGameEnhancements);
-
-                    hub.HubModel.GameRound = (int)GameTypes.EnhancedQuizGameRoundTwo; // For QuizEnhancedMode
-                    hub.HubModel.PlayersThatEndedGame = 0;
-                }
-                else if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo) || hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
-                {
-                    SendToEveryoneInLobby(
-                           hub,
-                           JsonSerializer.Serialize(hub.Summary),
-                           OpCodes.SendSummary);
-                    MakeAnUpdateOnALobbyAfterGame(hub);
-                    Task.Run(() =>
-                    {
-                        InsertSummaryToDB(hub);
-                        hub.Summary.Clear();
-                        hub.Questions.Clear();
-                    });
-                }
-            }
-            else
+            }else
             {
-                Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
-                return;
+                hub.HubModel.IsGameStarted = false;
+                hub.HubModel.PlayersThatEndedGame = 0;
+                hub.HubModel.GameRound = (int)GameTypes.NormalQuizGame;
             }
         }
 

@@ -7,7 +7,7 @@
              xmlns:gameviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
              d:DataContext="{d:DesignInstance Type=gameviewmodels:GameViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="Pink">
+             d:DesignHeight="450" d:DesignWidth="800" Background="Transparent">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -43,7 +43,8 @@
                    TextWrapping="Wrap"
                    Text="{Binding Path=CurrentQuestion.Question}"/>
 
-        <Button Grid.Row="5" Grid.Column="1"
+        <Button Style="{DynamicResource StandardButtonStyle}" Height="80" 
+                Grid.Row="5" Grid.Column="1"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
                 Margin="10"                        
                 Command="{Binding UserSelectedAnswerCommand}"
@@ -51,15 +52,16 @@
             <TextBlock Text="{Binding Path=AnswerA}" TextWrapping="Wrap" TextAlignment="Center"/>
         </Button>
 
-        <Button Style="{DynamicResource QuizStandardAnswerButton}" Grid.Row="5" Grid.Column="4"
+        <Button Style="{DynamicResource StandardButtonStyle}" Height="80" Grid.Row="5" Grid.Column="4"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
                 Margin="10"                     
                 Command="{Binding UserSelectedAnswerCommand}" 
                 CommandParameter="{Binding Path=AnswerB}">
             <TextBlock Text="{Binding Path=AnswerB}" TextWrapping="Wrap" TextAlignment="Center"/>
         </Button>
-        
-        <Button Grid.Row="7" Grid.Column="1"
+
+        <Button Style="{DynamicResource StandardButtonStyle}" Height="80" 
+                Grid.Row="7" Grid.Column="1"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
                 Margin="10"                       
                 Command="{Binding UserSelectedAnswerCommand}" 
@@ -67,7 +69,8 @@
             <TextBlock Text="{Binding Path=AnswerC}" TextWrapping="Wrap" TextAlignment="Center"/>
         </Button>
 
-        <Button Grid.Row="7" Grid.Column="4"
+        <Button Style="{DynamicResource StandardButtonStyle}" Height="80" 
+                Grid.Row="7" Grid.Column="4"
                 Grid.RowSpan="2" Grid.ColumnSpan="3"
                 Margin="10"                      
                 Command="{Binding UserSelectedAnswerCommand}" 

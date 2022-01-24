@@ -4,11 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DYKClient.MVVM.View.GameViews"
+             xmlns:converters="clr-namespace:DYKClient.MVVM.ViewModel.Converters"
              xmlns:gameviewmodels="clr-namespace:DYKClient.MVVM.ViewModel.GameViewModels"
              d:DataContext="{d:DesignInstance Type=gameviewmodels:ActionChooserViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Brown">
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <converters:BoolToObjConverter x:Key="boolConverter"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -61,12 +67,18 @@
         
 
         <ListView Grid.Column="4" Grid.ColumnSpan="4"
-                  Grid.Row="3" Grid.RowSpan="4"
+                  Grid.Row="2" Grid.RowSpan="4"
                   Margin="5"
                   Padding="5"
                   SelectionMode="Single"
-                  ItemsSource="{Binding Path=Users}" HorizontalAlignment="Stretch"
-                  SelectedItem="{Binding Path=SelectedUser}">
+                  ItemsSource="{Binding Path=Users}" 
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  SelectedItem="{Binding Path=SelectedUser}"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  Visibility="{Binding Path=IsGameEndedVisibility}">
+            <!--
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Username" Width="auto" 
@@ -79,15 +91,53 @@
                         DisplayMemberBinding="{Binding IsReady}" >
                     </GridViewColumn>
                 </GridView>
-            </ListView.View>
+            </ListView.View> -->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Transparent" BorderThickness="3" Margin="2" CornerRadius="8" Padding="2" >
+                        <StackPanel >
+                            <TextBlock Text="{Binding Username}" FontSize="14" Margin="0 0 0 5" FontWeight="SemiBold"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Wynik ostatniej gry" FontSize="12" HorizontalAlignment="Left"
+                                           Style="{StaticResource StandardTextBlockStyle}" />
+                                <TextBlock Text="{Binding GameScore}" FontSize="12" HorizontalAlignment="Right" Grid.Column="1"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Gotowość" FontSize="12" HorizontalAlignment="Left"
+                                           Style="{StaticResource StandardTextBlockStyle}" />
+                                <TextBlock Text="{Binding Path=IsReady, Converter={StaticResource boolConverter}}"
+                                           Style="{StaticResource StandardTextBlockStyle}"
+                                           FontSize="12" HorizontalAlignment="Right" Grid.Column="1"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
         </ListView>
 
-        <ListView Grid.Row="3" Grid.RowSpan="4"
+        <ListView Grid.Row="2" Grid.RowSpan="4"
                   Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Padding="5"
                   SelectionMode="Single"
                   ItemsSource="{Binding Path=Enhancements}" 
                   HorizontalAlignment="Stretch"
-                  SelectedItem="{Binding Path=SelectedEnhancement}">
+                  HorizontalContentAlignment="Stretch"
+                  SelectedItem="{Binding Path=SelectedEnhancement}"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  Visibility="{Binding Path=IsGameEndedVisibility}">
+            <!--
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="auto" 
@@ -98,13 +148,38 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
+            -->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Transparent" BorderThickness="3" Margin="2" CornerRadius="8" Padding="2" >
+                        <StackPanel >
+                            <TextBlock Text="{Binding Name}" FontSize="14" Margin="0 0 0 5" FontWeight="SemiBold"
+                                           Style="{StaticResource StandardTextBlockStyle}"/>
+                            <TextBlock Text="{Binding Description}" FontSize="12" HorizontalAlignment="Left"
+                                           Style="{StaticResource StandardTextBlockStyle}" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
         </ListView>
 
-        <Button Content="Pick" Grid.Column="2" Grid.Row="7"
+        <Button Style="{DynamicResource StandardButtonStyle}" Height="80" 
+                Content="Pick" Grid.Column="2" Grid.Row="7"
                 Grid.ColumnSpan="4" Grid.RowSpan="2" Margin="15"
-                Command="{Binding PickedActionAndUserCommand}"/>
+                Command="{Binding PickedActionAndUserCommand}"
+                Visibility="{Binding Path=IsGameEndedVisibility}"/>
 
 
+        <TextBlock Grid.Row="2" Grid.Column="0"
+                   Grid.RowSpan="3" Grid.ColumnSpan="8" 
+                   Text="Proszę czekać na zakończenie rozgrywki przez pozostałych uczestników!"
+                   TextWrapping="Wrap"
+                   Style="{StaticResource StandardTextBlockStyle}"
+                   FontSize="36"
+                   TextAlignment="Center"
+                   Visibility="{Binding IsUserWaitingVisibility}"/>
 
     </Grid>
 </UserControl>

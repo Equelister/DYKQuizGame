@@ -14,7 +14,8 @@
 
         <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="8">
             <TextBlock Text="Email" Margin="0,5,0,5"/>
-            <TextBox x:Name="emailTextBox" />
+            <TextBox Style="{StaticResource CustomTextBox}"
+                     x:Name="emailTextBox" />
 
             <TextBlock Text="Password" Margin="0,5,0,5"/>
             <PasswordBox x:Name="passwordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}"/>

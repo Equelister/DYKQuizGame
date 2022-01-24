@@ -184,5 +184,28 @@
         </Setter>
     </Style>
 
+    <LinearGradientBrush x:Key="GrayRedGradientBrush" StartPoint="1,0" EndPoint="1,1">
+        <GradientStop Color="#cacbcc" Offset="0" />
+        <GradientStop Color="#8a0000" Offset="0.9" />
+        <GradientStop Color="#cacbcc" Offset="1" />
+    </LinearGradientBrush>
+    
+    <Style x:Key="CustomCloseButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource GrayRedGradientBrush}"/>
+        <Setter Property="Foreground" Value="#000000"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Content" Value="X"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="8" BorderThickness="3" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>

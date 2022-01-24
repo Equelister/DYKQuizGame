@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=gamehistoryviewmodels:SummariesListViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Pink">
+             Background="Transparent">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -42,15 +42,23 @@
                   Margin="5"
                   Padding="5"
                   SelectionMode="Single"
+                  HorizontalContentAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Background="Transparent"
+                  BorderThickness="0"
                   ItemsSource="{Binding Path=GameHistories, 
                                 Mode=TwoWay, 
                                 UpdateSourceTrigger=PropertyChanged}"
                   SelectedItem="{Binding Path=SelectedGameHistory}">
 
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Data gry" Width="auto" 
-                        DisplayMemberBinding="{Binding CreatedAt}" >
+                <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                    <GridViewColumn Header="Data gry" Width="500">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=CreatedAt}" Style="{StaticResource StandardTextBlockStyle}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
