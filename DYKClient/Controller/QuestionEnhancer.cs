@@ -65,7 +65,7 @@ namespace DYKClient.Controller
                 {
                     int place = rand.Next(sb.Length);
                     sb.Remove(place, 1);
-                    sb.Insert(place, ' ');
+                    sb.Insert(place, '_');
                 }
             }
             return sb.ToString();
