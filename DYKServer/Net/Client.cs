@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DYKServer.Net
 {
-    class Client
+    public class Client
     {
         public Guid GUID { get; set; }
         public UserModel UserModel { get; set; }
@@ -164,7 +164,18 @@ namespace DYKServer.Net
 
         private void SetThisPlayerReady()
         {
-            Program.SetThisPlayerReady(GUID.ToString());
+            Hub hub = null;
+            bool result = Program.SetThisPlayerReady(GUID.ToString(), out hub);
+            if(result)
+            {
+                Program.SendToEveryoneInLobby(
+                        hub,
+                        System.Text.Json.JsonSerializer.Serialize(hub.HubModel.Users),       //Send Updated UserList To Everyone in lobby
+                        OpCodes.SendUpdatedPlayersList);
+            }else
+            {
+                Console.WriteLine($"User [{this.GUID}] can't be or already is ready");
+            }
         }
 
         private void RemoveUserFromHub()
@@ -176,16 +187,14 @@ namespace DYKServer.Net
         {
             var message = _packetReader.ReadMessage();
             HubModel newHub = HubModel.JsonToSingleLobby(message);
-            Program.UpdateReceivedLobbyInfo(GUID.ToString(), newHub);
-
-
-            /*message = newHub.ConvertToJson();
-            foreach (var user in newHub.Users)
+            Hub hub = Program.UpdateReceivedLobbyInfo(GUID.ToString(), newHub);
+            if (hub is not null)
             {
-                Program.BroadcastMessageToSpecificUser(GUID.ToString(), message, OpCodes.AddToLobbyRequest);
+                Program.SendToEveryoneInLobby(
+                    hub,
+                    hub.HubModel.ConvertToJson(),
+                    OpCodes.SendUpdatedLobbyInfo);
             }
-
-            throw new NotImplementedException();*/
         }
 
         private void AddToLobby()
@@ -252,6 +261,14 @@ namespace DYKServer.Net
             Program.BroadcastMessage($"{DateTime.Now} [{Username}]: {message}");*/
         }
 
+
+
+
+
+        public Client()
+        {
+
+        }
         
     }
 }

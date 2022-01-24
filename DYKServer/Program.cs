@@ -37,22 +37,19 @@ namespace DYKServer
         SendSecondHalfQuestions = 36
     }
 
-    class Program
+    public class Program
     {
-        static List<Client> _users;
-        static List<Hub> _hubs;
-        static List<CategoryModel> _categories;
+        public static List<Client> _users = new List<Client>();
+        public static List<Hub> _hubs = new List<Hub>();
+        public static List<CategoryModel> _categories = new List<CategoryModel>();
         static TcpListener _listener;
         private readonly static int _numberOfQuesions = 6; //Only even
                 
 
         static void Main(string[] args)
         {
-            _users = new List<Client>();
-            _hubs = new List<Hub>();
-            _categories = new List<CategoryModel>();
             InitializeCategories();
-            InitializeDefaultHubs();
+            InitializeDefaultHubs(15);
             OutPutInitializeToConsole();
 
             Task.Run(() => {
@@ -108,10 +105,10 @@ namespace DYKServer
         /// <summary>
         /// HUBS
         /// </summary>
-        static void InitializeDefaultHubs()
+        static void InitializeDefaultHubs(int hubCount)
         {
 
-            for(int i = 0; i<15;i++)
+            for(int i = 0; i<hubCount; i++)
             {
                 Hub newHub = new Hub(i + 1 + ". Hub", GetFirstCategoryFromList());
                 newHub.IsDefault = true;
@@ -187,7 +184,7 @@ namespace DYKServer
                         OpCodes.SendStartEnhancedGameRoundTwo);
                 }
                 hub.HubModel.PlayersThatEndedGame = 0;
-                StartQuizGame(hub.Users.ElementAt(0).GUID.ToString(), GameTypes.EnhancedQuizGame);      //////////////////////////////////////////////////////////////////////////////
+                StartQuizGame(hub.Users.ElementAt(0).GUID.ToString(), GameTypes.EnhancedQuizGame);
             }
         }
 
@@ -224,7 +221,7 @@ namespace DYKServer
 
         internal static void CreateSummaryForTheGame(string uid, List<QuestionModel> questionsFromUser)
         {
-            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();         //
+            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             user.UserModel.IsReady = true;
 
@@ -239,7 +236,7 @@ namespace DYKServer
         }
 
         internal static void CreateFullSummaryForTheGame(List<QuestionModel> questionsFromUser, Client user, Hub hub)
-            {                         // To separate method that collects from users questionsList => compares best times and adds usersnickanmes to summary.nickanmes list
+            {
             hub.HubModel.PlayersThatEndedGame++;
 
             if (hub.Summary.Count <= 0)
@@ -343,7 +340,7 @@ namespace DYKServer
             }
         }
 
-        private static bool IsEverybodyInHubEndedGame(Hub hub)
+        public static bool IsEverybodyInHubEndedGame(Hub hub)
         {
             foreach(var user in hub.Users)
             {
@@ -459,7 +456,7 @@ namespace DYKServer
 
         private static void UpdateDBWithUserScoresAsync(Hub hub)
         {
-            Console.WriteLine("\r\n UpdateDBWithUserScoresAsync => Please implement me!");                      //////////////////////////
+            Console.WriteLine("\r\n UpdateDBWithUserScoresAsync => Please implement me!");
             Console.WriteLine("throw new NotImplementedException();\r\n");
         }
 
@@ -498,7 +495,7 @@ namespace DYKServer
                 }
                 SendToEveryoneInLobby(
                     hub,
-                    JsonSerializer.Serialize(halfQuestions),       //Send Questions To Everyone in lobby
+                    JsonSerializer.Serialize(halfQuestions),
                     opcode);                
             }
             else if (gameType.Equals(GameTypes.NormalQuizGame))
@@ -506,30 +503,10 @@ namespace DYKServer
                 hub.HubModel.GameRound = (int)GameTypes.NormalQuizGame;
                 SendToEveryoneInLobby(
                                     hub,
-                                    JsonSerializer.Serialize(hub.Questions),       //Send Questions To Everyone in lobby
+                                    JsonSerializer.Serialize(hub.Questions),
                                     OpCodes.SendQuestions);
             }
         }
-/*
-        internal static void StartQuizGame(string uid)
-        {
-            Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
-            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
-            QuestionsReceiver qr = new QuestionsReceiver();
-            hub.Questions = qr.GetRandomQuestions(hub.HubModel.Category.ID, _numberOfQuesions);
-            List<QuestionModel> halfQuestions = new List<QuestionModel>();
-            for(int i = 0; i<_numberOfQuesions/2; i++ )
-            {
-                halfQuestions.Add(hub.Questions.ElementAt(i));
-            }
-
-            SendToEveryoneInLobby(
-                                hub,
-                                JsonSerializer.Serialize(halfQuestions),       //Send Questions To Everyone in lobby
-                                OpCodes.SendQuestions);
-        }*/
-
-
 
 
 
@@ -540,19 +517,19 @@ namespace DYKServer
             return Hub.PublicLobbiesToSendCreateJson(_hubs);
         }
 
-        internal static void SetThisPlayerReady(string uid)
-        {
+        public static bool SetThisPlayerReady(string uid, out Hub hub)
+        {            
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
-            Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
+            hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             if (hub is not null && user.UserModel.IsReady == false)
             {
                 user.UserModel.IsReady = true;
-                SendToEveryoneInLobby(
-                                hub,
-                                JsonSerializer.Serialize(hub.HubModel.Users),       //Send Updated UserList To Everyone in lobby
-                                OpCodes.SendUpdatedPlayersList);
+                return true;
             }
-            Console.WriteLine($"User [{uid}] can't be or already is ready");
+            else
+            {
+                return false;
+            }
         }
 
         public static void RemoveUserFromHub(string uid, UserModel userModel)
@@ -578,7 +555,7 @@ namespace DYKServer
                     }
                     SendToEveryoneInLobby(
                                 hub,
-                                JsonSerializer.Serialize(hub.HubModel.Users),    //Send Updated UserList To Everyone in lobby
+                                JsonSerializer.Serialize(hub.HubModel.Users),
                                 OpCodes.SendUpdatedPlayersList);
                 }
             }
@@ -590,7 +567,14 @@ namespace DYKServer
 
         public static HubModel AddUserToHub(int receivedJoinCode, string uid)
         {
-            Hub hub = _hubs.Where(x => x.HubModel.JoinCode == receivedJoinCode).FirstOrDefault();
+            Hub hub;
+            try
+            {
+                hub = _hubs.Where(x => x.HubModel.JoinCode == receivedJoinCode).FirstOrDefault();
+            }catch(Exception e)
+            {
+                hub = null;
+            }
             if (hub is not null)
             {
                 Client newClient = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
@@ -620,40 +604,41 @@ namespace DYKServer
             return null;
         }
 
-        public static void UpdateReceivedLobbyInfo(string UID, HubModel newHub)
+        public static Hub UpdateReceivedLobbyInfo(string UID, HubModel newHub)
         {
             Hub hub = new Hub(newHub);
             if(hub.HubModel.JoinCode == 0)
             {
-                hub.HubModel.JoinCode = hub.GenerateJoinCode();
+                if(_hubs.Count > 8999)
+                {
+                    Console.WriteLine("Reached Full Server Capacity! Cannot create new Hub.");
+                    return null;
+                }
+                /*hub.HubModel.JoinCode = */hub.GenerateJoinCode();
                 CheckHubUniqueJoinCodeSingle(hub);
                 Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
+                if(user is null)
+                {
+                    Console.WriteLine("User doesnt exists.");
+                    return null;
+                }
                 hub.Users = new List<Client>();
                 hub.HubModel.Users = new List<UserModel>();
                 hub.AddClient(user);
                 hub.HubModel.Users.Add(user.UserModel);
                 _hubs.Add(hub);
-            }else
+            }
+            else
             {
                 hub = _hubs.Where(x => x.HubModel.JoinCode == newHub.JoinCode).FirstOrDefault();
                 var usersList = hub.HubModel.Users;
                 hub.HubModel = newHub;
                 hub.HubModel.Users = usersList;
             }
-
-
-            SendToEveryoneInLobby(
-                    hub,
-                    hub.HubModel.ConvertToJson(),
-                    OpCodes.SendUpdatedLobbyInfo);
-/*                            var message = hub.HubModel.ConvertToJson();
-            foreach (var user in hub.Users)
-            {
-                Program.BroadcastMessageToSpecificUser(user.GUID.ToString(), message, OpCodes.SendUpdatedLobbyInfo);
-            }*/
+            return hub;
         }
 
-        private static void SendToEveryoneInLobby(Hub hub, string message, OpCodes opcode)
+        public static void SendToEveryoneInLobby(Hub hub, string message, OpCodes opcode)
         {
             Console.WriteLine(message);
             foreach (var user in hub.Users)
@@ -662,7 +647,7 @@ namespace DYKServer
             }
         }
 
-        private static void SendToEveryoneInLobbyExceptThisClient(Hub hub, Client newClient, string message, OpCodes opcode)
+        public static void SendToEveryoneInLobbyExceptThisClient(Hub hub, Client newClient, string message, OpCodes opcode)
         {
             foreach (var user in hub.Users)
             {
@@ -729,7 +714,7 @@ namespace DYKServer
             }
             if (message.Equals("credsLegit"))
             {
-                ChecKUniqueUser(ref message, user);
+                CheckUniqueUser(ref message, user);
             }
             var msgPacket = new PacketBuilder();
             msgPacket.WriteOpCode(2);
@@ -761,28 +746,27 @@ namespace DYKServer
             }
         }
 
-        public static void ChecKUniqueUser(ref string message, Client user)
+        public static void CheckUniqueUser(ref string message, Client user)
         {
             int count = _users.Where(x => x.UserModel.ID == user.UserModel.ID).Count();
             if (count > 1)
             {
                 message = "credsNotLegit";
             }
-            //user = _users.Where(x => x.UID.ToString() == UID).FirstOrDefault();
         }
 
-        public static void RemoveUserFromList(string UID)
+        public static string RemoveUserFromList(string UID)
         {
             var user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
             if (user is not null)
             {
                 _users.Remove(user);
                 user = null;
-                Console.WriteLine($"User [{UID}] removed from list");
+                return ($"User [{UID}] removed from list");
             }        
             else
             {
-                Console.WriteLine($"Error while finding user to remove from list [{UID}].");
+                return ($"Error while finding user to remove from list [{UID}].");
             }
         }
 
@@ -797,32 +781,7 @@ namespace DYKServer
         /// <summary>
         /// BROADCASTS
         /// </summary>
-        static void BroadcastConnection()
-        {
-            /*            foreach (var user in _users)
-                        {
-                            foreach (var usr in _users)
-                            {
-                                var broadcastPacket = new PacketBuilder();
-                                broadcastPacket.WriteOpCode(1);
-                                broadcastPacket.WriteMessage(usr.Username);
-                                broadcastPacket.WriteMessage(usr.UID.ToString());
-                                user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
-                            }
-                        }*/
-        }
-
-        public static void BroadcastMessage(string message)
-        {
-/*            foreach (var user in _users)
-            {
-                var msgPacket = new PacketBuilder();
-                msgPacket.WriteOpCode(5);
-                msgPacket.WriteMessage(message);
-                user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
-            }*/
-        }
-        public static void BroadcastMessageToSpecificUser(string UID, string message, OpCodes opcode)
+        public static void BroadcastMessageToSpecificClient(string UID, string message, OpCodes opcode)
         {
             Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
             var msgPacket = new PacketBuilder();
@@ -838,17 +797,5 @@ namespace DYKServer
             msgPacket.WriteMessage(message);
             client.Client.Send(msgPacket.GetPacketBytes());
         }
-
-        public static void BroadcastDisconnect(string uid)
-        {
-            var disconnectedUser = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
-            _users.Remove(disconnectedUser);
-            var broadcastPacket = new PacketBuilder();
-            BroadcastMessage($"{disconnectedUser.UserModel.Username} has disconnected from the server!");            
-        }
-
-
-
-
     }
 }

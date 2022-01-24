@@ -9,7 +9,7 @@ using DYKShared.Model;
 
 namespace DYKServer.Net
 {
-    class Hub
+    public class Hub
     {
 
         public Guid GUID { get; set; }
@@ -31,8 +31,8 @@ namespace DYKServer.Net
             GUID = Guid.NewGuid();
             Users = new List<Client>();
             HubModel = new HubModel(
-                GenerateJoinCode(),
-                8,
+                new Random().Next(9000) + 1000,
+            8,
                 name,
                 category,
                 false
@@ -45,18 +45,18 @@ namespace DYKServer.Net
             GUID = Guid.NewGuid();
             Users = new List<Client>();
             HubModel = new HubModel(
-                GenerateJoinCode(),
+                new Random().Next(9000) + 1000,
                 maxSize,
                 name,
                 category,
                 isPrivate
             );
             Summary = new List<SummaryModel>();
-        }
+        }       
 
-        public int GenerateJoinCode()
+        public void GenerateJoinCode()
         {
-            return new Random().Next(9000)+1000;
+            this.HubModel.JoinCode = new Random().Next(9000)+1000;
         }
 
         public bool AddClient(Client client)
