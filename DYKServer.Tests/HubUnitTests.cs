@@ -57,15 +57,15 @@ namespace DYKServer.Tests
                 }else if (i == 10)
                 {
                     Assert.IsNotNull(result);
-                }else if (i == 8999)
+                }else if (i == 8998)
+                {
+                    Assert.IsNotNull(result);
+                }
+                else if (i == 8999)
                 {
                     Assert.IsNotNull(result);
                 }
                 else if (i == 9000)
-                {
-                    Assert.IsNull(result);
-                }
-                else if (i == 9001)
                 {
                     Assert.IsNull(result);
                 }

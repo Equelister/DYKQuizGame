@@ -23,7 +23,7 @@ namespace DYKServer.Tests
             Program._users.Add(client);
         }
 
-        [Test, Order(0)]
+        [Test]
         public void IsUserAlreadyLoggedInShouldReturnTrue()
         {
             Client testClient = client;
