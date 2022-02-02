@@ -50,6 +50,7 @@ namespace DYKClient.Net
         public event Action startEnhancedGameEvent;
         public event Action startNormalGameEvent;
         public event Action getGameSummaryEvent;
+        public event Action getIsUserAWinnerEvent;
         public event Action closeWindowEvent;
         public event Func<bool> receivedLoginResultEvent;
 
@@ -66,7 +67,7 @@ namespace DYKClient.Net
             {
                 try
                 {
-                    _client.Connect("127.0.0.1", 7710);
+                    _client.Connect("127.0.0.1", 7715);
                     PacketReader = new PacketReader(_client.GetStream());
                     return true;
                 }catch (Exception e)
@@ -179,6 +180,9 @@ namespace DYKClient.Net
                             break;
                         case 36:
                             receivedSendSecondHalfQuestionsEvent.Invoke();
+                            break;
+                        case 37:
+                            getIsUserAWinnerEvent.Invoke();
                             break;
                         default:
                             Console.WriteLine("Server.ReadPacket = default");

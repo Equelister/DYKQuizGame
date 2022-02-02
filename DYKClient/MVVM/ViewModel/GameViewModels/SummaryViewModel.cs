@@ -26,6 +26,21 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged("IsGameEndedVisibility");
             }
         }
+        
+        private bool _isUserAWinner = false;
+        public bool IsUserAWinner
+        {
+            get
+            {
+                return _isUserAWinner;
+            }
+            set
+            {
+                _isUserAWinner = value;
+                onPropertyChanged("IsUserAWinner");
+                onPropertyChanged("IsUserAWinnerVisibility");
+            }
+        }
 
         public System.Windows.Visibility IsUserWaitingVisibility
         {
@@ -40,6 +55,14 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             get
             {
                 return GameInProgress ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+            }
+        }
+
+        public System.Windows.Visibility IsUserAWinnerVisibility
+        {
+            get
+            {
+                return IsUserAWinner ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             }
         }
 
@@ -62,11 +85,13 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             this.mainViewModel = mainViewModel;
 
             mainViewModel._server.getGameSummaryEvent += DisplaySummary;
+            mainViewModel._server.getIsUserAWinnerEvent += ChangeStarVisibility;
             GoBackToLobbyCommand = new RelayCommand(o =>
             {
                 if (GameInProgress == false)
                 {
                     mainViewModel._server.getGameSummaryEvent -= DisplaySummary;
+                    mainViewModel._server.getIsUserAWinnerEvent -= ChangeStarVisibility;
                     mainViewModel.CurrentView = mainViewModel.LobbiesViewModel.LobbyViewModel;
                 }
             });
@@ -97,7 +122,12 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             Console.WriteLine("\r\n OTO PODSUMOWANIE: " + msg + "\r\n");
             Summary = SummaryModel.JsonToObservableCollection(msg);
             onPropertyChanged("Summary");
-            GameInProgress = false;
+            GameInProgress = false;            
+        }
+
+        private void ChangeStarVisibility()
+        {
+            IsUserAWinner = true;
         }
     }
 }

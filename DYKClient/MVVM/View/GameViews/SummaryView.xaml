@@ -9,6 +9,30 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="Transparent">
+
+    <UserControl.Resources>
+        <Style x:Key="AnimationImageStyle" TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsVisible}" 
+                         Value="True">
+
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:1"
+                                             AutoReverse="True"
+                                             />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -110,6 +134,14 @@
                 Command="{Binding GoBackToLobbyCommand}"
                 Style="{StaticResource StandardButtonStyle}"
                 Visibility="{Binding Path=IsGameEndedVisibility}"/>
+        <Image x:Name="WinnerStar" 
+               Source="/MVVM/View/GameViews/winnerStar.png"
+               Grid.Column="5" Grid.Row="2"
+               Grid.ColumnSpan="4" Grid.RowSpan="4"
+               Visibility="{Binding IsUserAWinnerVisibility}"
+               Style="{StaticResource AnimationImageStyle}"/>
+
+
 
     </Grid>
 </UserControl>

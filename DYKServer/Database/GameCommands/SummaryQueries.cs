@@ -172,19 +172,22 @@ namespace DYKServer.Database.GameCommands
             return summaryList;
         }
 
-        /// <summary>
-        /// Inserts userID with gameID and re
-        /// </summary>
-        /// <param name="iD"></param>
-        /// <returns></returns>
-        internal static int InsertSummaryForUser(int iD)
-        {
-            throw new NotImplementedException();
-        }
 
-        internal static void InsertQuestionsForGame(int iD, int summaryID)
+        public void IncrementUsersTotalGamesCount(List<int> userIDList)
         {
-            throw new NotImplementedException();
+            var userIDstring = string.Join(',', userIDList);
+            var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            string queryString = $"UPDATE users SET total_games = total_games + 1 WHERE id IN ({userIDstring})";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString.ToString(), connection);
+                connection.Open();
+                var result = command.ExecuteNonQuery();
+
+                if (result < 0)
+                    Console.WriteLine("Error inserting data into Database!");
+                connection.Close();
+            }
         }
     }
 }

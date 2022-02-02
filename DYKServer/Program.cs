@@ -34,7 +34,8 @@ namespace DYKServer
         SendUsersPartialSummary = 35,
         SendMidGameEnhancements = 34,
         SendStartEnhancedGameRoundTwo = 33,
-        SendSecondHalfQuestions = 36
+        SendSecondHalfQuestions = 36,
+        SendToWinner = 37
     }
 
     public class Program
@@ -76,7 +77,7 @@ namespace DYKServer
                 }
             });
 
-            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7710);
+            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7715);
             _listener.Start();
 
             Console.WriteLine("******\r\nStarted Listening for clients...");
@@ -398,6 +399,17 @@ namespace DYKServer
                                hub,
                                JsonSerializer.Serialize(hub.Summary),
                                OpCodes.SendSummary);
+
+                        Client user = hub.Users.ElementAt(0);
+                        foreach(var userSearch in hub.Users)
+                        {
+                            if(userSearch.UserModel.GameScore > user.UserModel.GameScore)
+                            {
+                                user = userSearch;
+                            }
+                        }
+                        Program.BroadcastopCodeToSpecificClient(user.ClientSocket, OpCodes.SendToWinner);
+
                         MakeAnUpdateOnALobbyAfterGame(hub);
                         Task.Run(() =>
                         {
@@ -454,8 +466,8 @@ namespace DYKServer
                 user.UserModel.IsReady = false;
                 user.UserModel.Total_games++;
                 user.UserModel.AppliedEnhancementsIDs.Clear();
-                UpdateDBWithUserScoresAsync(hub);
             }
+            UpdateDBWithUserScoresAsync(hub);
             SendToEveryoneInLobby(
                     hub,
                     hub.HubModel.ConvertToJson(),
@@ -464,8 +476,22 @@ namespace DYKServer
 
         private static void UpdateDBWithUserScoresAsync(Hub hub)
         {
-            Console.WriteLine("\r\n UpdateDBWithUserScoresAsync => Please implement me!");
-            Console.WriteLine("throw new NotImplementedException();\r\n");
+            List<int> userIDList = new List<int>();
+            foreach(var user in hub.Users)
+            {
+                userIDList.Add(user.UserModel.ID);
+            }
+            SummaryQueries sq = new SummaryQueries();
+            sq.IncrementUsersTotalGamesCount(userIDList);
+        }
+
+        private static void ClearUserScoresAndChangeIsReadyState(Hub hub)
+        {
+            foreach(var user in hub.Users)
+            {
+                user.UserModel.GameScore = 0;
+                user.UserModel.IsReady = false;
+            }
         }
 
         internal static void StartQuizGame(string uid, GameTypes gameType)
@@ -473,10 +499,7 @@ namespace DYKServer
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             hub.HubModel.IsGameStarted = true;
-            foreach (var usr in hub.Users)
-            {
-                usr.UserModel.IsReady = false;
-            }
+            ClearUserScoresAndChangeIsReadyState(hub);
 
             if (gameType.Equals(GameTypes.EnhancedQuizGame))
             {
@@ -713,11 +736,11 @@ namespace DYKServer
         /// <returns></returns>
         public static bool BroadcastLoginResult(string UID, string message)
         {
-            RemoveUserFromList(Guid.Empty.ToString());
+            RemoveUserFromList(Guid.Empty.ToString(), 0);
             Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
             if(user is null)
             {
-                RemoveUserFromList(UID);
+                RemoveUserFromList(UID, user.UserModel.ID);
                 return false;
             }
             if (message.Equals("credsLegit"))
@@ -763,7 +786,7 @@ namespace DYKServer
             }
         }
 
-        public static string RemoveUserFromList(string UID)
+        public static string RemoveUserFromList(string UID, int id)
         {
             var user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
             if (user is not null)
@@ -774,7 +797,17 @@ namespace DYKServer
             }        
             else
             {
-                return ($"Error while finding user to remove from list [{UID}].");
+                user = _users.Where(x => x.UserModel.ID == id).FirstOrDefault();
+                if (user is not null)
+                {
+                    _users.Remove(user);
+                    user = null;
+                    return ($"User [{UID}] removed from list");
+                }
+                else
+                {
+                    return ($"Error while finding user to remove from list [{UID}].");
+                }
             }
         }
 
@@ -803,6 +836,13 @@ namespace DYKServer
             var msgPacket = new PacketBuilder();
             msgPacket.WriteOpCode(Convert.ToByte(opcode));
             msgPacket.WriteMessage(message);
+            client.Client.Send(msgPacket.GetPacketBytes());
+        }
+
+        public static void BroadcastopCodeToSpecificClient(TcpClient client, OpCodes opcode)
+        {
+            var msgPacket = new PacketBuilder();
+            msgPacket.WriteOpCode(Convert.ToByte(opcode));
             client.Client.Send(msgPacket.GetPacketBytes());
         }
     }

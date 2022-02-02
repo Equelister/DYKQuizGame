@@ -120,7 +120,7 @@ namespace DYKServer.Net
                     Console.WriteLine($"{GUID.ToString()} - Disconnected!");
                     ClientSocket.Close();
                     Program.RemoveUserFromHub(GUID.ToString(), UserModel);
-                    Program.RemoveUserFromList(GUID.ToString());
+                    Program.RemoveUserFromList(GUID.ToString(), UserModel.ID);
                     return;
                 }
             }
