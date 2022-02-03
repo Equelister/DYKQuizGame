@@ -119,22 +119,23 @@ namespace DYKClient.LoginWindow
 
 
         private string HashPassword(string password)
-        {/*
-                        byte[] salt = new byte[128 / 8];
-                        using (var rngCsp = new RNGCryptoServiceProvider())
-                        {
-                            rngCsp.GetNonZeroBytes(salt);
-                        }
-                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                            password: password,
-                            salt: salt,
-                            prf: KeyDerivationPrf.HMACSHA256,
-                            iterationCount: 100000,
-                            numBytesRequested: 256 / 8));
-                        return hashed;
-*/
-
-            return password;
+        {
+            byte[] salt = new byte[128 / 8];
+/*            using (var rngCsp = new RNGCryptoServiceProvider())
+            {
+                rngCsp.GetNonZeroBytes(salt);
+            }*/
+            for(int i=0; i<salt.Length; i++)
+            {
+                salt[i] = 0;
+            }
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
+            return hashed;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace DYKServer.Tests
         public void RemoveUserFromListShouldRemove()
         {
             int preUserCount = Program._users.Count();
-            string message = Program.RemoveUserFromList(client.GUID.ToString());
+            string message = Program.RemoveUserFromList(client.GUID.ToString(), 0);
             int postUserCount = Program._users.Count();
 
             Assert.AreEqual($"User [{client.GUID}] removed from list", message);
@@ -61,7 +61,7 @@ namespace DYKServer.Tests
         public void RemoveUserFromListShouldReturnError()
         {
             Guid guid = Guid.NewGuid();
-            string message = Program.RemoveUserFromList(guid.ToString());
+            string message = Program.RemoveUserFromList(guid.ToString(), 0);
             Assert.AreEqual($"Error while finding user to remove from list [{guid}].", message);
         }
         

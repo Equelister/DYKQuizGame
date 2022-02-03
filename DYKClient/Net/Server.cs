@@ -10,6 +10,7 @@ namespace DYKClient.Net
 {   public enum OpCodes
     {
         SendLogin = 2,
+        SendRegister = 3,
         SendMessage = 5,
         SendLobbiesList = 20,
         SendLobbyJoinCode = 21,
@@ -47,6 +48,7 @@ namespace DYKClient.Net
         public event Action startEnhancendGameNextRoundEvent;
         public event Action connectToLobbyViewEvent;
         public event Action unlockLoginButtonEvent;
+        public event Action unlockRegisterButtonEvent;
         public event Action startEnhancedGameEvent;
         public event Action startNormalGameEvent;
         public event Action getGameSummaryEvent;
@@ -74,6 +76,7 @@ namespace DYKClient.Net
                 {
                     Console.WriteLine(e.ToString());
                     unlockLoginButtonEvent?.Invoke();
+                    unlockRegisterButtonEvent?.Invoke();
                     return false;
                 }
             }
@@ -220,9 +223,28 @@ namespace DYKClient.Net
             {
                 if (ConnectToServer())
                 {
-                    string message = String.Concat(userEmail, "%%^^&&", hashedPassword);
-                    SendMessageToServerOpCode(message, OpCodes.SendLogin);
+                    DYKShared.ModelHelpers.LoginCredentialsModelHelper lc = new DYKShared.ModelHelpers.LoginCredentialsModelHelper();
+                    lc.Login = userEmail;
+                    lc.Password = hashedPassword;
+                    var json = System.Text.Json.JsonSerializer.Serialize(lc);
+                    SendMessageToServerOpCode(json, OpCodes.SendLogin);
                     ReadPacket();
+                }
+            }
+        }
+
+        public void SendRegisterCredentialsToServer(string userEmail, string hashedPassword, string userName)
+        {
+            if (string.IsNullOrEmpty(userEmail) == false && string.IsNullOrEmpty(hashedPassword) == false)
+            {
+                if (ConnectToServer())
+                {
+                    DYKShared.ModelHelpers.LoginCredentialsModelHelper lc = new DYKShared.ModelHelpers.LoginCredentialsModelHelper();
+                    lc.Email = userEmail;
+                    lc.Login = userName;
+                    lc.Password = hashedPassword;
+                    var json = System.Text.Json.JsonSerializer.Serialize(lc);
+                    SendMessageToServerOpCode(json, OpCodes.SendRegister);
                 }
             }
         }

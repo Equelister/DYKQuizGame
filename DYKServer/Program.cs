@@ -86,6 +86,8 @@ namespace DYKServer
                 _users.Add(new Client(_listener.AcceptTcpClient()));
             }
         }
+
+
         static void OutPutInitializeToConsole()
         {
             foreach (Hub hub in _hubs)
@@ -97,8 +99,6 @@ namespace DYKServer
                 Console.WriteLine($"Created new Hub [{category.ID}] - [{category.Name}]");
             }
         }
-
-
 
 
 
@@ -797,7 +797,7 @@ namespace DYKServer
             }        
             else
             {
-                user = _users.Where(x => x.UserModel.ID == id).FirstOrDefault();
+                //user = _users.Where(x => x.UserModel.ID == id).FirstOrDefault();
                 if (user is not null)
                 {
                     _users.Remove(user);
