@@ -237,7 +237,7 @@
                     Margin="50,10,50,10"
                    
                     VerticalAlignment="Center">
-            <Button Content="Zatwierdż ustawienia"
+            <Button Content="Zatwierdź ustawienia"
                     Style="{StaticResource StandardButtonStyle}"
                     Command="{Binding UpdateLobbyDataCommand}"/>
             <Button Content="Quit"

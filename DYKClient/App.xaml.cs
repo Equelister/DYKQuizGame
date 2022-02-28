@@ -23,7 +23,7 @@ namespace DYKClient
 
         private App()
         {
-            AllocConsole();
+            //AllocConsole();
         }
     }
 }
