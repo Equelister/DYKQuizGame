@@ -12,11 +12,11 @@ namespace DYKServer.Database.ConnectionCommands
 {
     class LoginValidator 
     {
-        public UserModel ValidateLoginCredentials(string userName, string userPassword)
+        public UserModel ValidateLoginCredentials(string email, string userPassword)
         {
             UserModel usr = new UserModel();
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-            string queryString = $"SELECT id, username, email, total_games FROM users WHERE username LIKE '{userName}' AND password LIKE '{userPassword}'";
+            string queryString = $"SELECT id, username, email, total_games FROM users WHERE email LIKE '{email}' AND password LIKE '{userPassword}'";
             //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
@@ -47,11 +47,21 @@ namespace DYKServer.Database.ConnectionCommands
             {
                 var command = new SqlCommand(queryString.ToString(), connection);
                 connection.Open();
-                var result = command.ExecuteNonQuery();
+                try
+                {
+                    var result = command.ExecuteNonQuery();
 
-                if (result < 0)
-                    Console.WriteLine("Error inserting data into Database!");
-                connection.Close();
+                    if (result < 0)
+                        Console.WriteLine("Error inserting data into Database!");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e + "\r\n Error inserting data into Database!");
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
 
