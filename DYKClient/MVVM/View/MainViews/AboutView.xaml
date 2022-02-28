@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DYKClient.MVVM.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Red">
+             Background="Transparent">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -30,10 +30,22 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="7"
-                   Text="wadwadwadwadwadwadwadwad"
-                   FontSize="30"
-                   VerticalAlignment="Bottom"/>
+        <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="15"
+                   Grid.Row="0" Grid.RowSpan="8"
+                   Grid.Column="0" Grid.ColumnSpan="8"
+                   FontSize="26"
+                   Style="{StaticResource StandardTextBlockStyle}">
+            Aplikacja powstała w ramach pracy inżynierskiej.
+            <LineBreak/>
+            <LineBreak/>
+            Rok stworzenia aplikacji<LineBreak/>2022
+            <LineBreak/>
+            <LineBreak/>
+            Autor<LineBreak/>MMA
+            <LineBreak/>
+            <LineBreak/>
+            Repozytorium<LineBreak/>https://github.com/Equelister/DYKQuizGame
+        </TextBlock>
 
 
     </Grid>

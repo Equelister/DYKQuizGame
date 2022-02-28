@@ -6,10 +6,128 @@
              xmlns:local="clr-namespace:DYKClient.MVVM.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="Green">
+             Background="Transparent">
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer CanContentScroll="True">
+
+            <StackPanel>
+                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="18">
+                    Lista Poczekalni
+                </TextBlock>
+                <TextBlock TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="14">
+                    Z poziomu tego widoku można dołączyć do jednej z istniejących 
+                    poczekalni albo stworzyć własną. Dołączenie do poczekalni 
+                    może odbyć się na dwa sposoby. Pierwszym z nich jest wybór 
+                    poczekalni z listy, a następnie wybranie opcji „Dołącz z listy”. 
+                    Drugim sposobem jest dołączenie na podstawie kodu dołączenia
+                    poprzez wpisanie kodu poczekalni w wyznaczonym miejscu.
+                </TextBlock>
+
+
+                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="18">
+                    Poczekalnia
+                </TextBlock>
+                    <TextBlock TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="14">
+                    Po wykorzystaniu jednego z wymienionych sposobów dołączenia, 
+                        zostanie ukazany widok wybranej  
+                        poczekalni. Z tego poziomu można edytować 
+                        jej ustawienia, czyli między innymi widoczność, nazwę oraz kategorię
+                        pytań. Widok posiada dwie listy, którymi są lista kategorii pytań
+                        oraz lista użytkowników, którzy również dołączyli do tej poczekalni.
+                        Po zgłoszeniu przez wszystkich użytkowników gotowości do rozpoczęcia
+                        rozgrywki możliwe jest rozpoczęcie jednej z dwóch dostępnych trybów gry:
+                        zwykłej bądź urozmaiconej.
+                    </TextBlock>
+
+
+
+                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="18">
+                    Rozgrywka zwykła
+                </TextBlock>
+                <TextBlock TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="14">
+                    Po rozpoczęciu rozgrywki ukazany zostanie widok z czterema przyciskami do wyboru.
+                    Rozgrywka polega na wyborze jednej z czterech odpowiedzi
+                    dostępnych u dołu ekranu aż do wyczerpania pytań przypisanych 
+                    do bieżącej rozgrywki.
+                </TextBlock>
+
+
+
+
+                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="18">
+                    Rozgrywka urozmaicona
+                </TextBlock>
+                <TextBlock TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="14">
+                    W rozgrywce urozmaiconej po odpowiedzi na połowę pytań 
+                    prezentowane są dwie listy, jedna z akcjami przeszkadzającymi, 
+                    a druga z listą użytkowników biorących udział w rozgrywce. 
+                    Celem użytkownika na tym etapie jest dobranie dla każdej akcji 
+                    przeszkadzającej, dowolnego użytkownika. 
+                    Gdy każdy użytkownik tego dokona, dostają oni drugą połowę pytań, 
+                    zmodyfikowaną o otrzymane akcje przeszkadzające. Akcje przeszkadzające 
+                    są modyfikatorami pytań służącymi do utrudnienia drugiemu użytkownikowi 
+                    poprawy wybór odpowiedzi lub jego spowolnienie, w celu wygrania 
+                    rozgrywki przez własne zdobycie najwyższej liczby punktów. 
+                    Akcjami przeszkadzającymi na chwilę obecną są:
+                    • Usunięcie 15% znaków z treści pytania.
+                    • Usunięcie 15% znaków z każdej z czterech odpowiedzi.
+                    • Zamiana pierwszego znaku z ostatnim w każdym słowie z treści pytania.
+                    • Zamiana pierwszego znaku z ostatnim w każdym słowie, z każdej z czterech odpowiedzi.
+                    • Wymuszenie wielokrotnego kliknięcia w przycisk odpowiedzi w celu jej zaakceptowania.
+                </TextBlock>
+
+                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="18">
+                    Podsumowanie rozgrywki
+                </TextBlock>
+                <TextBlock TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource StandardTextBlockStyle}"
+                    FontSize="14">
+                    Na podsumowaniu rozgrywki prezentowane są pytania wraz z poprawną odpowiedzią na nie
+                    oraz użytkownik, który najszybciej odpowiedział na to pytanie, wraz z jego czasem odpowiedzi.
+                    Oprócz tego prezentowani są użytkownicy, którzy poprawnie odpowiedzili na to pytanie.
+                    Przycisk u dołu ekranu cofa do widoku poczekalni.
+                </TextBlock>
+
+            </StackPanel>
+        </ScrollViewer>
+
     </Grid>
    
 </UserControl>
