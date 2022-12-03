@@ -1,17 +1,12 @@
-﻿using System;
+﻿using DYKShared.Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using DYKShared.Model;
 
 namespace DYKServer.Net
 {
     public class Hub
     {
-
         public Guid GUID { get; set; }
         public HubModel HubModel { get; set; }
         public List<Client> Users { get; set; }
@@ -52,16 +47,16 @@ namespace DYKServer.Net
                 isPrivate
             );
             Summary = new List<SummaryModel>();
-        }       
+        }
 
         public void GenerateJoinCode()
         {
-            this.HubModel.JoinCode = new Random().Next(9000)+1000;
+            this.HubModel.JoinCode = new Random().Next(9000) + 1000;
         }
 
         public bool AddClient(Client client)
         {
-            if(Users.Count < HubModel.MaxSize && HubModel.IsGameStarted == false)
+            if (Users.Count < HubModel.MaxSize && HubModel.IsGameStarted == false)
             {
                 Users.Add(client);
                 return true;

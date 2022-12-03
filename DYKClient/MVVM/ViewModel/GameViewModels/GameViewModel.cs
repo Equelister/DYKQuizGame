@@ -1,13 +1,11 @@
 ﻿using DYKClient.Controller;
 using DYKClient.Core;
-using DYKClient.Net;
 using DYKShared.Enums;
 using DYKShared.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -25,7 +23,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged();
             }
         }
-        
+
         private QuestionModel _currentQuestion = new QuestionModel();
         public QuestionModel CurrentQuestion
         {
@@ -80,7 +78,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged("AnswerD");
             }
         }
-        
+
         private int _answerHitCounter = 1;
         public int AnswerHitCounter
         {
@@ -100,8 +98,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             }
         }
 
-
-
         public RelayCommand UserSelectedAnswerCommand { get; set; }
         private MainViewModel mainViewModel;
         private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -111,18 +107,14 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private List<int> Enhancements = new List<int>();
         private SummaryViewModel summaryViewModel;
         private ActionChooserViewModel actionChooserViewModel;
-
+        private int currentQuestionIndex = 0;
 
         public GameViewModel(MainViewModel mainViewModel, int gameRound, GameTypes gameType)
         {
             this.mainViewModel = mainViewModel;
             _gameRound = gameRound;
             _gameType = gameType;
-           /* Task.Run(() =>
-            {*/
-                //System.Threading.Thread.Sleep(5000);
-                Run();
-           // });
+            Run();
         }
 
         public GameViewModel(MainViewModel mainViewModel, int gameRound, GameTypes gameType, List<int> inGameActions)
@@ -137,11 +129,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         private async Task Run()
         {
             ReadQuestions();
-            if(_gameType.Equals(GameTypes.EnhancedQuizGame))
+            if (_gameType.Equals(GameTypes.EnhancedQuizGame))
             {
                 EnhanceQuestions();
             }
-            UserSelectedAnswerCommand = new RelayCommand(SumQuestion);        
+            UserSelectedAnswerCommand = new RelayCommand(SumQuestion);
             ShowQuestion(0);
         }
 
@@ -167,14 +159,12 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                             Questions = QuestionEnhancer.SwitchLettersQuestions(Questions);
                             break;
                         case (int)InGameActionTypes.DisplayOnlyOnHoverAnswers:
-                            // Change Buttons Style with Opacity and animation
                             break;
                         case (int)InGameActionTypes.HitIt5TimesAnswers:
                             _isHitCounterActive = true;
                             AnswerHitCounter = 5;
                             break;
                         case (int)InGameActionTypes.FloatingAnswers:
-                            // Change buttons Style
                             break;
                         default:
                             break;
@@ -182,13 +172,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 }
             }
         }
-
-/*        private void ReadMyEnhancements()
-        {
-            var msg = mainViewModel._server.PacketReader.ReadMessage();
-            Console.WriteLine("\r\n My Enhancements: " + msg + "\r\n");
-            Enhancements = InGameActions.JsonToList(msg);
-        }*/
 
         private void SumQuestion(object param)
         {
@@ -208,20 +191,20 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                         if (_gameRound == 0)
                         {
                             string message = CreateQuestionsSummaryToSend();
-                            mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
+                            mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);
                             GoToActionChooserView();
                         }
                         else if (_gameRound == 1)
                         {
-                            string message = CreateQuestionsSummaryToSend();                                                        //swap new view with sending message
-                            mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
+                            string message = CreateQuestionsSummaryToSend();
+                            mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);
                             GoToSummaryViewAsync();
                         }
                     }
                     else
                     {
                         string message = CreateQuestionsSummaryToSend();
-                        mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);       //maybe add if(normalGameType == false && isFirstSetOfQuestions == true) {dontsend();}
+                        mainViewModel._server.SendMessageToServerOpCode(message, Net.OpCodes.SendIHaveEndedGame);
                         GoToSummaryViewAsync();
                     }
                 }
@@ -229,7 +212,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 {
                     ShowQuestion(currentQuestionIndex);
                 }
-            }else
+            }
+            else
             {
                 AnswerHitCounter--;
             }
@@ -244,7 +228,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private string CreateQuestionsSummaryToSend()
         {
-            foreach(var question in Questions)
+            foreach (var question in Questions)
             {
                 question.Question = null;
                 question.CorrectAnswer = null;
@@ -252,7 +236,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 question.WrongAnswerB = null;
                 question.WrongAnswerC = null;
             }
-            return JsonSerializer.Serialize(Questions);          
+            return JsonSerializer.Serialize(Questions);
         }
 
         private async Task GoToSummaryViewAsync()
@@ -281,8 +265,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             }
         }
 
-        private int currentQuestionIndex = 0;
-
         private void ShowQuestion(int index)
         {
             CurrentQuestion = Questions.ElementAt(index);
@@ -291,11 +273,11 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             answers.Add(CurrentQuestion.WrongAnswerA);
             answers.Add(CurrentQuestion.WrongAnswerB);
             answers.Add(CurrentQuestion.WrongAnswerC);
-            RandomizeAnswersList( ref answers);
+            RandomizeAnswersList(ref answers);
             AnswerA = answers.ElementAt(0);
             AnswerB = answers.ElementAt(1);
             AnswerC = answers.ElementAt(2);
-            AnswerD = answers.ElementAt(3); 
+            AnswerD = answers.ElementAt(3);
             stopwatch.Restart();
         }
 

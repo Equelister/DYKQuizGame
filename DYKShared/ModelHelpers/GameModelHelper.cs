@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DYKShared.ModelHelpers
 {
@@ -13,15 +9,14 @@ namespace DYKShared.ModelHelpers
         public int ID { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        public GameModelHelper()
+        {
+        }
+
         public GameModelHelper(int id, DateTime date)
         {
             this.ID = id;
             this.CreatedAt = date;
-        }
-
-        public GameModelHelper()
-        {
-
         }
 
         public static ObservableCollection<GameModelHelper> JsonListToObservableCollection(string json)

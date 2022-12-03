@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DYKClient.Net
-{   public enum OpCodes
+{
+    public enum OpCodes
     {
         SendLogin = 2,
         SendRegister = 3,
@@ -32,7 +33,6 @@ namespace DYKClient.Net
     {
         TcpClient _client;
         public PacketReader PacketReader;
-
         public event Action connectedEvent;
         public event Action messageEvent;
         public event Action userDisconnectedEvent;
@@ -56,8 +56,6 @@ namespace DYKClient.Net
         public event Action closeWindowEvent;
         public event Func<bool> receivedLoginResultEvent;
 
-        
-
         public Server()
         {
             _client = new TcpClient();
@@ -72,7 +70,8 @@ namespace DYKClient.Net
                     _client.Connect("127.0.0.1", 7715);
                     PacketReader = new PacketReader(_client.GetStream());
                     return true;
-                }catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine(e.ToString());
                     unlockLoginButtonEvent?.Invoke();
@@ -92,7 +91,8 @@ namespace DYKClient.Net
 
         private void ReadPacket()
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 Console.WriteLine("Server.cs -> ReadPacket() Dzien Dobry");
                 while (_client.Connected)
                 {
@@ -100,21 +100,24 @@ namespace DYKClient.Net
                     try
                     {
                         Console.WriteLine("Server.cs -> ReadPacket() try. CanRead?: " + PacketReader._ns.CanRead);
-                        opcode =  PacketReader.ReadByte();
-                        Console.WriteLine("OPCODE: "+opcode);
-                    }catch(System.IO.IOException IOE)
+                        opcode = PacketReader.ReadByte();
+                        Console.WriteLine("OPCODE: " + opcode);
+                    }
+                    catch (System.IO.IOException IOE)
                     {
                         Console.WriteLine(IOE.ToString());
                         System.Windows.MessageBox.Show("Unexpected error occured. Please check your network connection.", "DidYouKnow", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                         closeWindowEvent.Invoke();
                         return;
-                    }catch(System.InvalidOperationException invalidOperationE)
+                    }
+                    catch (System.InvalidOperationException invalidOperationE)
                     {
                         Console.WriteLine("Propably user was clicking to fast at login phase \r\n" + invalidOperationE.ToString());
                         System.Windows.MessageBox.Show("Unexpected error occured. Please check your network connection.", "DidYouKnow", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                         closeWindowEvent.Invoke();
                         return;
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Console.WriteLine(e.ToString());
                         System.Windows.MessageBox.Show("Unexpected error occured. Please check your network connection.", "DidYouKnow", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
@@ -127,11 +130,11 @@ namespace DYKClient.Net
                             break;
                         case 2:
                             bool? xdddd = receivedLoginResultEvent?.Invoke();
-                            if(xdddd.HasValue == false)
+                            if (xdddd.HasValue == false)
                             {
                                 return;
                             }
-                            if(xdddd == false)
+                            if (xdddd == false)
                             {
                                 return;
                             }
@@ -267,7 +270,8 @@ namespace DYKClient.Net
                     //DisconnectFromServer
                     return false;
                 }
-            }else
+            }
+            else
             {
                 return false;
             }

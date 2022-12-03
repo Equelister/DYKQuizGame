@@ -1,19 +1,12 @@
 ﻿using DYKClient.Core;
-using DYKClient.MVVM.Model;
 using DYKClient.MVVM.ViewModel.GameViewModels;
 using DYKClient.Net;
+using DYKShared.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using DYKShared.Model;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Data;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace DYKClient.MVVM.ViewModel
 {
@@ -157,7 +150,7 @@ namespace DYKClient.MVVM.ViewModel
                 mainViewModel._server.SendOpCodeToServer(OpCodes.SendCategoriesList);
             }
         }
-        
+
         private void CreateNewLobby()
         {
             LobbyViewModel = null;
@@ -165,8 +158,6 @@ namespace DYKClient.MVVM.ViewModel
             mainViewModel.CurrentView = LobbyViewModel;
             mainViewModel._server.SendOpCodeToServer(OpCodes.SendCategoriesList);
         }
-
-
 
         private List<HubModel> hubListTemp;
         private string _hubFilter = "";
@@ -194,7 +185,6 @@ namespace DYKClient.MVVM.ViewModel
                 }
             }
         }
-
         private ObservableCollection<HubModel> DoAFilter()
         {
             ObservableCollection<HubModel> filteredList = new ObservableCollection<HubModel>();
@@ -208,5 +198,5 @@ namespace DYKClient.MVVM.ViewModel
             }
             return filteredList;
         }
-    }    
+    }
 }

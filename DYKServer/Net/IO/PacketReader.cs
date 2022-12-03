@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKServer.Net.IO
 {
     class PacketReader : BinaryReader
     {
-
         private NetworkStream _ns;
         public PacketReader(NetworkStream ns) : base(ns)
         {
@@ -23,7 +18,6 @@ namespace DYKServer.Net.IO
             var length = ReadInt32();
             msgBuffer = new byte[length];
             _ns.Read(msgBuffer, 0, length);
-
             var msg = Encoding.UTF8.GetString(msgBuffer);
 
             return msg;

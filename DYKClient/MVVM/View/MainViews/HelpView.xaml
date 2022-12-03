@@ -1,35 +1,29 @@
 ﻿<UserControl x:Class="DYKClient.MVVM.View.HelpView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DYKClient.MVVM.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
              Background="Transparent">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
         <ScrollViewer CanContentScroll="True">
 
             <StackPanel>
-                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="18">
+                <TextBlock TextAlignment="Center"
+                           Margin="0,25,0,5"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="18">
                     Lista Poczekalni
                 </TextBlock>
                 <TextBlock TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="14">
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="14">
                     Z poziomu tego widoku można dołączyć do jednej z istniejących 
                     poczekalni albo stworzyć własną. Dołączenie do poczekalni 
                     może odbyć się na dwa sposoby. Pierwszym z nich jest wybór 
@@ -38,17 +32,17 @@
                     poprzez wpisanie kodu poczekalni w wyznaczonym miejscu.
                 </TextBlock>
 
-
-                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="18">
+                <TextBlock TextAlignment="Center"
+                           Margin="0,25,0,5"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="18">
                     Poczekalnia
                 </TextBlock>
-                    <TextBlock TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="14">
+                <TextBlock TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="14">
                     Po wykorzystaniu jednego z wymienionych sposobów dołączenia, 
                         zostanie ukazany widok wybranej  
                         poczekalni. Z tego poziomu można edytować 
@@ -58,39 +52,36 @@
                         Po zgłoszeniu przez wszystkich użytkowników gotowości do rozpoczęcia
                         rozgrywki możliwe jest rozpoczęcie jednej z dwóch dostępnych trybów gry:
                         zwykłej bądź urozmaiconej.
-                    </TextBlock>
+                </TextBlock>
 
-
-
-                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="18">
+                <TextBlock TextAlignment="Center"
+                           Margin="0,25,0,5"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="18">
                     Rozgrywka zwykła
                 </TextBlock>
                 <TextBlock TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="14">
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="14">
                     Po rozpoczęciu rozgrywki ukazany zostanie widok z czterema przyciskami do wyboru.
                     Rozgrywka polega na wyborze jednej z czterech odpowiedzi
                     dostępnych u dołu ekranu aż do wyczerpania pytań przypisanych 
                     do bieżącej rozgrywki.
                 </TextBlock>
 
-
-
-
-                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="18">
+                <TextBlock TextAlignment="Center"
+                           Margin="0,25,0,5"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="18">
                     Rozgrywka urozmaicona
                 </TextBlock>
                 <TextBlock TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="14">
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="14">
                     W rozgrywce urozmaiconej po odpowiedzi na połowę pytań 
                     prezentowane są dwie listy, jedna z akcjami przeszkadzającymi, 
                     a druga z listą użytkowników biorących udział w rozgrywce. 
@@ -109,16 +100,17 @@
                     • Wymuszenie wielokrotnego kliknięcia w przycisk odpowiedzi w celu jej zaakceptowania.
                 </TextBlock>
 
-                <TextBlock TextAlignment="Center" Margin="0,25,0,5"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="18">
+                <TextBlock TextAlignment="Center"
+                           Margin="0,25,0,5"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="18">
                     Podsumowanie rozgrywki
                 </TextBlock>
                 <TextBlock TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource StandardTextBlockStyle}"
-                    FontSize="14">
+                           TextWrapping="Wrap"
+                           Style="{StaticResource StandardTextBlockStyle}"
+                           FontSize="14">
                     Na podsumowaniu rozgrywki prezentowane są pytania wraz z poprawną odpowiedzią na nie
                     oraz użytkownik, który najszybciej odpowiedział na to pytanie, wraz z jego czasem odpowiedzi.
                     Oprócz tego prezentowani są użytkownicy, którzy poprawnie odpowiedzili na to pytanie.
@@ -128,6 +120,13 @@
             </StackPanel>
         </ScrollViewer>
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
     </Grid>
-   
+
 </UserControl>

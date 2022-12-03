@@ -2,20 +2,14 @@
 using DYKClient.MVVM.ViewModel.GameViewModels;
 using DYKClient.Net;
 using DYKShared.ModelHelpers;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKClient.MVVM.ViewModel.GameHistoryViewModels
 {
     class SummariesListViewModel : ObservableObject, INotifyCollectionChanged
     {
-
         public RelayCommand ReceivedPublicLobbiesListCommand { get; set; }
         public RelayCommand SendLobbiesListRequestCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,7 +27,6 @@ namespace DYKClient.MVVM.ViewModel.GameHistoryViewModels
 
         private GameModelHelper _selectedGameHistory;
         private MainViewModel mainViewModel;
-
         public GameModelHelper SelectedGameHistory
         {
             get
@@ -62,8 +55,8 @@ namespace DYKClient.MVVM.ViewModel.GameHistoryViewModels
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             GameHistories = GameModelHelper.JsonListToObservableCollection(msg);
-        } 
-        
+        }
+
         public void ReceivedGameHistoryDetails()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DYKShared.Model
 {
@@ -24,7 +21,7 @@ namespace DYKShared.Model
         }
 
         public QuestionModel(
-            string question, 
+            string question,
             string correctAnswer,
             string wrongAnswerA,
             string wrongAnswerB,

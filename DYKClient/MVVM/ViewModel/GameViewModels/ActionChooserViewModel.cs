@@ -3,10 +3,7 @@ using DYKShared.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DYKClient.MVVM.ViewModel.GameViewModels
 {
@@ -36,7 +33,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 return GameInProgress ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             }
         }
-
         public System.Windows.Visibility IsGameEndedVisibility
         {
             get
@@ -116,7 +112,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             InitializeCommands();
         }
 
-
         private void InitializeEvents()
         {
             mainViewModel._server.receivedACEnhancementsEvent += ReceivedEnhancementList;
@@ -144,6 +139,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         {
             mainViewModel._server.startEnhancendGameNextRoundEvent -= EnhancedGameChangeView;
         }
+
         private void UnInitializeEventsExceptViewChanger()
         {
             mainViewModel._server.receivedACEnhancementsEvent -= ReceivedEnhancementList;
@@ -158,7 +154,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 ApplySelection();
             });
         }
-        
+
         private void ReceivedEnhancementList()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
@@ -167,7 +163,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             onPropertyChanged("Enhancements");
             GameInProgress = false;
         }
-        
+
         private void ReceivedUsersList()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
@@ -181,19 +177,12 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             EnhancementsForMe = ReadMyEnhancements();
         }
 
-/*        private List<InGameActions> ReadMyEnhancements()
-        {
-            var msg = mainViewModel._server.PacketReader.ReadMessage();
-            Console.WriteLine("\r\n My Enhancements: " + msg + "\r\n");
-            return InGameActions.JsonToList(msg);
-        }*/
         private List<int> ReadMyEnhancements()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
-            Console.WriteLine("\r\n My Enhancements: " + msg + "\r\n");
+            Console.WriteLine("\r\n \r\n \r\n My Enhancements: " + msg + "\r\n \r\n \r\n");
             return JsonSerializer.Deserialize<List<int>>(msg);
         }
-
 
         private void ApplySelection()
         {
@@ -205,7 +194,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 Users.Remove(SelectedUser);
                 SelectedEnhancement = null;
                 SelectedUser = null;
-                if(Enhancements.Count <= 0)
+                if (Enhancements.Count <= 0)
                 {
                     UnInitializeEventsExceptViewChanger();
                     string json = JsonSerializer.Serialize(PickedActions);

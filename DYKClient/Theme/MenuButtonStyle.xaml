@@ -17,24 +17,30 @@
                                        VerticalAlignment="Center"
                                        Margin="50,0,0,0"
                                        Foreground="#6483e8"
-                                       FontWeight="SemiBold"/>
+                                       FontWeight="SemiBold" />
 
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
         </Style.Setters>
 
         <Style.Triggers>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#19265e"/>
+            <Trigger Property="IsChecked"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#19265e" />
             </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#19265e"/>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#19265e" />
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
 </ResourceDictionary>

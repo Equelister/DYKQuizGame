@@ -6,12 +6,11 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKServer.Database.GameCommands
 {
     class SummaryQueries
-    {        
+    {
         public List<SummaryModel> GetAllSummariesIDWhereUserID(int userID)
         {
             List<SummaryModel> summaryList = new List<SummaryModel>();
@@ -37,7 +36,6 @@ namespace DYKServer.Database.GameCommands
             return summaryList;
         }
 
-
         public decimal InsertNewGameToTable()
         {
             decimal newGameId = -1;
@@ -51,14 +49,13 @@ namespace DYKServer.Database.GameCommands
                 {
                     while (reader.Read())
                     {
-                        newGameId = (decimal)reader[0];                        
+                        newGameId = (decimal)reader[0];
                     }
                 }
                 connection.Close();
             }
             return newGameId;
         }
-
 
         public int InsertUsersToGameID(List<int> usersID, decimal gameID)
         {
@@ -78,14 +75,12 @@ namespace DYKServer.Database.GameCommands
                 connection.Open();
                 result = command.ExecuteNonQuery();
 
-                // Check Error
                 if (result < 0)
                     Console.WriteLine("Error inserting data into Database!");
                 connection.Close();
             }
             return result;
         }
-
 
         public int InsertQuestionSummariesToGame(Net.Hub hub, decimal gameID)
         {
@@ -114,14 +109,12 @@ namespace DYKServer.Database.GameCommands
                 connection.Open();
                 result = command.ExecuteNonQuery();
 
-                // Check Error
                 if (result < 0)
                     Console.WriteLine("Error inserting data into Database!");
                 connection.Close();
             }
             return result;
         }
-
 
         public List<GameModelHelper> GetAllGamesHistoriesWhereUserID(int userID)
         {
@@ -156,7 +149,7 @@ namespace DYKServer.Database.GameCommands
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
-                    {                        
+                    {
                         string nicknames = (string)reader[4];
                         summaryList.Add(new SummaryModel(
                                 (string)reader[0],
@@ -171,7 +164,6 @@ namespace DYKServer.Database.GameCommands
             }
             return summaryList;
         }
-
 
         public void IncrementUsersTotalGamesCount(List<int> userIDList)
         {

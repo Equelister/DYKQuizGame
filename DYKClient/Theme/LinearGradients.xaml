@@ -1,27 +1,45 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <LinearGradientBrush x:Key="GrayBlueGradientBrush" StartPoint="1,0" EndPoint="1,1">
-        <GradientStop Color="#cacbcc" Offset="0" />
-        <GradientStop Color="#a5c9f0" Offset="0.9" />
-        <GradientStop Color="#cacbcc" Offset="1" />
+    <LinearGradientBrush x:Key="GrayBlueGradientBrush"
+                         StartPoint="1,0"
+                         EndPoint="1,1">
+        <GradientStop Color="#cacbcc"
+                      Offset="0" />
+        <GradientStop Color="#a5c9f0"
+                      Offset="0.9" />
+        <GradientStop Color="#cacbcc"
+                      Offset="1" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="BlueGridGradientBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="1" Color="#aacbcc"/>
-        <GradientStop Offset="0" Color="#aacbcc"/>
-        <GradientStop Offset="0.7" Color="#a5c9f0"/>
+    <LinearGradientBrush x:Key="BlueGridGradientBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientStop Offset="1"
+                      Color="#aacbcc" />
+        <GradientStop Offset="0"
+                      Color="#aacbcc" />
+        <GradientStop Offset="0.7"
+                      Color="#a5c9f0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="GreyGridGradientBrush" StartPoint="1,0" EndPoint="1,1">
-        <GradientStop Offset="0.8" Color="#bbd3ed"/>
-        <GradientStop Offset="0.25" Color="#bbd3ed"/>
-        <GradientStop Offset="0.4" Color="#bbd3ed"/>
+    <LinearGradientBrush x:Key="GreyGridGradientBrush"
+                         StartPoint="1,0"
+                         EndPoint="1,1">
+        <GradientStop Offset="0.8"
+                      Color="#bbd3ed" />
+        <GradientStop Offset="0.25"
+                      Color="#bbd3ed" />
+        <GradientStop Offset="0.4"
+                      Color="#bbd3ed" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="MainWindowsBrush" StartPoint="1,0" EndPoint="1,1">
-        <GradientStop Offset="0.8" Color="#111c4a"/>
-        <GradientStop Offset="0.25" Color="#1a2969"/>
-        <GradientStop Offset="0.4" Color="#0d1c5c"/>
+    <LinearGradientBrush x:Key="MainWindowsBrush"
+                         StartPoint="1,0"
+                         EndPoint="1,1">
+        <GradientStop Offset="0.8"
+                      Color="#111c4a" />
+        <GradientStop Offset="0.25"
+                      Color="#1a2969" />
+        <GradientStop Offset="0.4"
+                      Color="#0d1c5c" />
     </LinearGradientBrush>
-
-
 
 </ResourceDictionary>

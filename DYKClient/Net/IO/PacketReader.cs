@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKClient.Net.IO
 {
@@ -23,7 +21,7 @@ namespace DYKClient.Net.IO
             var length3 = ReadInt32();
             Console.WriteLine("Length: " + length3);
             msgBuffer = new byte[length3];
-            
+
             var abc = 0;
             if (_ns.CanRead)
             {

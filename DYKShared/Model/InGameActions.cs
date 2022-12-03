@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DYKShared.Model
 {
@@ -26,11 +24,11 @@ namespace DYKShared.Model
             Description = desc;
         }
 
-        public InGameActions(int  id, string name, string desc, string username) : this(id, name, desc)
+        public InGameActions(int id, string name, string desc, string username) : this(id, name, desc)
         {
             UserNickname = username;
-        } 
-        
+        }
+
         public InGameActions(InGameActions enhancement, string username)
         {
             ID = enhancement.ID;
@@ -42,22 +40,20 @@ namespace DYKShared.Model
         public static List<InGameActions> GenerateActions()
         {
             List<InGameActions> list = new List<InGameActions>();
-            list.Add(new InGameActions(0, "Question Switcher", "Switches first letter with last in every word in a question."));
-            list.Add(new InGameActions(1, "Answer Switcher", "Switches first letter with last in every word in each answer."));
-            list.Add(new InGameActions(2, "Question Remover", "Deletes 15% of letters in a question."));
-            list.Add(new InGameActions(3, "Answer Remover", "Deletes 15% of letters in each answer."));
-            list.Add(new InGameActions(4, "Multi-Clicker", "You need to click 5 times in order to select your answer."));
-            //list.Add(new InGameActions(5, "Flashlight", "Shows answer only if you have your mouse cursor on it."));
-            //list.Add(new InGameActions(6, "It Floats!", "Makes Answers float"));
+            list.Add(new InGameActions(0, "Zmieniacz pytań", "Zamienia pierwszą literę z ostatnią w każdym słowie pytania."));
+            list.Add(new InGameActions(1, "Zmieniacz odpowiedzi", "Zamienia pierwszą literę z ostatnią w każdym słowie odpowiedzi."));
+            list.Add(new InGameActions(2, "Usuwacz pytań", "Usuwa 15% liter z pytania."));
+            list.Add(new InGameActions(3, "Usuwacz odpowiedzi", "Usuwa 15% liter z odpowiedzi."));
+            list.Add(new InGameActions(4, "Klikacz", "Musisz kliknąć 5 razy, by wybrać prawidłową odpowiedź."));
             return list;
         }
 
-        public static List<InGameActions> GetRandomAmoutOfActions(List<InGameActions> actionList ,int userCount)
+        public static List<InGameActions> GetRandomAmoutOfActions(List<InGameActions> actionList, int userCount)
         {
             List<InGameActions> resultList = new List<InGameActions>();
             Random rand = new Random();
-            int numberOfActionsPerUser = (int)Math.Ceiling((userCount * (0.24)) > 1 ? (userCount * (0.24) + 0.1) : (userCount * (0.24))); // 1 action for 2-4 users, 2 for 5-7, 3 for 8
-            for(int i = 0; i<numberOfActionsPerUser; i++)
+            int numberOfActionsPerUser = (int)Math.Ceiling((userCount * (0.24)) > 1 ? (userCount * (0.24) + 0.1) : (userCount * (0.24)));
+            for (int i = 0; i < numberOfActionsPerUser; i++)
             {
                 int random = rand.Next(actionList.Count);
                 if (resultList.Contains(actionList.ElementAt(random)))
@@ -84,5 +80,4 @@ namespace DYKShared.Model
             return jsonData;
         }
     }
-
 }

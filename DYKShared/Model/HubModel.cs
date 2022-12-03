@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DYKShared.Model
 {
@@ -29,6 +26,10 @@ namespace DYKShared.Model
             }
         }
 
+        public HubModel()
+        {
+        }
+
         public HubModel(string name, int joinCode, CategoryModel category)
         {
             Name = name;
@@ -39,7 +40,7 @@ namespace DYKShared.Model
             PlayersThatEndedGame = 0;
             GameRound = 0;
         }
-        
+
         public HubModel(int joinCode, int maxSize, string name, CategoryModel category, bool isPrivate)
         {
             Name = name;
@@ -58,12 +59,8 @@ namespace DYKShared.Model
             Users = new List<UserModel>();
             Category = category;
             IsGameStarted = false;
-            PlayersThatEndedGame = 0; 
+            PlayersThatEndedGame = 0;
             GameRound = 0;
-        }
-
-        public HubModel()
-        {
         }
 
         public HubModel(string name, int joinCode, CategoryModel category, int maxSize, int playerCount, bool isGameStarted) : this(name, joinCode, category)
@@ -77,7 +74,6 @@ namespace DYKShared.Model
 
         public static List<HubModel> JsonListToHubModelList(string json)
         {
-            //List<HubModel> lobbies = new List<HubModel>();
             var jsonData = JsonSerializer.Deserialize<List<HubModel>>(json);
             return jsonData;
         }
@@ -91,7 +87,6 @@ namespace DYKShared.Model
 
         public static ObservableCollection<HubModel> JsonListToHubModelObservableCollection(string json)
         {
-            //List<HubModel> lobbies = new List<HubModel>();
             var jsonData = JsonSerializer.Deserialize<ObservableCollection<HubModel>>(json);
             return jsonData;
         }

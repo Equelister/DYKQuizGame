@@ -1,11 +1,7 @@
-﻿using DYKShared.Enums;
-using DYKShared.Model;
+﻿using DYKShared.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKClient.Controller
 {
@@ -13,7 +9,7 @@ namespace DYKClient.Controller
     {
         internal static ObservableCollection<QuestionModel> DeleteLettersAnswers(ObservableCollection<QuestionModel> questions)
         {
-            foreach(var question in questions)
+            foreach (var question in questions)
             {
                 question.CorrectAnswer = DeletePercentageOfText(question.CorrectAnswer, 0.15);
                 question.WrongAnswerA = DeletePercentageOfText(question.WrongAnswerA, 0.15);
@@ -25,7 +21,7 @@ namespace DYKClient.Controller
 
         internal static ObservableCollection<QuestionModel> DeleteLettersQuestions(ObservableCollection<QuestionModel> questions)
         {
-            foreach(var question in questions)
+            foreach (var question in questions)
             {
                 question.Question = DeletePercentageOfText(question.Question, 0.15);
             }
@@ -55,7 +51,7 @@ namespace DYKClient.Controller
 
         private static string DeletePercentageOfText(string text, double percentage)
         {
-            StringBuilder sb = new StringBuilder(text);         
+            StringBuilder sb = new StringBuilder(text);
             int length = sb.Length;
             if (length > 2)
             {
@@ -75,7 +71,7 @@ namespace DYKClient.Controller
         {
             StringBuilder sb = new StringBuilder(text.Length);
             string[] stringArray = text.Split(' ');
-            foreach(var part in stringArray)
+            foreach (var part in stringArray)
             {
                 if (part.Length > 1)
                 {
@@ -84,8 +80,9 @@ namespace DYKClient.Controller
                     {
                         sb.Append(part.Substring(1, part.Length - 2));
                     }
-                    sb.Append(part.Substring(0, 1));                    
-                }else
+                    sb.Append(part.Substring(0, 1));
+                }
+                else
                 {
                     sb.Append(part);
                 }

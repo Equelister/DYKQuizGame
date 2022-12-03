@@ -1,14 +1,9 @@
 ﻿using DYKClient.Core;
 using DYKClient.MVVM.Model;
 using DYKClient.MVVM.ViewModel.GameHistoryViewModels;
-using DYKClient.MVVM.ViewModel.GameViewModels;
 using DYKClient.Net;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace DYKClient.MVVM.ViewModel
@@ -17,7 +12,6 @@ namespace DYKClient.MVVM.ViewModel
     {
         public ObservableCollection<UserModel> Users { get; set; }
         public ObservableCollection<string> Messages { get; set; }
-
         public RelayCommand SendMessageCommand { get; set; }
         public RelayCommand HelpViewCommand { get; set; }
         public RelayCommand SummariesListViewCommand { get; set; }
@@ -27,16 +21,17 @@ namespace DYKClient.MVVM.ViewModel
         public SummariesListViewModel SummariesListViewModel { get; set; }
         public AboutViewModel AboutViewModel { get; set; }
         public LobbiesViewModel LobbiesViewModel { get; set; }
-        
         public string Username { get; set; }
         public string Message { get; set; }
         public Server _server;
 
         private object _currentView;
         public object CurrentView
-        { 
+        {
             get { return _currentView; }
-            set { _currentView = value;
+            set
+            {
+                _currentView = value;
                 onPropertyChanged();
             }
         }
@@ -57,7 +52,6 @@ namespace DYKClient.MVVM.ViewModel
             InitializeConnectionToServer();
             InitializeViewCommands();
         }
-
 
         private void InitializeConnectionToServer()
         {
@@ -101,7 +95,6 @@ namespace DYKClient.MVVM.ViewModel
                 _server.SendOpCodeToServer(OpCodes.SendGamesHistoriesList);
             });
         }
-
 
         private void RemoveUser()
         {

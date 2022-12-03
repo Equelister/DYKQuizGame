@@ -2,10 +2,7 @@
 using DYKShared.Model;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKServer.Tests
 {
@@ -31,7 +28,7 @@ namespace DYKServer.Tests
             string message = "credsLegit";
             Program.CheckUniqueUser(ref message, testClient);
             Assert.AreEqual("credsNotLegit", message);
-        }           
+        }
 
         [Test]
         public void IsUserAlreadyLoggedInShouldReturnFalse()
@@ -54,7 +51,7 @@ namespace DYKServer.Tests
             int postUserCount = Program._users.Count();
 
             Assert.AreEqual($"User [{client.GUID}] removed from list", message);
-            Assert.AreEqual(preUserCount-1, postUserCount);
+            Assert.AreEqual(preUserCount - 1, postUserCount);
         }
 
         [Test]
@@ -64,7 +61,7 @@ namespace DYKServer.Tests
             string message = Program.RemoveUserFromList(guid.ToString(), 0);
             Assert.AreEqual($"Error while finding user to remove from list [{guid}].", message);
         }
-        
+
         [Test]
         public void SetUserInHubReadyShouldReturnTrue()
         {
@@ -75,8 +72,8 @@ namespace DYKServer.Tests
             client.UserModel.IsReady = false;
             bool result = Program.SetThisPlayerReady(client.GUID.ToString(), out hub);
             Assert.AreEqual(true, result);
-        }    
-        
+        }
+
         [Test]
         public void SetUserInHubReadyShouldReturnFalse()
         {
@@ -87,7 +84,6 @@ namespace DYKServer.Tests
             bool result = Program.SetThisPlayerReady(client.GUID.ToString(), out hub);
             Assert.AreEqual(false, result);
         }
-
 
         [TearDown]
         public void Teardown()

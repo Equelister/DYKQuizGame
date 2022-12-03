@@ -5,71 +5,94 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DYKClient.LoginWindow"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="600" Width="400"
+        Title="LoginWindow"
+        Height="600"
+        Width="400"
         WindowStartupLocation="CenterScreen"
-        Background="Transparent" Foreground="#b3bcfc"
-        FontWeight="DemiBold" FontFamily="Georgia" 
+        Background="Transparent"
+        Foreground="#b3bcfc"
+        FontWeight="DemiBold"
+        FontFamily="Georgia"
         WindowStyle="None"
         AllowsTransparency="True"
         MouseDown="Window_MouseDown">
 
-
-    <Border CornerRadius="20" BorderThickness="3" BorderBrush="#000" Background="{StaticResource MainWindowsBrush}">
+    <Border CornerRadius="20"
+            BorderThickness="3"
+            BorderBrush="#000"
+            Background="{StaticResource MainWindowsBrush}">
         <Grid>
-            <Button x:Name="closeButton" Grid.Column="4" Style="{StaticResource CustomCloseButtonStyle}" 
-                Click="CloseButton_Click"/>
+            <Button x:Name="closeButton"
+                    Grid.Column="4"
+                    Style="{StaticResource CustomCloseButtonStyle}"
+                    Click="CloseButton_Click" />
 
-            <StackPanel Grid.Row="15" Grid.Column="1" Grid.ColumnSpan="3" 
-                        Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Button x:Name="LoginPageButton" Style="{StaticResource StandardButtonStyle}"
-                    Content="Logowanie"
-                    MinWidth="80" MinHeight="20" Width="Auto" Height="Auto" Margin="10,0,0,0" 
-                    Click="LoginPageButton_Click"/>
-                <Button x:Name="RegisterPageButton" Style="{StaticResource StandardButtonStyle}"
-                    Content="Rejestracja" 
-                    MinWidth="80" MinHeight="25" Width="Auto" Height="Auto" Margin="10,0,0,0" 
-                    Click="RegisterPageButton_Click"/>
+            <StackPanel Grid.Row="15"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="3"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Button x:Name="LoginPageButton"
+                        Style="{StaticResource StandardButtonStyle}"
+                        Content="Logowanie"
+                        MinWidth="80"
+                        MinHeight="20"
+                        Width="Auto"
+                        Height="Auto"
+                        Margin="10,0,0,0"
+                        Click="LoginPageButton_Click" />
+                <Button x:Name="RegisterPageButton"
+                        Style="{StaticResource StandardButtonStyle}"
+                        Content="Rejestracja"
+                        MinWidth="80"
+                        MinHeight="25"
+                        Width="Auto"
+                        Height="Auto"
+                        Margin="10,0,0,0"
+                        Click="RegisterPageButton_Click" />
             </StackPanel>
 
-            <Frame x:Name="LoginWindowFrameTopBar" NavigationUIVisibility="Hidden"
-                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5"/>
+            <Frame x:Name="LoginWindowFrameTopBar"
+                   NavigationUIVisibility="Hidden"
+                   Grid.Column="0"
+                   Grid.Row="0"
+                   Grid.ColumnSpan="5" />
 
-            <Frame x:Name="LoginWindowFrame" NavigationUIVisibility="Hidden" 
-               Grid.Column="1" Grid.ColumnSpan="3" 
-               Grid.Row="2" Grid.RowSpan="12" />
-
-
+            <Frame x:Name="LoginWindowFrame"
+                   NavigationUIVisibility="Hidden"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="3"
+                   Grid.Row="2"
+                   Grid.RowSpan="12" />
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-
-
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
         </Grid>
     </Border>
 </Window>

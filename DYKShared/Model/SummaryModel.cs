@@ -1,32 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DYKShared.Model
 {
     public class SummaryModel
     {
-        public int ID { get; set; }                                                 // id, questionID, fastestAnswerName, fastestAnswerLong, usernames, created_at
+        public int ID { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
-        public string FastestAnswer 
-        { 
+        public string FastestAnswer
+        {
             get
             {
-                return $"{this.FastestAnswerName} - [{this.FastestAnswerLong}ms]"; 
+                return $"{this.FastestAnswerName} - [{this.FastestAnswerLong}ms]";
             }
-        }        //"User001 [132ms]"  
-        public string FastestAnswerName { get; set; }        //"User001 [132ms]"  
-        public long FastestAnswerLong{ get; set; }        //"User001 [132ms]"  
-        public List<string> UsersNicknames { get; set; } //Those with CorrectAnswer
+        }
+        public string FastestAnswerName { get; set; }
+        public long FastestAnswerLong { get; set; }
+        public List<string> UsersNicknames { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public SummaryModel()
-        {             
+        {
         }
 
         public SummaryModel(string question, string correctanswer, string fastestanswer, long fastestAnswerLong, List<string> nicknames)
@@ -46,8 +43,6 @@ namespace DYKShared.Model
             FastestAnswerLong = fastestAnswerLong;
             UsersNicknames = new List<string>();
         }
-
-
 
         public static List<SummaryModel> JsonToList(string json)
         {

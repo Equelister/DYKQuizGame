@@ -1,83 +1,90 @@
 ﻿<Page x:Class="DYKClient.LoginWindow.RegisterPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:DYKClient.LoginWindow"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="240"
+      mc:Ignorable="d"
+      d:DesignHeight="450"
+      d:DesignWidth="240"
       Title="RegisterPage"
       Background="Transparent"
       Foreground="#b3bcfc"
-      FontFamily="Georgia"
-      >
-
-
-
-
-
-
+      FontFamily="Georgia">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="5"
+                    Grid.RowSpan="16">
 
+            <TextBlock Text="Nazwa gracza"
+                       Margin="0,0,0,5" />
+            <TextBox x:Name="userNameTextBox"
+                     Style="{StaticResource CustomTextBox}"
+                     MaxHeight="24" />
 
+            <TextBlock Text="Email"
+                       Margin="0,0,0,5" />
+            <TextBox x:Name="emailTextBox"
+                     Style="{StaticResource CustomTextBox}"
+                     MaxHeight="24" />
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <TextBlock Text="Hasło"
+                       Margin="0,0,0,5" />
+            <PasswordBox x:Name="passwordPasswordBox"
+                         Style="{StaticResource StandardPasswordBoxStyle}"
+                         MaxHeight="24" />
 
+            <TextBlock Text="Powtórz hasło"
+                       Margin="0,0,0,5" />
+            <PasswordBox x:Name="retypePasswordPasswordBox"
+                         Style="{StaticResource StandardPasswordBoxStyle}"
+                         MaxHeight="24" />
 
-
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="16">
-
-            <TextBlock Text="Nazwa gracza" Margin="0,0,0,5"/>
-            <TextBox x:Name="userNameTextBox" Style="{StaticResource CustomTextBox}"
-                     MaxHeight="24"/>
-
-            <TextBlock Text="Email" Margin="0,0,0,5"/>
-            <TextBox x:Name="emailTextBox" Style="{StaticResource CustomTextBox}"
-                     MaxHeight="24"/>
-
-            <TextBlock Text="Hasło" Margin="0,0,0,5"/>
-            <PasswordBox x:Name="passwordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}" MaxHeight="24"/>
-
-            <TextBlock Text="Powtórz hasło" Margin="0,0,0,5"/>
-            <PasswordBox x:Name="retypePasswordPasswordBox" Style="{StaticResource StandardPasswordBoxStyle}" MaxHeight="24"/>
-
-            <Button x:Name="registerButton" Style="{StaticResource StandardButtonStyle}"
-                    Content="Zarejestruj" 
-                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+            <Button x:Name="registerButton"
+                    Style="{StaticResource StandardButtonStyle}"
+                    Content="Zarejestruj"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
                     MinWidth="70"
-                    Margin="0,0,0,10" Click="UserRegister"/>
+                    Margin="0,0,0,10"
+                    Click="UserRegister" />
             <TextBlock x:Name="failedRegisterTextBlock"
-                Text="FailedRegisterText}" 
-                HorizontalAlignment="Center" Visibility="Collapsed"/>
+                       Text="FailedRegisterText}"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed" />
             <TextBlock x:Name="successRegisterTextBlock"
-                Text="SuccessRegisterText}" 
-                HorizontalAlignment="Center" Visibility="Collapsed"/>
+                       Text="SuccessRegisterText}"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed" />
         </StackPanel>
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
     </Grid>
 </Page>

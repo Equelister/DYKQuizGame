@@ -1,11 +1,7 @@
 ﻿using DYKShared.Model;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKServer.Database.GameCommands
 {
@@ -17,7 +13,6 @@ namespace DYKServer.Database.GameCommands
             QuestionModel question;
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             string queryString = $"SELECT TOP {numberOfQuestions} question, correct_answer, wrong_answer_1, wrong_answer_2, wrong_answer_3, id FROM questions WHERE category_id = {categoryID} AND archive = 0 ORDER BY NEWID()";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -47,7 +42,6 @@ namespace DYKServer.Database.GameCommands
             QuestionModel question = new QuestionModel();
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             string queryString = $"SELECT question, correct_answer FROM questions WHERE id = {questionID}";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);

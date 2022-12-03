@@ -1,11 +1,7 @@
 ﻿using DYKClient.Core;
 using DYKShared.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKClient.MVVM.ViewModel.GameViewModels
 {
@@ -26,7 +22,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged("IsGameEndedVisibility");
             }
         }
-        
+
         private bool _isUserAWinner = false;
         public bool IsUserAWinner
         {
@@ -122,7 +118,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             Console.WriteLine("\r\n OTO PODSUMOWANIE: " + msg + "\r\n");
             Summary = SummaryModel.JsonToObservableCollection(msg);
             onPropertyChanged("Summary");
-            GameInProgress = false;            
+            GameInProgress = false;
         }
 
         private void ChangeStarVisibility()

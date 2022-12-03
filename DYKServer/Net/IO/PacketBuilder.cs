@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKServer.Net.IO
 {
@@ -23,7 +20,7 @@ namespace DYKServer.Net.IO
         public void WriteMessage(string msg)
         {
             var msgLength = msg.Length;
-            Console.WriteLine("msgLength: "+ msgLength +", msg: " +msg);
+            Console.WriteLine("msgLength: " + msgLength + ", msg: " + msg);
             _ms.Write(BitConverter.GetBytes(msgLength));
             _ms.Write(Encoding.UTF8.GetBytes(msg));
         }

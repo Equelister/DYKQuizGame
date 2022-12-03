@@ -4,7 +4,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 
 namespace DYKServer.Tests
 {
@@ -46,18 +45,21 @@ namespace DYKServer.Tests
             Program._users.Add(testClient);
             for (int i = 0; i < 9050; i++)
             {
-                hubmodel = new HubModel("testHub", 0, null); 
+                hubmodel = new HubModel("testHub", 0, null);
                 result = Program.UpdateReceivedLobbyInfo(testClient.GUID.ToString(), hubmodel);
-                if(i == 0)
+                if (i == 0)
                 {
                     Assert.IsNotNull(result);
-                }else if (i == 1)
+                }
+                else if (i == 1)
                 {
                     Assert.IsNotNull(result);
-                }else if (i == 10)
+                }
+                else if (i == 10)
                 {
                     Assert.IsNotNull(result);
-                }else if (i == 8998)
+                }
+                else if (i == 8998)
                 {
                     Assert.IsNotNull(result);
                 }
@@ -69,7 +71,7 @@ namespace DYKServer.Tests
                 {
                     Assert.IsNull(result);
                 }
-            }            
+            }
             Assert.IsNull(result);
         }
 
@@ -139,7 +141,7 @@ namespace DYKServer.Tests
             hubmodel.MaxSize = 8;
             Hub hub = new Hub(hubmodel);
             hub.Users = new System.Collections.Generic.List<Client>();
-            for (int i = 0; i<hubmodel.MaxSize; i++)
+            for (int i = 0; i < hubmodel.MaxSize; i++)
             {
                 Client client = new Client();
                 client.UserModel = new UserModel("testUserModel" + i);
@@ -162,7 +164,7 @@ namespace DYKServer.Tests
             hubmodel.MaxSize = 8;
             Hub hub = new Hub(hubmodel);
             hub.Users = new System.Collections.Generic.List<Client>();
-            for(int i = 0; i<hubmodel.MaxSize; i++)
+            for (int i = 0; i < hubmodel.MaxSize; i++)
             {
                 Client client = new Client();
                 client.UserModel = new UserModel("testUserModel" + i);
@@ -179,7 +181,7 @@ namespace DYKServer.Tests
         {
             List<Hub> hubList = new List<Hub>();
             List<HubModel> hmList = new List<HubModel>();
-            for(int i = 0; i< 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 HubModel hm = new HubModel();
                 hm.Name = "testHub" + 1;
@@ -192,7 +194,7 @@ namespace DYKServer.Tests
                 hmList.Add(hm);
             }
 
-            foreach(var hubmodel in hmList)
+            foreach (var hubmodel in hmList)
             {
                 Hub hub = new Hub(hubmodel);
                 hubList.Add(hub);
@@ -201,13 +203,13 @@ namespace DYKServer.Tests
             var json = Hub.PublicLobbiesToSendCreateJson(hubList);
             var listFromJson = HubModel.JsonListToHubModelList(json);
 
-            for(int i =0;i<listFromJson.Count; i++)
+            for (int i = 0; i < listFromJson.Count; i++)
             {
-                Assert.AreEqual(hmList.ElementAt(i).JoinCode, listFromJson.ElementAt(i).JoinCode);                
-                Assert.AreEqual(hmList.ElementAt(i).Name, listFromJson.ElementAt(i).Name);                
-                Assert.AreEqual(hmList.ElementAt(i).IsPrivate, listFromJson.ElementAt(i).IsPrivate);                
-                Assert.AreEqual(hmList.ElementAt(i).Users.Count, listFromJson.ElementAt(i).Users.Count);                
-            }            
+                Assert.AreEqual(hmList.ElementAt(i).JoinCode, listFromJson.ElementAt(i).JoinCode);
+                Assert.AreEqual(hmList.ElementAt(i).Name, listFromJson.ElementAt(i).Name);
+                Assert.AreEqual(hmList.ElementAt(i).IsPrivate, listFromJson.ElementAt(i).IsPrivate);
+                Assert.AreEqual(hmList.ElementAt(i).Users.Count, listFromJson.ElementAt(i).Users.Count);
+            }
         }
 
         [Test]
@@ -215,7 +217,7 @@ namespace DYKServer.Tests
         {
             List<Hub> hubList = new List<Hub>();
             List<HubModel> hmList = new List<HubModel>();
-            for(int i = 0; i< 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 HubModel hm = new HubModel();
                 hm.Name = "testHub" + 1;
@@ -230,7 +232,7 @@ namespace DYKServer.Tests
             hmList.ElementAt(1).IsPrivate = true;
             hmList.ElementAt(2).IsPrivate = true;
 
-            foreach(var hubmodel in hmList)
+            foreach (var hubmodel in hmList)
             {
                 Hub hub = new Hub(hubmodel);
                 hubList.Add(hub);

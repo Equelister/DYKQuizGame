@@ -1,19 +1,16 @@
-﻿using DYKServer.Database.MenuCommands;
-using DYKServer.Database.GameCommands;
+﻿using DYKServer.Database.GameCommands;
+using DYKServer.Database.MenuCommands;
 using DYKServer.Net;
 using DYKServer.Net.IO;
+using DYKShared.Enums;
 using DYKShared.Model;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Text;
-using DYKShared.Enums;
 
 namespace DYKServer
 {
@@ -45,37 +42,13 @@ namespace DYKServer
         public static List<CategoryModel> _categories = new List<CategoryModel>();
         static TcpListener _listener;
         private readonly static int _numberOfQuesions = 6; //Only even
-                
+
 
         static void Main(string[] args)
         {
             InitializeCategories();
             InitializeDefaultHubs(15);
             OutPutInitializeToConsole();
-
-            Task.Run(() => {
-            while(true)
-                {
-                    System.Threading.Thread.Sleep(5000);
-                    Console.WriteLine("***"); 
-                    Console.WriteLine();
-                    Console.WriteLine("HUB USER COUNT: " + _hubs.ElementAt(9).Users.Count);
-                    Console.WriteLine("HUBMODEL USER COUNT: "+_hubs.ElementAt(9).HubModel.Users.Count);
-                    Console.WriteLine("TOTAL HUB COUNT: "+_hubs.Count);
-                    Console.WriteLine();
-                    foreach (var user in _hubs.ElementAt(9).Users)
-                    {
-                        Console.WriteLine(user?.UserModel.Username);
-                    }
-                    Console.WriteLine();
-                    foreach (var user in _hubs.ElementAt(9).HubModel.Users)
-                    {
-                        Console.WriteLine(user?.Username);
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("***");
-                }
-            });
 
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7715);
             _listener.Start();
@@ -86,7 +59,6 @@ namespace DYKServer
                 _users.Add(new Client(_listener.AcceptTcpClient()));
             }
         }
-
 
         static void OutPutInitializeToConsole()
         {
@@ -100,16 +72,13 @@ namespace DYKServer
             }
         }
 
-
-
-
         /// <summary>
         /// HUBS
         /// </summary>
         static void InitializeDefaultHubs(int hubCount)
         {
 
-            for(int i = 0; i<hubCount; i++)
+            for (int i = 0; i < hubCount; i++)
             {
                 Hub newHub = new Hub(i + 1 + ". Hub", GetFirstCategoryFromList());
                 newHub.IsDefault = true;
@@ -120,11 +89,11 @@ namespace DYKServer
 
         static void CheckHubUniqueJoinCodeAll()
         {
-            for(int i = 0; i<_hubs.Count; i++)
+            for (int i = 0; i < _hubs.Count; i++)
             {
                 foreach (Hub nextHub in _hubs)
                 {
-                    if(_hubs.ElementAt(i).HubModel.JoinCode == nextHub.HubModel.JoinCode && _hubs.ElementAt(i).GUID != nextHub.GUID)
+                    if (_hubs.ElementAt(i).HubModel.JoinCode == nextHub.HubModel.JoinCode && _hubs.ElementAt(i).GUID != nextHub.GUID)
                     {
                         _hubs.ElementAt(i).GenerateJoinCode();
                         i--;
@@ -166,8 +135,8 @@ namespace DYKServer
                     continue;
                 }
                 foreach (var currentUser in hub.Users)
-                {                    
-                    if(currentUser.UserModel.Username.Equals(actions.UserNickname))
+                {
+                    if (currentUser.UserModel.Username.Equals(actions.UserNickname))
                     {
                         currentUser.UserModel.AppliedEnhancementsIDs.Add(actions.ID);
                         break;
@@ -175,12 +144,12 @@ namespace DYKServer
                 }
             }
 
-            if(hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
+            if (hub.HubModel.PlayersThatEndedGame >= hub.Users.Count)
             {
-                foreach(var userToSend in hub.Users)
+                foreach (var userToSend in hub.Users)
                 {
                     BroadcastMessageToSpecificClient(
-                        user.ClientSocket,
+                        userToSend.ClientSocket,
                         JsonSerializer.Serialize(userToSend.UserModel.AppliedEnhancementsIDs),
                         OpCodes.SendStartEnhancedGameRoundTwo);
                 }
@@ -193,12 +162,13 @@ namespace DYKServer
         {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             bool success = Int32.TryParse(message, out int gameId);
-            if(success)
+            if (success)
             {
                 SummaryQueries sq = new SummaryQueries();
                 string msg = JsonSerializer.Serialize(sq.GetAllQuestionsFromGameHistoryWhereGameID(gameId));
                 BroadcastMessageToSpecificClient(user.ClientSocket, msg, OpCodes.SendGameHistoryDetails);
-            }else
+            }
+            else
             {
                 Console.WriteLine($"Something went wrong with sending GameHistoryDetails to user [{user.GUID}]");
             }
@@ -226,18 +196,18 @@ namespace DYKServer
             Hub hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             user.UserModel.IsReady = true;
 
-            if(hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
+            if (hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
             {
                 CreateFullSummaryForTheGame(questionsFromUser, user, hub);
-            }else
+            }
+            else
             {
                 CreatePartialSummaryForTheGame(questionsFromUser, user, hub);
             }
-
         }
 
         internal static void CreateFullSummaryForTheGame(List<QuestionModel> questionsFromUser, Client user, Hub hub)
-            {
+        {
             hub.HubModel.PlayersThatEndedGame++;
 
             if (hub.Summary.Count <= 0)
@@ -254,7 +224,7 @@ namespace DYKServer
                 }
             }
 
-            for(int i = 0; i< hub.Questions.Count; i++)
+            for (int i = 0; i < hub.Questions.Count; i++)
             {
                 if (questionsFromUser.ElementAt(i).IsAnsweredCorrectly)
                 {
@@ -274,14 +244,12 @@ namespace DYKServer
             });
         }
 
-
         internal static void CreatePartialSummaryForTheGame(List<QuestionModel> questionsFromUser, Client user, Hub hub)
         {
             hub.HubModel.PlayersThatEndedGame++;
 
             if (hub.Summary.Count <= 0)
             {
-                ///hub.Summary = new List<SummaryModel>();
                 for (int j = 0; j < hub.Questions.Count; j++)
                 {
                     hub.Summary.Add(new SummaryModel(
@@ -323,9 +291,6 @@ namespace DYKServer
             });
         }
 
-
-
-
         private static void GiveUserExtraPointsForTime(Hub hub)
         {
             foreach (var elem in hub.Summary)
@@ -343,9 +308,9 @@ namespace DYKServer
 
         public static bool IsEverybodyInHubEndedGame(Hub hub)
         {
-            foreach(var user in hub.Users)
+            foreach (var user in hub.Users)
             {
-                if(user.UserModel.IsReady == false)
+                if (user.UserModel.IsReady == false)
                 {
                     return false;
                 }
@@ -390,7 +355,7 @@ namespace DYKServer
                                 JsonSerializer.Serialize(enhancementsToSend),
                                 OpCodes.SendMidGameEnhancements);
 
-                        hub.HubModel.GameRound = (int)GameTypes.EnhancedQuizGameRoundTwo; // For QuizEnhancedMode
+                        hub.HubModel.GameRound = (int)GameTypes.EnhancedQuizGameRoundTwo;
                         hub.HubModel.PlayersThatEndedGame = 0;
                     }
                     else if (hub.HubModel.GameRound.Equals((int)GameTypes.EnhancedQuizGameRoundTwo) || hub.HubModel.GameRound.Equals((int)GameTypes.NormalQuizGame))
@@ -401,9 +366,9 @@ namespace DYKServer
                                OpCodes.SendSummary);
 
                         Client user = hub.Users.ElementAt(0);
-                        foreach(var userSearch in hub.Users)
+                        foreach (var userSearch in hub.Users)
                         {
-                            if(userSearch.UserModel.GameScore > user.UserModel.GameScore)
+                            if (userSearch.UserModel.GameScore > user.UserModel.GameScore)
                             {
                                 user = userSearch;
                             }
@@ -424,7 +389,8 @@ namespace DYKServer
                     Console.WriteLine($"[In {hub.GUID}] there're still some players playing!");
                     return;
                 }
-            }else
+            }
+            else
             {
                 hub.HubModel.IsGameStarted = false;
                 hub.HubModel.PlayersThatEndedGame = 0;
@@ -436,18 +402,18 @@ namespace DYKServer
         {
             SummaryQueries sq = new SummaryQueries();
             decimal gameID = sq.InsertNewGameToTable();
-            if(gameID > 0)
+            if (gameID > 0)
             {
                 List<int> usersID = new List<int>();
-                foreach(var user in hub.Users)
+                foreach (var user in hub.Users)
                 {
                     usersID.Add(user.UserModel.ID);
                 }
                 int result = sq.InsertUsersToGameID(usersID, gameID);
-                if(result > 0)
+                if (result > 0)
                 {
                     result = sq.InsertQuestionSummariesToGame(hub, gameID);
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return;
                     }
@@ -477,7 +443,7 @@ namespace DYKServer
         private static void UpdateDBWithUserScoresAsync(Hub hub)
         {
             List<int> userIDList = new List<int>();
-            foreach(var user in hub.Users)
+            foreach (var user in hub.Users)
             {
                 userIDList.Add(user.UserModel.ID);
             }
@@ -487,7 +453,7 @@ namespace DYKServer
 
         private static void ClearUserScoresAndChangeIsReadyState(Hub hub)
         {
-            foreach(var user in hub.Users)
+            foreach (var user in hub.Users)
             {
                 user.UserModel.GameScore = 0;
                 user.UserModel.IsReady = false;
@@ -527,7 +493,7 @@ namespace DYKServer
                 SendToEveryoneInLobby(
                     hub,
                     JsonSerializer.Serialize(halfQuestions),
-                    opcode);                
+                    opcode);
             }
             else if (gameType.Equals(GameTypes.NormalQuizGame))
             {
@@ -539,9 +505,6 @@ namespace DYKServer
             }
         }
 
-
-
-
         public static string GetHubListAsJson(string UID)
         {
             Console.WriteLine($"User [{UID}] requested a lobby list.");
@@ -549,7 +512,7 @@ namespace DYKServer
         }
 
         public static bool SetThisPlayerReady(string uid, out Hub hub)
-        {            
+        {
             Client user = _users.Where(x => x.GUID.ToString() == uid).FirstOrDefault();
             hub = _hubs.Where(x => x.Users.Contains(user)).FirstOrDefault();
             if (hub is not null && user.UserModel.IsReady == false)
@@ -580,7 +543,7 @@ namespace DYKServer
                 }
                 else
                 {
-                    if(hub.HubModel.IsGameStarted == true)
+                    if (hub.HubModel.IsGameStarted == true)
                     {
                         GiveSummaryIfGameEnded(hub);
                     }
@@ -602,7 +565,8 @@ namespace DYKServer
             try
             {
                 hub = _hubs.Where(x => x.HubModel.JoinCode == receivedJoinCode).FirstOrDefault();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 hub = null;
             }
@@ -620,7 +584,7 @@ namespace DYKServer
                     );
                     foreach (var user in hub.Users)
                     {
-                        hubmodel.Users.Add(user.UserModel);          
+                        hubmodel.Users.Add(user.UserModel);
                     }
                     hub.HubModel = hubmodel;
                     Task.Run(() => SendToEveryoneInLobbyExceptThisClient(
@@ -638,17 +602,17 @@ namespace DYKServer
         public static Hub UpdateReceivedLobbyInfo(string UID, HubModel newHub)
         {
             Hub hub = new Hub(newHub);
-            if(hub.HubModel.JoinCode == 0)
+            if (hub.HubModel.JoinCode == 0)
             {
-                if(_hubs.Count > 8999)
+                if (_hubs.Count > 8999)
                 {
                     Console.WriteLine("Reached Full Server Capacity! Cannot create new Hub.");
                     return null;
                 }
-                /*hub.HubModel.JoinCode = */hub.GenerateJoinCode();
+                hub.GenerateJoinCode();
                 CheckHubUniqueJoinCodeSingle(hub);
                 Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
-                if(user is null)
+                if (user is null)
                 {
                     Console.WriteLine("User doesnt exists.");
                     return null;
@@ -686,16 +650,14 @@ namespace DYKServer
                 {
                     Program.BroadcastMessageToSpecificClient(user.ClientSocket, message, opcode);
                 }
-            }                
+            }
         }
-
-
 
         static void InitializeCategories()
         {
             HubCommands hc = new HubCommands();
-            _categories = hc.GetCategoriesListNotArchived(); 
-            if(IsListEmpty(_categories))
+            _categories = hc.GetCategoriesListNotArchived();
+            if (IsListEmpty(_categories))
             {
                 throw new ArgumentException(
                      "*** Categories do not exists in database ***\r\n" +
@@ -724,10 +686,6 @@ namespace DYKServer
             return _categories.ElementAt(0);
         }
 
-
-
-
-
         /// <summary>
         /// LOGIN
         /// </summary>
@@ -738,29 +696,23 @@ namespace DYKServer
         {
             RemoveUserFromList(Guid.Empty.ToString(), 0);
             Client user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
-            if(user is null)
+            var msgPacket = new PacketBuilder();
+            if (user is null)
             {
-                RemoveUserFromList(UID, user.UserModel.ID);
-                return false;
+                RemoveUserFromList(UID, 0);
+                message = "credsNotLegit";
+                msgPacket.WriteOpCode(2);
+                msgPacket.WriteMessage(message);
             }
             if (message.Equals("credsLegit"))
             {
                 CheckUniqueUser(ref message, user);
+                msgPacket.WriteOpCode(2);
+                msgPacket.WriteMessage(message);
             }
-            var msgPacket = new PacketBuilder();
-            msgPacket.WriteOpCode(2);
-            msgPacket.WriteMessage(message);
+
             if (user is not null)
             {
-/*                Console.WriteLine("**********************");
-                //Console.WriteLine(msgPacket.WriteMessage()) ;
-
-                foreach (var item in msgPacket.GetPacketBytes())
-                {
-                    Console.Write(item.ToString()+", ");
-                }
-
-                Console.WriteLine("**********************");*/
                 user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
                 if (message.Equals("credsNotLegit"))
                 {
@@ -768,7 +720,7 @@ namespace DYKServer
                     user = null;
                     return false;
                 }
-                return true; // successfull login
+                return true;
             }
             else
             {
@@ -788,16 +740,10 @@ namespace DYKServer
 
         public static string RemoveUserFromList(string UID, int id)
         {
-            var user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
-            if (user is not null)
+            try
             {
-                _users.Remove(user);
-                user = null;
-                return ($"User [{UID}] removed from list");
-            }        
-            else
-            {
-                //user = _users.Where(x => x.UserModel.ID == id).FirstOrDefault();
+                var user = _users.Where(x => x.GUID.ToString() == UID).FirstOrDefault();
+
                 if (user is not null)
                 {
                     _users.Remove(user);
@@ -806,18 +752,21 @@ namespace DYKServer
                 }
                 else
                 {
-                    return ($"Error while finding user to remove from list [{UID}].");
+                    if (user is not null)
+                    {
+                        _users.Remove(user);
+                        user = null;
+                        return ($"User [{UID}] removed from list");
+                    }
+                    else
+                    {
+                        return ($"Error while finding user to remove from list [{UID}].");
+                    }
                 }
             }
+            catch (Exception e)
+            { return "Error"; }
         }
-
-
-
-
-
-
-
-
 
         /// <summary>
         /// BROADCASTS

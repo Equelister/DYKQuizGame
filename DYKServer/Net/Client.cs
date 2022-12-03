@@ -4,9 +4,7 @@ using DYKShared.Model;
 using DYKShared.ModelHelpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DYKServer.Net
@@ -27,28 +25,26 @@ namespace DYKServer.Net
 
             LoginOrRegister();
 
-            Task.Run(() => Process());            
+            Task.Run(() => Process());
         }
 
         void LoginOrRegister()
         {
-            var opCode = _packetReader.ReadByte(); 
+            var opCode = _packetReader.ReadByte();
             string jsonMsg = _packetReader.ReadMessage();
             LoginCredentialsModelHelper lc = LoginCredentialsModelHelper.JsonToModelHelper(jsonMsg);
             LoginValidator lg = new LoginValidator();
             if (opCode == 2)
             {
-                //login
                 UserModel = lg.ValidateLoginCredentials(lc.Login, lg.HashPassword(lc.Password));
-            }else
+            }
+            else
             {
-                //register
                 RegisterRequest = true;
                 ClientSocket = null;
                 _packetReader = null;
                 lg.CreateNewAccount(lc.Login, lg.HashPassword(lc.Password), lc.Email);
             }
-
         }
 
         void Process()
@@ -76,7 +72,6 @@ namespace DYKServer.Net
                     _packetReader = null;
                 }
 
-
                 while (succesLogin)
                 {
                     try
@@ -84,12 +79,6 @@ namespace DYKServer.Net
                         var opcode = _packetReader.ReadByte();
                         switch (opcode)
                         {
-                            /* case 2:
-                                 //GetClientsLoginCredentials();
-                                 break;*/
-                            /* case 5:
-                                 GetAndBroadcastClientMessage();
-                                 break;*/
                             case 20:
                                 SendHubListAsJson();
                                 break;
@@ -129,9 +118,7 @@ namespace DYKServer.Net
                             default:
                                 Console.WriteLine("Client.ReadPacket = default");
                                 break;
-
                         }
-
                     }
                     catch (Exception e)
                     {
@@ -143,7 +130,8 @@ namespace DYKServer.Net
                         return;
                     }
                 }
-            }else
+            }
+            else
             {
                 Program.RemoveUserFromList(GUID.ToString(), 0);
             }
@@ -189,13 +177,14 @@ namespace DYKServer.Net
         {
             Hub hub = null;
             bool result = Program.SetThisPlayerReady(GUID.ToString(), out hub);
-            if(result)
+            if (result)
             {
                 Program.SendToEveryoneInLobby(
                         hub,
-                        System.Text.Json.JsonSerializer.Serialize(hub.HubModel.Users),       //Send Updated UserList To Everyone in lobby
+                        System.Text.Json.JsonSerializer.Serialize(hub.HubModel.Users),
                         OpCodes.SendUpdatedPlayersList);
-            }else
+            }
+            else
             {
                 Console.WriteLine($"User [{this.GUID}] can't be or already is ready");
             }
@@ -224,22 +213,21 @@ namespace DYKServer.Net
         {
             int receivedJoinCode;
             bool result = Int32.TryParse(_packetReader.ReadMessage(), out receivedJoinCode);
-            if(result)
+            if (result)
             {
                 HubModel hub = Program.AddUserToHub(receivedJoinCode, GUID.ToString());
                 if (hub is not null)
                 {
                     var message = hub.ConvertToJson();
                     Program.BroadcastMessageToSpecificClient(this.ClientSocket, message, OpCodes.AddToLobbyRequest);
-                    //add user to hub and send hubmodel
                 }
                 else
                 {
                     var message = "lobbyDoesntExists";
                     Program.BroadcastMessageToSpecificClient(this.ClientSocket, message, OpCodes.AddToLobbyRequest);
-                    // lobby doesnt exist return to user
-                }                
-            }else
+                }
+            }
+            else
             {
                 var message = "wrongJoinCode";
                 Program.BroadcastMessageToSpecificClient(this.ClientSocket, message, OpCodes.AddToLobbyRequest);
@@ -249,7 +237,7 @@ namespace DYKServer.Net
         private void SendHubListAsJson()
         {
             var lobbiesString = Program.GetHubListAsJson(this.GUID.ToString());
-            Program.BroadcastMessageToSpecificClient(this.ClientSocket,lobbiesString, OpCodes.LobbiesList);
+            Program.BroadcastMessageToSpecificClient(this.ClientSocket, lobbiesString, OpCodes.LobbiesList);
         }
 
         private void SendCategoriesList()
@@ -266,32 +254,24 @@ namespace DYKServer.Net
 
         private bool GetClientsLoginCredentials(bool status)
         {
-            if (status)
+            try
             {
-                return Program.BroadcastLoginResult(GUID.ToString(), "credsLegit");
-            }
-            else
-            {
-                return Program.BroadcastLoginResult(GUID.ToString(), "credsNotLegit");
-                
-            }
-        }        
+                if (status)
+                {
+                    return Program.BroadcastLoginResult(GUID.ToString(), "credsLegit");
+                }
+                else
+                {
+                    return Program.BroadcastLoginResult(GUID.ToString(), "credsNotLegit");
 
-        private void GetAndBroadcastClientMessage()
-        {
-/*            var message = _packetReader.ReadMessage();
-            Console.WriteLine($"{DateTime.Now} [{Username}]: {message}");
-            Program.BroadcastMessage($"{DateTime.Now} [{Username}]: {message}");*/
+                }
+            }
+            catch (Exception e)
+            { return false; }
         }
-
-
-
-
 
         public Client()
         {
-
         }
-        
     }
 }

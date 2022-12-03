@@ -2,12 +2,9 @@
 using DYKClient.Net;
 using DYKShared.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKClient.MVVM.ViewModel.GameViewModels
 {
@@ -17,8 +14,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         public RelayCommand SetPlayerReadyCommand { get; set; }
         public RelayCommand StartEnhancedGameCommand { get; set; }
         public RelayCommand StartNormalGameCommand { get; set; }
-        //public RelayCommand SendCategoriesListReqCommand { get; set; }
         public RelayCommand QuitFromLobbyCommand { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
         private MainViewModel mainViewModel;
         private ObservableCollection<CategoryModel> _categories = new ObservableCollection<CategoryModel>();
         public ObservableCollection<CategoryModel> Categories
@@ -73,10 +70,15 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                                 if (Int32.Parse(value) < Hub.Users.Count)
                                 {
                                     _playerNumberStr = Hub.Users.Count.ToString();
-                                }else
+                                }
+                                else
                                 {
                                     _playerNumberStr = value;
                                 }
+                            }
+                            else
+                            {
+                                _playerNumberStr = value;
                             }
                         }
                         else
@@ -84,7 +86,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                             _playerNumberStr = value;
                         }
                     }
-                }else
+                }
+                else
                 {
                     _playerNumberStr = "8";
                 }
@@ -137,9 +140,21 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
                 onPropertyChanged("IsHubChangedVisibility");
             }
         }
+
+        private HubModel _hub;
+        public HubModel Hub
+        {
+            get { return _hub; }
+            set
+            {
+                _hub = value;
+                onPropertyChanged();
+            }
+        }
+
         public System.Windows.Visibility IsHubChangedVisibility
         {
-            get 
+            get
             {
                 return IsHubChanged ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             }
@@ -208,7 +223,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             QuitFromLobbyCommand = new RelayCommand(o =>
             {
                 QuitFromLobby();
-                //Sendquiting info to server
             });
 
             SetPlayerReadyCommand = new RelayCommand(o =>
@@ -219,7 +233,6 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             StartEnhancedGameCommand = new RelayCommand(o =>
             {
                 StartGame(OpCodes.SendNewEnhancedGame);
-                //Sendquiting info to server
             });
 
             StartNormalGameCommand = new RelayCommand(o =>
@@ -229,8 +242,8 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
         }
 
         private void StartGame(OpCodes gameType)
-        {            
-            if(CheckArePlayersReady())
+        {
+            if (CheckArePlayersReady())
             {
                 mainViewModel._server.SendOpCodeToServer(gameType);
             }
@@ -306,23 +319,18 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             Hub = HubModel.JsonToSingleLobby(msg);
             InitializeFields();
-            //throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
         }
-        
+
         public void ReceivedPlayersInfo()
         {
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             Hub.Users = UserModel.JsonListToUserModelList(msg);
             onPropertyChanged("Hub");
-
-            //InitializeFields();
-            //throw new NotImplementedException("ReceivedLobbyInfo() => Not implemented");
         }
         public void SendNewLobbyData()
         {
             Hub = new HubModel();
             SendUpdatedLobbyData();
-            //throw new NotImplementedException("SendNewLobbyData() => Not implemented");
         }
 
         public void SendUpdatedLobbyData()
@@ -350,7 +358,7 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
 
         private bool CheckIfInputFieldsAreEmpty()
         {
-            if(SelectedCategory is null ||
+            if (SelectedCategory is null ||
                 PlayerNumberStr is null ||
                 LobbyName is null)
             {
@@ -364,30 +372,5 @@ namespace DYKClient.MVVM.ViewModel.GameViewModels
             var msg = mainViewModel._server.PacketReader.ReadMessage();
             Categories = CategoryModel.JsonListToCategoryModelObservableCollection(msg);
         }
-
-        //clock every10s request users list(or new complete hub to update) ////////// button refresh to do the same
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-
-        private HubModel _hub;
-        public HubModel Hub
-        {
-            get { return _hub; }
-            set
-            {
-                _hub = value;
-                onPropertyChanged();
-            }
-        }
-
-
-
-
-
-
-
     }
 }

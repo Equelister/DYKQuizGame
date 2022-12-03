@@ -1,23 +1,18 @@
 ﻿using DYKShared.Model;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DYKServer.Database.ConnectionCommands
 {
-    class LoginValidator 
+    class LoginValidator
     {
         public UserModel ValidateLoginCredentials(string email, string userPassword)
         {
             UserModel usr = new UserModel();
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             string queryString = $"SELECT id, username, email, total_games FROM users WHERE email LIKE '{email}' AND password LIKE '{userPassword}'";
-            //string queryString = $"SELECT * FROM users ORDER BY id OFFSET 1 ROWS";
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -68,10 +63,6 @@ namespace DYKServer.Database.ConnectionCommands
         public string HashPassword(string password)
         {
             byte[] salt = new byte[128 / 8];
-            /*            using (var rngCsp = new RNGCryptoServiceProvider())
-                        {
-                            rngCsp.GetNonZeroBytes(salt);
-                        }*/
             for (int i = 0; i < salt.Length; i++)
             {
                 salt[i] = 0;

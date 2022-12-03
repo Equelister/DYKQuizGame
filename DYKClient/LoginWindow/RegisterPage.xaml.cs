@@ -1,26 +1,11 @@
 ﻿using DYKClient.Net;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DYKClient.LoginWindow
 {
-    /// <summary>
-    /// Interaction logic for RegisterPage.xaml
-    /// </summary>
     public partial class RegisterPage : Page
     {
         public RegisterPage()
@@ -36,7 +21,6 @@ namespace DYKClient.LoginWindow
 
         private void UserRegister(object sender, RoutedEventArgs e)
         {
-            //registerButton.IsEnabled = false;
             InitializeConnectionToServer();
             string emailTe = emailTextBox.Text.ToString();
 
@@ -71,13 +55,10 @@ namespace DYKClient.LoginWindow
                 registerButton.IsEnabled = true;
             }
         }
+
         private string HashPassword(string password)
         {
             byte[] salt = new byte[128 / 8];
-            /*            using (var rngCsp = new RNGCryptoServiceProvider())
-                        {
-                            rngCsp.GetNonZeroBytes(salt);
-                        }*/
             for (int i = 0; i < salt.Length; i++)
             {
                 salt[i] = 0;
