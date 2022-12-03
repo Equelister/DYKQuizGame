@@ -1,6 +1,6 @@
 <div align="center" font-size="large">
   
-   # To Do Application
+   # DYKQuizGame
 </div>
 
 <table align="center">
